@@ -1,0 +1,3 @@
+function nodejs_context {
+  scl enable nodejs010 "$1"
+}

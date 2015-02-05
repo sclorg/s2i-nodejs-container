@@ -1,0 +1,43 @@
+#!/bin/bash -e
+
+source "${HOME}/lib/nodejs_context"
+
+function link_global_modules {
+  # Global modules good to have
+  npmgl=$(grep "^\s*[^#\s]" /opt/nodejs/etc/npm_global_module_list | sort -u)
+
+  # Available global modules; only match top-level npm packages
+  global_modules=$(nodejs_context "npm ls -g" 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
+
+  # List all modules in common
+  module_list=$(comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
+
+  # Link the modules
+  nodejs_context "npm link $module_list"
+  #npm link $module_list &> /dev/null
+}
+
+if [ "$1" = "-h" ]; then
+  exec /opt/nodejs/bin/usage
+fi
+
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "Restoring build artifacts"
+  mv /tmp/artifacts/* $HOME/.
+else
+  link_global_modules
+fi
+
+APP_RUNTIME_DIR="${HOME}/src"
+APP_SRC_DIR="/tmp/src"
+
+echo "---> Installing application source"
+mkdir -p ${APP_RUNTIME_DIR}
+cp -Rf ${APP_SRC_DIR}/* ${APP_RUNTIME_DIR}/
+
+pushd "${APP_RUNTIME_DIR}/${APP_ROOT}" >/dev/null
+echo "---> Building your Node application from source"
+
+nodejs_context "npm install -d"
+
+popd >/dev/null

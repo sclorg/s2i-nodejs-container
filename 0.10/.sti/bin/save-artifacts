@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+pushd ${HOME} >/dev/null
+
+if [ -d ./src/node_modules ]; then
+  tar cf - ./src/node_modules
+fi
+
+popd >/dev/null

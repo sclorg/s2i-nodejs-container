@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cat <<EOF
+This is a STI nodejs-0.10 rhel base image:
+To use it, install STI: https://github.com/openshift/source-to-image
+
+Sample invocation:
+
+sti build https://github.com/ryanj/node-echo.git openshift/nodejs-0-10-rhel nodejs-echo-app
+
+You can then run the resulting image via:
+docker run -p 3000:3000 nodejs-echo-app
+EOF
