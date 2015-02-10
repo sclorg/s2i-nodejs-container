@@ -16,7 +16,7 @@ ADD ./nodejs         /opt/nodejs/
 ADD ./.sti/bin/usage /opt/nodejs/bin/
 
 
-ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/sti-nodejs/master/.sti/bin
+ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/sti-nodejs/master/0.10/.sti/bin
 
 
 ENV STI_LOCATION /tmp
