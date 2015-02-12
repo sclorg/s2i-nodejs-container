@@ -18,7 +18,7 @@ fi
 
 for dir in ${dirs}; do
   IMAGE_NAME=nodejs-${dir}-${OS}
-  echo "---> Building ${IMAGE_NAME}"
+  echo ">>>> Building ${IMAGE_NAME}"
 
   pushd ${dir} > /dev/null
 
