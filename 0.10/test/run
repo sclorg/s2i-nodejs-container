@@ -89,9 +89,14 @@ wait_for_cid() {
   done
 }
 
-test_usage() {
+test_sti_usage() {
   echo "Testing 'sti usage'..."
   sti usage ${sti_args} ${IMAGE_NAME} &>/dev/null
+}
+
+test_docker_run_usage() {
+  echo "Testing 'docker run' usage..."
+  docker run ${IMAGE_NAME} &>/dev/null
 }
 
 test_connection() {
@@ -122,8 +127,12 @@ prepare
 run_sti_build
 check_result $?
 
-# Verify the 'usage' script is working properly
-test_usage
+# Verify the 'usage' script is working properly when running the base image with 'sti usage ...'
+test_sti_usage
+check_result $?
+
+# Verify the 'usage' script is working properly when running the base image with 'docker run ...'
+test_docker_run_usage
 check_result $?
 
 # Verify that the HTTP connection can be established to test application container
