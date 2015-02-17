@@ -12,15 +12,12 @@ RUN rpm -i https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64
     yum clean all -y
 
 
-ADD ./nodejs         /opt/nodejs/
-ADD ./.sti/bin/usage /opt/nodejs/bin/
+COPY ./nodejs/ /opt/nodejs/
 
+# Including STI scripts into the image
+COPY ./.sti/bin/ /usr/local/sti
 
-ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/openshift/sti-nodejs/master/0.10/.sti/bin
-
-
-ENV STI_LOCATION /tmp
-
+ENV STI_SCRIPTS_URL image:///usr/local/sti
 
 RUN mkdir -p /opt/nodejs/{run,src} && \
     groupadd -r nodejs -f -g 433 && \
@@ -41,4 +38,4 @@ USER nodejs
 
 EXPOSE 3000
 
-CMD ["/opt/nodejs/bin/usage"]
+CMD ["/usr/local/sti/usage"]
