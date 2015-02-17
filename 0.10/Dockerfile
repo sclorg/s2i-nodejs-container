@@ -1,10 +1,4 @@
-FROM centos:centos7
-
-RUN yum install -y --setopt=tsflags=nodocs yum-utils wget which lsof epel-release \
-	unzip tar bsdtar procps-ng gettext which gcc-c++ automake autoconf \
-	curl-devel openssl-devel zlib-devel libxslt-devel libxml2-devel gdb \
-	mysql-libs mysql-devel postgresql-devel sqlite-devel && \
-    yum clean all -y
+FROM openshift/base-centos7
 
 RUN rpm -i https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm && \
     rpm -i https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-7-x86_64/download/rhscl-nodejs010-epel-7-x86_64.noarch.rpm && \
