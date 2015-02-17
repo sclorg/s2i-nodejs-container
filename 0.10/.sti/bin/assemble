@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# Prevent running assemble in builders different than official STI image.
+# The official nodejs:0.10-onbuild already run npm install and use different
+# application folder.
+[ -d "/usr/src/app" ] && exit 0
+
 source "${HOME}/lib/nodejs_context"
 
 function link_global_modules {

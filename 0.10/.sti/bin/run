@@ -1,5 +1,16 @@
 #!/bin/bash -e
 
+# Runs the nodejs application server.
+run_node() {
+  exec npm start -d
+}
+
+# If the official dockerhub node image is used, skip the SCL setup below
+# and just run the nodejs server
+if [ -d "/usr/src/app" ]; then
+  run_node
+fi
+
 export APP_ROOT_DIR="${HOME}/src/${APP_ROOT:-.}"
 source "${HOME}/lib/nodejs_context"
 
@@ -35,4 +46,5 @@ set +e
 
 export X_SCLS="nodejs010"
 source /opt/rh/nodejs010/enable
-exec npm start -d
+
+run_node
