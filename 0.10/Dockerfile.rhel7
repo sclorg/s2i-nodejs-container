@@ -24,8 +24,6 @@ RUN mkdir -p /opt/nodejs/{run,src} && \
     useradd -u 431 -r -g nodejs -d /opt/nodejs -s /sbin/nologin -c "NodeJS user" nodejs && \
     chown -R nodejs:nodejs /opt/nodejs
 
-
-ENV APP_ROOT .
 ENV HOME     /opt/nodejs
 ENV PATH     $HOME/bin:$PATH
 
@@ -34,7 +32,6 @@ ENV STI_NODEJS_VERSION 0.10
 WORKDIR     /opt/nodejs/src
 
 USER nodejs
-
 
 EXPOSE 3000
 

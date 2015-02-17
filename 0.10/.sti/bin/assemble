@@ -19,7 +19,6 @@ function link_global_modules {
 
   # Link the modules
   nodejs_context "npm link $module_list"
-  #npm link $module_list &> /dev/null
 }
 
 if [ "$1" = "-h" ]; then
@@ -27,22 +26,14 @@ if [ "$1" = "-h" ]; then
 fi
 
 if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
-  echo "Restoring build artifacts"
-  mv /tmp/artifacts/* $HOME/.
+  echo "---> Restoring build artifacts"
+  mv /tmp/artifacts/* ./
 else
   link_global_modules
 fi
 
-APP_RUNTIME_DIR="${HOME}/src"
-APP_SRC_DIR="/tmp/src"
-
 echo "---> Installing application source"
-mkdir -p ${APP_RUNTIME_DIR}
-cp -Rf ${APP_SRC_DIR}/* ${APP_RUNTIME_DIR}/
+cp -Rf /tmp/src/* ${HOME}/src
 
-pushd "${APP_RUNTIME_DIR}/${APP_ROOT}" >/dev/null
 echo "---> Building your Node application from source"
-
 nodejs_context "npm install -d"
-
-popd >/dev/null
