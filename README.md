@@ -55,13 +55,13 @@ resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ sti build https://github.com/ryanj/node-echo.git nodejs-0.10-rhel7 nodejs-echo-app
+    $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-rhel7 nodejs-echo-app
     $ docker run -p 3000:3000 nodejs-echo-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ sti build https://github.com/ryanj/node-echo.git nodejs-0.10-centos7 nodejs-echo-app
+    $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-centos7 nodejs-echo-app
     $ docker run -p 3000:3000 nodejs-echo-app
     ```
 
@@ -156,6 +156,16 @@ Repository organization
 * **`hack/`**
 
     Folder contains scripts which are responsible for build and test actions performed by the `Makefile`.
+
+Image name structure
+------------------------
+##### Structure: openshift/1-2-3
+
+1. Platform name - nodejs
+2. Platform version(without dots)
+3. Base builder image - centos7/rhel7
+
+Examples: `openshift/nodejs-010-centos7`, `openshift/nodejs-010-rhel7`
 
 
 Environment variables

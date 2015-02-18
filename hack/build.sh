@@ -17,7 +17,8 @@ else
 fi
 
 for dir in ${dirs}; do
-  IMAGE_NAME=nodejs-${dir}-${OS}
+  IMAGE_NAME=openshift/nodejs-${dir//./}-${OS}
+
   echo ">>>> Building ${IMAGE_NAME}"
 
   pushd ${dir} > /dev/null
