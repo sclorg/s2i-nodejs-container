@@ -171,12 +171,6 @@ Examples: `openshift/nodejs-010-centos7`, `openshift/nodejs-010-rhel7`
 Environment variables
 ---------------------
 
-*  **APP_ROOT** (default: `.`)
-
-    This variable specifies a relative location to your application inside the
-    application GIT repository. In case your application is located in a
-    sub-folder, you can set this variable to a *./myapplication*.
-
 *  **STI_SCRIPTS_URL** (default: [`.sti/bin`](https://raw.githubusercontent.com/openshift/sti-nodejs/master/0.10/.sti/bin))
 
     This variable specifies the location of directory, where *assemble*, *run* and
