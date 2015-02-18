@@ -11,33 +11,10 @@ if [ -d "/usr/src/app" ]; then
   run_node
 fi
 
-export APP_ROOT_DIR="${HOME}/src/${APP_ROOT:-.}"
-source "${HOME}/lib/nodejs_context"
-
-cd $APP_ROOT_DIR
-
 # Allow users to inspect/debug the builder image itself, by using:
 # $ docker run -i -t openshift/centos-nodejs-builder --debug
 #
 [ "$1" == "--debug" ] && exec /bin/bash
-
-function get_main_script_from_package_json() {
-    nodejs_context "node" <<NODE_EOF
-try {
-  var zmain = require('$APP_ROOT_DIR/package.json').main;
-  if (typeof zmain === 'undefined') {
-    console.log('server.js');
-  }
-  else {
-    console.log(zmain);
-  }
-} catch(ex) {
-  console.log('server.js');
-}
-NODE_EOF
-
-}  #  End of function  get_main_script_from_package_json.
-node_app=`get_main_script_from_package_json`
 
 # TODO: Nuke this hack when SCL-2.0 are out
 # For now this is the only way how to prevent
