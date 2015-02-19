@@ -17,7 +17,7 @@ else
 fi
 
 for dir in ${dirs}; do
-  IMAGE_NAME=openshift/nodejs-${dir//./}-${OS}7
+  IMAGE_NAME=openshift/nodejs-${dir//./}-${OS}
   
   echo ">>>> Testing ${IMAGE_NAME}"
 
