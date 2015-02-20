@@ -48,7 +48,6 @@ prepare() {
   git config user.email "build@localhost" && git config user.name "builder"
   git add -A && git commit -m "Sample commit"
   popd >/dev/null
-  run_sti_build
 }
 
 run_test_application() {
