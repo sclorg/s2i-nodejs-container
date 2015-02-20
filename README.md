@@ -24,7 +24,6 @@ Installation
 ---------------
 To build NodeJS image, choose between CentOS or RHEL based image:
 *  **RHEL based image**
-    This image is not available as trusted build in [Docker Index](https://index.docker.io).
 
     To build a rhel-based nodejs-0.10 image, you need to run the build on properly
     subscribed RHEL machine.
@@ -166,22 +165,3 @@ Image name structure
 3. Base builder image - centos7/rhel7
 
 Examples: `openshift/nodejs-010-centos7`, `openshift/nodejs-010-rhel7`
-
-
-Environment variables
----------------------
-
-*  **STI_SCRIPTS_URL** (default: [`.sti/bin`](https://raw.githubusercontent.com/openshift/sti-nodejs/master/0.10/.sti/bin))
-
-    This variable specifies the location of directory, where *assemble*, *run* and
-    *save-artifacts* scripts are downloaded/copied from. By default the scripts
-    in this repository will be used, but users can provide an alternative
-    location and run their own scripts (see [sti build](https://github.com/openshift/source-to-image/blob/master/docs/cli.md#sti-build)).
-
-* **STI_LOCATION** (default: `/tmp`)
-
-    This variable specifies existing directory inside the builder image where
-    the scripts and sources will be placed before executing *assemble* script.
-    By default `/tmp` is used and *assemble* script expects sources and scripts
-    to be present there, but users can provide an alternative location
-    (see [sti build](https://github.com/openshift/source-to-image/blob/master/docs/cli.md#sti-build)).
