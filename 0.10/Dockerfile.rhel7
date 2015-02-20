@@ -1,38 +1,17 @@
-FROM rhel7
+FROM openshift/base-rhel7
 
-RUN yum install -y --setopt=tsflags=nodocs yum-utils wget which lsof \
-	unzip tar bsdtar procps-ng gettext which gcc-c++ automake autoconf \
-	curl-devel openssl-devel zlib-devel libxslt-devel libxml2-devel gdb \
-	mysql-libs mysql-devel postgresql-devel sqlite-devel && \
-    yum clean all -y
+ENV STI_NODEJS_VERSION 0.10
 
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum install -y --setopt=tsflags=nodocs nodejs010 && \
     yum clean all -y
 
+USER default
 
-COPY ./nodejs/ /opt/nodejs/
-
-# Including STI scripts into the image
-COPY ./.sti/bin/ /usr/local/sti
-
-ENV STI_SCRIPTS_URL image:///usr/local/sti
-
-RUN mkdir -p /opt/nodejs/{run,src} && \
-    groupadd -r nodejs -f -g 433 && \
-    useradd -u 431 -r -g nodejs -d /opt/nodejs -s /sbin/nologin -c "NodeJS user" nodejs && \
-    chown -R nodejs:nodejs /opt/nodejs
-
-ENV HOME     /opt/nodejs
-ENV PATH     $HOME/bin:$PATH
-
-ENV STI_NODEJS_VERSION 0.10
-
-WORKDIR     /opt/nodejs/src
-
-USER nodejs
+# Copy the nodejs scripts and build tools into /opt/openshift directory
+# TODO: There is a bug in Docker < 1.5 that disallows to use './..' as dest
+#       directory.
+COPY ./nodejs/ /opt/openshift/
 
 EXPOSE 3000
-
-CMD ["/usr/local/sti/usage"]

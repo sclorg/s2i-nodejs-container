@@ -5,11 +5,11 @@
 # application folder.
 [ -d "/usr/src/app" ] && exit 0
 
-source "${HOME}/lib/nodejs_context"
+source "../lib/nodejs_context"
 
 function link_global_modules {
   # Global modules good to have
-  npmgl=$(grep "^\s*[^#\s]" /opt/nodejs/etc/npm_global_module_list | sort -u)
+  npmgl=$(grep "^\s*[^#\s]" ../etc/npm_global_module_list | sort -u)
 
   # Available global modules; only match top-level npm packages
   global_modules=$(nodejs_context "npm ls -g" 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
@@ -22,7 +22,7 @@ function link_global_modules {
 }
 
 if [ "$1" = "-h" ]; then
-  exec /opt/nodejs/bin/usage
+  exec /usr/local/sti/usage
 fi
 
 if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
@@ -33,7 +33,7 @@ else
 fi
 
 echo "---> Installing application source"
-cp -Rf /tmp/src/* ${HOME}/src
+cp -Rf /tmp/src/* ./
 
 echo "---> Building your Node application from source"
 nodejs_context "npm install -d"
