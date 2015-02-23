@@ -1,6 +1,10 @@
 FROM openshift/base-centos7
 
-ENV STI_NODEJS_VERSION 0.10
+# Image metadata
+ENV NODEJS_VERSION        = "0.10" \
+    IMAGE_DESCRIPTION     = "Node.js 0.10" \
+    IMAGE_TAGS            = "node,nodejs,nodejs010" \
+    IMAGE_EXPOSE_SERVICES = "3000:http"
 
 RUN yum install -y \
     https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm \
