@@ -129,12 +129,6 @@ Repository organization
             This script is responsible for running the application, by using the
             application web server.
 
-        *   **save-artifacts**
-
-            In order to do an *incremental build* (iow. re-use the build artifacts
-            from an already built image in a new image), this script is responsible for
-            archiving those. In this image, this script will archive all dependent modules.
-
     * **`nodejs/`**
 
         This folder contains file with commonly used modules.

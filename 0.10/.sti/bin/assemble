@@ -7,30 +7,18 @@
 
 source "../lib/nodejs_context"
 
-function link_global_modules {
-  # Global modules good to have
-  npmgl=$(grep "^\s*[^#\s]" ../etc/npm_global_module_list | sort -u)
-
-  # Available global modules; only match top-level npm packages
-  global_modules=$(nodejs_context "npm ls -g" 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
-
-  # List all modules in common
-  module_list=$(comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
-
-  # Link the modules
-  nodejs_context "npm link $module_list"
-}
-
 if [ "$1" = "-h" ]; then
   exec /usr/local/sti/usage
 fi
 
-if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
-  echo "---> Restoring build artifacts"
-  mv /tmp/artifacts/* ./
-else
-  link_global_modules
-fi
+# Global modules good to have
+npmgl=$(grep "^\s*[^#\s]" ../etc/npm_global_module_list | sort -u)
+# Available global modules; only match top-level npm packages
+global_modules=$(nodejs_context "npm ls -g" 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
+# List all modules in common
+module_list=$(comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
+# Link the modules
+nodejs_context "npm link $module_list"
 
 echo "---> Installing application source"
 cp -Rf /tmp/src/* ./
