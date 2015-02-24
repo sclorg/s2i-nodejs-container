@@ -1,5 +1,10 @@
 FROM openshift/base-centos7
 
+# This image provides a Node.JS environment you can use to run your Node.JS
+# applications.
+
+MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
+
 # Image metadata
 ENV NODEJS_VERSION        = "0.10" \
     IMAGE_DESCRIPTION     = "Node.js 0.10" \
@@ -13,10 +18,5 @@ RUN yum install -y \
     yum clean all -y
 
 USER default
-
-# Copy the nodejs scripts and build tools into /opt/openshift directory
-# TODO: There is a bug in Docker < 1.5 that disallows to use './..' as dest
-#       directory.
-COPY ./nodejs/ /opt/openshift/
 
 EXPOSE 3000
