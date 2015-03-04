@@ -6,10 +6,10 @@ FROM openshift/base-centos7
 MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
 
 # Image metadata
-ENV NODEJS_VERSION        = "0.10" \
-    IMAGE_DESCRIPTION     = "Node.js 0.10" \
-    IMAGE_TAGS            = "node,nodejs,nodejs010" \
-    IMAGE_EXPOSE_SERVICES = "3000:http"
+ENV NODEJS_VERSION        0.10
+ENV IMAGE_DESCRIPTION     Node.js 0.10
+ENV IMAGE_TAGS            node,nodejs,nodejs010
+ENV IMAGE_EXPOSE_SERVICES 3000:http
 
 RUN yum install -y \
     https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm \
