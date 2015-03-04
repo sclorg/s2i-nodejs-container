@@ -6,10 +6,10 @@ FROM openshift/base-rhel7
 MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
 
 # Image metadata
-ENV NODEJS_VERSION        = "0.10" \
-    IMAGE_DESCRIPTION     = "Node.js 0.10" \
-    IMAGE_TAGS            = "node,nodejs,nodejs010" \
-    IMAGE_EXPOSE_SERVICES = "3000:http"
+ENV NODEJS_VERSION        0.10
+ENV IMAGE_DESCRIPTION     Node.js 0.10
+ENV IMAGE_TAGS            node,nodejs,nodejs010
+ENV IMAGE_EXPOSE_SERVICES 3000:http
 
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
