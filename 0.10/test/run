@@ -18,7 +18,7 @@ cid_file=$(mktemp -u --suffix=.cid)
 sti_args="--forcePull=false -s ${scripts_url}"
 
 # TODO: This should be part of the image metadata
-test_port=3000
+test_port=8080
 
 image_exists() {
   docker inspect $1 &>/dev/null

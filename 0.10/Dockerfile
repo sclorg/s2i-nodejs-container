@@ -9,7 +9,7 @@ MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
 ENV NODEJS_VERSION        0.10
 ENV IMAGE_DESCRIPTION     Node.js 0.10
 ENV IMAGE_TAGS            node,nodejs,nodejs010
-ENV IMAGE_EXPOSE_SERVICES 3000:http
+ENV IMAGE_EXPOSE_SERVICES 8080:http
 
 RUN yum install -y \
     https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm \
@@ -19,4 +19,4 @@ RUN yum install -y \
 
 USER default
 
-EXPOSE 3000
+EXPOSE 8080
