@@ -55,18 +55,18 @@ resulting image with [Docker](http://docker.io) execute:
 *  **For RHEL based image**
     ```
     $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-rhel7 nodejs-echo-app
-    $ docker run -p 3000:3000 nodejs-echo-app
+    $ docker run -p 8080:8080 nodejs-echo-app
     ```
 
 *  **For CentOS based image**
     ```
     $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-centos7 nodejs-echo-app
-    $ docker run -p 3000:3000 nodejs-echo-app
+    $ docker run -p 8080:8080 nodejs-echo-app
     ```
 
 **Accessing the application:**
 ```
-$ curl 127.0.0.1:3000
+$ curl 127.0.0.1:8080
 ```
 
 
