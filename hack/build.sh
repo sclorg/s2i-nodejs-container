@@ -8,7 +8,7 @@ VERSION=$2
 # Array of all versions of NodeJS
 declare -a VERSIONS=(0.10)
 
-# TODO: Remove this hack once Docker 1.5 is in use, 
+# TODO: Remove this hack once Docker 1.5 is in use,
 # which supports building of named Dockerfiles.
 function docker_build {
   TAG=$1
@@ -28,7 +28,7 @@ if [ -z ${VERSION} ]; then
   # Build all versions
   dirs=${VERSIONS}
 else
-  # Build only specified version on NodeJS
+  # Build only specified version of NodeJS
   dirs=${VERSION}
 fi
 
