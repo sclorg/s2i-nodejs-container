@@ -24,6 +24,7 @@ Installation
 ---------------
 To build NodeJS image, choose between CentOS or RHEL based image:
 *  **RHEL based image**
+    This image is not available as automated build in [Docker Index](https://index.docker.io).
 
     To build a rhel-based nodejs-0.10 image, you need to run the build on properly
     subscribed RHEL machine.
@@ -48,20 +49,20 @@ you can omit this parameter.**
 
 Usage
 ---------------------
-To build simple [nodejs-echo-app](https://github.com/ryanj/node-echo) application,
+To build simple [nodejs-sample-app](https://github.com/openshift/sti-nodejs/tree/master/0.10/test/test-app) application,
 using standalone [STI](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-rhel7 nodejs-echo-app
-    $ docker run -p 8080:8080 nodejs-echo-app
+    $ sti build https://github.com/openshift/sti-nodejs.git --contextDir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
+    $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ sti build https://github.com/ryanj/node-echo.git openshift/nodejs-010-centos7 nodejs-echo-app
-    $ docker run -p 8080:8080 nodejs-echo-app
+    $ sti build https://github.com/openshift/sti-nodejs.git --contextDir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
+    $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 **Accessing the application:**
@@ -122,14 +123,14 @@ Repository organization
 
             Is used to install the sources into location from where the application
             will be run and prepare the application for deployment (eg. installing
-            modules using npm, etc..)
+            modules using npm, etc.)
 
         *   **run**
 
             This script is responsible for running the application, by using the
             application web server.
 
-    * **`nodejs/`**
+    * **`contrib/`**
 
         This folder contains file with commonly used modules.
 
