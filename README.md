@@ -79,8 +79,6 @@ User can choose between testing nodejs test application based on RHEL or CentOS 
 
 *  **RHEL based image**
 
-    This image is not available as trusted build in [Docker Index](https://index.docker.io).
-
     To test a rhel7-based nodejs-0.10 image, you need to run the test on a properly
     subscribed RHEL machine.
 
