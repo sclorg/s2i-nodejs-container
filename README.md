@@ -10,7 +10,7 @@ The resulting image can be run using [Docker](http://docker.io).
 
 Versions
 ---------------
-NodeJS versions currently supported are:
+NodeJS versions currently provided are:
 * nodejs-0.10
 
 RHEL versions currently supported are:
@@ -24,7 +24,6 @@ Installation
 ---------------
 To build NodeJS image, choose between CentOS or RHEL based image:
 *  **RHEL based image**
-    This image is not available as automated build in [Docker Index](https://index.docker.io).
 
     To build a rhel-based nodejs-0.10 image, you need to run the build on properly
     subscribed RHEL machine.
@@ -36,6 +35,15 @@ To build NodeJS image, choose between CentOS or RHEL based image:
     ```
 
 *  **CentOS based image**
+
+    This image is available on DockerHub. To download it use:
+
+    ```
+    $ docker pull openshift/nodejs-010-centos7
+    ```
+
+    To build NodeJS image from scratch use:
+
     ```
     $ git clone https://github.com/openshift/sti-nodejs.git
     $ cd sti-nodejs
@@ -43,7 +51,7 @@ To build NodeJS image, choose between CentOS or RHEL based image:
     ```
 
 **Notice: By omitting the `VERSION` parameter, the build/test action will be performed
-on all the supported versions of NodeJS. Since we are now supporting only version `0.10`,
+on all provided versions of NodeJS. Since we are now providing only version `0.10`,
 you can omit this parameter.**
 
 
@@ -96,7 +104,7 @@ User can choose between testing nodejs test application based on RHEL or CentOS 
     ```
 
 **Notice: By omitting the `VERSION` parameter, the build/test action will be performed
-on all the supported versions of NodeJS. Since we are now supporting only version `0.10`
+on all provided versions of NodeJS. Since we are now providing only version `0.10`
 you can omit this parameter.**
 
 
@@ -128,6 +136,10 @@ Repository organization
             This script is responsible for running the application, by using the
             application web server.
 
+        *   **usage***
+
+            This script prints the usage of this image.
+
     * **`contrib/`**
 
         This folder contains file with commonly used modules.
@@ -148,6 +160,7 @@ Repository organization
 * **`hack/`**
 
     Folder contains scripts which are responsible for build and test actions performed by the `Makefile`.
+
 
 Image name structure
 ------------------------
