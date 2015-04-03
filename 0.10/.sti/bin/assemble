@@ -1,11 +1,13 @@
-#!/bin/bash -e
+#!/bin/bash
 
 # Prevent running assemble in builders different than official STI image.
 # The official nodejs:0.10-onbuild already run npm install and use different
 # application folder.
 [ -d "/usr/src/app" ] && exit 0
 
-source "../lib/nodejs_context"
+source scl_source enable nodejs010
+
+set -e
 
 if [ "$1" = "-h" ]; then
   exec /usr/local/sti/usage
@@ -14,14 +16,14 @@ fi
 # Global modules good to have
 npmgl=$(grep "^\s*[^#\s]" ../etc/npm_global_module_list | sort -u)
 # Available global modules; only match top-level npm packages
-global_modules=$(nodejs_context "npm ls -g" 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
+global_modules=$(npm ls -g 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
 # List all modules in common
-module_list=$(comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
+module_list=$(/usr/bin/comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
 # Link the modules
-nodejs_context "npm link $module_list"
+npm link $module_list
 
 echo "---> Installing application source"
 cp -Rf /tmp/src/* ./
 
 echo "---> Building your Node application from source"
-nodejs_context "npm install -d"
+npm install -d
