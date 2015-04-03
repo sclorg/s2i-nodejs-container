@@ -1,4 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash
+
+source scl_source enable nodejs010
+
+set -e
 
 # Runs the nodejs application server.
 run_node() {
@@ -15,13 +19,5 @@ fi
 # $ docker run -i -t openshift/centos-nodejs-builder --debug
 #
 [ "$1" == "--debug" ] && exec /bin/bash
-
-# TODO: Nuke this hack when SCL-2.0 are out
-# For now this is the only way how to prevent
-# shebang from spawning a new bash process.
-set +e
-
-export X_SCLS="nodejs010"
-source /opt/rh/nodejs010/enable
 
 run_node
