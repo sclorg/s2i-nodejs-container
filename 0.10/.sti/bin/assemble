@@ -5,7 +5,8 @@
 # application folder.
 [ -d "/usr/src/app" ] && exit 0
 
-source scl_source enable nodejs010
+# For SCL enablement
+source .bashrc
 
 set -e
 
