@@ -17,6 +17,18 @@ RUN yum install -y \
     yum install -y --setopt=tsflags=nodocs nodejs010 && \
     yum clean all -y
 
+EXPOSE 8080
+
+# Copy the STI scripts from the specific language image to /usr/local/sti
+COPY ./.sti/bin/ /usr/local/sti
+
+# Each language image can have 'contrib' a directory with extra files needed to
+# run and build the applications.
+COPY ./contrib/ /opt/openshift
+
+RUN chown -R default:default /opt/openshift
+
 USER default
 
-EXPOSE 8080
+# Set the default CMD to print the usage of the language image
+CMD ["usage"]
