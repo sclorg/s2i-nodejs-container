@@ -81,7 +81,7 @@ wait_for_cid() {
   local attempt=1
   local result=1
   while [ $attempt -le $max_attempts ]; do
-    [ -f $cid_file ] && break
+    [ -f $cid_file ] && [ -s $cid_file ] && break
     echo "Waiting for container start..."
     attempt=$(( $attempt + 1 ))
     sleep $sleep_time
