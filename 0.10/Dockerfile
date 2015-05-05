@@ -6,18 +6,10 @@ FROM openshift/base-centos7
 MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
 
 # Image metadata
-ENV NODEJS_VERSION        0.10
-ENV IMAGE_DESCRIPTION     Node.js 0.10
-ENV IMAGE_TAGS            node,nodejs,nodejs010
-ENV IMAGE_EXPOSE_SERVICES 8080:http
-
-RUN yum install -y \
-    https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm \
-    https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-7-x86_64/download/rhscl-nodejs010-epel-7-x86_64.noarch.rpm && \
-    yum install -y --setopt=tsflags=nodocs nodejs010 && \
-    yum clean all -y
-
-EXPOSE 8080
+ENV NODEJS_VERSION=0.10 \
+    IMAGE_DESCRIPTION="Node.js 0.10" \
+    IMAGE_TAGS=node,nodejs,nodejs010 \
+    IMAGE_EXPOSE_SERVICES=8080:http
 
 # Copy the STI scripts from the specific language image to /usr/local/sti
 COPY ./.sti/bin/ /usr/local/sti
@@ -26,7 +18,14 @@ COPY ./.sti/bin/ /usr/local/sti
 # run and build the applications.
 COPY ./contrib/ /opt/openshift
 
-RUN chown -R default:default /opt/openshift
+RUN yum install -y \
+    https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm \
+    https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-7-x86_64/download/rhscl-nodejs010-epel-7-x86_64.noarch.rpm && \
+    yum install -y --setopt=tsflags=nodocs nodejs010 && \
+    yum clean all -y && \
+    chown -R default:default /opt/openshift
+
+EXPOSE 8080
 
 USER default
 
