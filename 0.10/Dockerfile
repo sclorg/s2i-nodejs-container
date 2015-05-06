@@ -5,11 +5,13 @@ FROM openshift/base-centos7
 
 MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
 
-# Image metadata
-ENV NODEJS_VERSION=0.10 \
-    IMAGE_DESCRIPTION="Node.js 0.10" \
-    IMAGE_TAGS=node,nodejs,nodejs010 \
-    IMAGE_EXPOSE_SERVICES=8080:http
+EXPOSE 8080
+
+ENV NODEJS_VERSION 0.10
+LABEL k8s.io/description="Platform for building and running Node.js 0.10 applications" \
+      k8s.io/display-name="Node.js 0.10" \
+      openshift.io/expose-services="8080:http" \
+      openshift.io/tags="builder,nodejs,nodejs010"
 
 # Copy the STI scripts from the specific language image to /usr/local/sti
 COPY ./.sti/bin/ /usr/local/sti
@@ -24,8 +26,6 @@ RUN yum install -y \
     yum install -y --setopt=tsflags=nodocs nodejs010 && \
     yum clean all -y && \
     chown -R default:default /opt/openshift
-
-EXPOSE 8080
 
 USER default
 
