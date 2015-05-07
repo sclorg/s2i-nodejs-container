@@ -10,12 +10,11 @@ IMAGE_NAME=${IMAGE_NAME-openshift/nodejs-010-centos7-candidate}
 
 test_dir="$(readlink -zf $(dirname "${BASH_SOURCE[0]}"))"
 image_dir=$(readlink -zf ${test_dir}/..)
-scripts_url="file://${image_dir}/.sti/bin"
 cid_file=$(mktemp -u --suffix=.cid)
 
 # Since we built the candidate image locally, we don't want STI attempt to pull
 # it from Docker hub
-sti_args="--forcePull=false -s ${scripts_url}"
+sti_args="--forcePull=false "
 
 # TODO: This should be part of the image metadata
 test_port=8080
@@ -61,7 +60,7 @@ cleanup() {
     fi
   fi
   if image_exists ${IMAGE_NAME}-testapp; then
-    docker rmi ${IMAGE_NAME}-testapp
+    docker rmi -f ${IMAGE_NAME}-testapp
   fi
   rm -rf ${test_dir}/test-app/.git
 }
