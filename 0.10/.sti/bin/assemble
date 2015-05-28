@@ -24,7 +24,7 @@ module_list=$(/usr/bin/comm -12 <(echo "${global_modules}") <(echo "${npmgl}") |
 npm link $module_list
 
 echo "---> Installing application source"
-cp -Rf /tmp/src/* ./
+cp -Rf /tmp/src/. ./
 
 echo "---> Building your Node application from source"
 npm install -d
