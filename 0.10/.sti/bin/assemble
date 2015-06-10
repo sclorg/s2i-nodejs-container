@@ -5,9 +5,6 @@
 # application folder.
 [ -d "/usr/src/app" ] && exit 0
 
-# For SCL enablement
-source .bashrc
-
 set -e
 
 if [ "$1" = "-h" ]; then
