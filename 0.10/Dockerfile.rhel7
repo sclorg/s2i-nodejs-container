@@ -13,6 +13,12 @@ LABEL k8s.io/description="Platform for building and running Node.js 0.10 applica
       openshift.io/expose-services="8080:http" \
       openshift.io/tags="builder,nodejs,nodejs010"
 
+# Labels consumed by Red Hat build service
+LABEL Component="nodejs010" \
+      Name="openshift3/nodejs-010-rhel7" \
+      Version="0.10" \
+      Release="1"
+
 # Copy the STI scripts from the specific language image to /usr/local/sti
 COPY ./.sti/bin/ /usr/local/sti
 
