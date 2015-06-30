@@ -14,6 +14,11 @@ LABEL io.k8s.description="Platform for building and running Node.js 0.10 applica
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs010"
 
+LABEL k8s.io/description="Platform for building and running Node.js 0.10 applications" \
+      k8s.io/display-name="Node.js 0.10" \
+      openshift.io/expose-services="8080:http" \
+      openshift.io/tags="builder,nodejs,nodejs010"
+
 # Labels consumed by Red Hat build service
 LABEL Component="nodejs010" \
       Name="openshift3/nodejs-010-rhel7" \
