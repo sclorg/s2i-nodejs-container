@@ -20,10 +20,11 @@ LABEL k8s.io/description="Platform for building and running Node.js 0.10 applica
       openshift.io/tags="builder,nodejs,nodejs010"
 
 # Labels consumed by Red Hat build service
-LABEL Component="nodejs010" \
+LABEL BZComponent="nodejs010" \
       Name="openshift3/nodejs-010-rhel7" \
       Version="0.10" \
-      Release="1"
+      Release="1" \
+      Architecture="x86_64"
 
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
