@@ -3,7 +3,7 @@ FROM openshift/base-rhel7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
-MAINTAINER Jakub Hadvig <jhadvig@redhat.com>
+MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
@@ -13,11 +13,6 @@ LABEL io.k8s.description="Platform for building and running Node.js 0.10 applica
       io.k8s.display-name="Node.js 0.10" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs010"
-
-LABEL k8s.io/description="Platform for building and running Node.js 0.10 applications" \
-      k8s.io/display-name="Node.js 0.10" \
-      openshift.io/expose-services="8080:http" \
-      openshift.io/tags="builder,nodejs,nodejs010"
 
 # Labels consumed by Red Hat build service
 LABEL BZComponent="nodejs010" \
