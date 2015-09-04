@@ -63,13 +63,13 @@ resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ sti build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
+    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ sti build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
+    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
