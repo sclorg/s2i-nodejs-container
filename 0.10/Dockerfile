@@ -28,7 +28,7 @@ COPY ./s2i/bin/ /usr/local/sti
 COPY ./contrib/ /opt/app-root
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:1001 /opt/app-root
+RUN chown -R 1001:0 /opt/app-root
 USER 1001
 
 # Set the default CMD to print the usage of the language image
