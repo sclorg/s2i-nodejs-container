@@ -3,8 +3,6 @@ FROM openshift/base-rhel7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
-MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
-
 EXPOSE 8080
 
 ENV NODEJS_VERSION 0.10
