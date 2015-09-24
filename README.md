@@ -180,3 +180,19 @@ To set environment variables, you can place them as a key value pair into a `.st
 file inside your source code repository.
 
 Example: DATABASE_USER=sampleUser
+
+Hot deploy
+---------------------
+Hot deploy is not supported in this image. To support it, make sure that modules responsible for the server reload are installed upon the build process. Those modules are:
+
+* [Supervisor](https://github.com/petruisfan/node-supervisor)
+* [Nodemon](https://github.com/remy/nodemon)
+
+Please note that in order to be able to run your application in development mode, you need to modify the [S2I run script](https://github.com/openshift/source-to-image#anatomy-of-a-builder-image), so the web server is launched by the chosen module, which checks for changes in the source code.
+
+To change your source code in running container, use Docker's [exec](http://docker.io) command:
+```
+docker exec -it <CONTAINER_ID> /bin/bash
+```
+
+After you [Docker exec](http://docker.io) into the running container, your current directory is set to `/opt/app-root/src`, where the source code is located.
