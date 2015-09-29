@@ -7,10 +7,6 @@
 
 set -e
 
-if [ "$1" = "-h" ]; then
-  exec /usr/local/sti/usage
-fi
-
 # FIXME: Linking of global modules is disabled for now as it causes npm failures
 #        under RHEL7
 # Global modules good to have
