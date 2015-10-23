@@ -20,8 +20,9 @@ set -e
 
 echo "---> Installing application source"
 cp -Rf /tmp/src/. ./
-chgrp -R 0 ./
-chmod -R g+rw ./
 
 echo "---> Building your Node application from source"
 npm install -d
+
+# Fix source directory permissions
+fix-permissions ./
