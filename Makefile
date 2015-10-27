@@ -1,22 +1,7 @@
-SKIP_SQUASH?=0
-VERSIONS="0.10"
+# Include common Makefile code.
+BASE_IMAGE_NAME = nodejs
+VERSIONS = 0.10
+OPENSHIFT_NAMESPACES = 0.10
 
-ifeq ($(TARGET),rhel7)
-	OS := rhel7
-else
-	OS := centos7
-endif
-
-ifeq ($(VERSION), 0.10)
-	VERSION := 0.10
-else
-	VERSION :=
-endif
-
-.PHONY: build
-build:
-	SKIP_SQUASH=$(SKIP_SQUASH) VERSIONS=$(VERSIONS) hack/build.sh $(OS) $(VERSION)
-
-.PHONY: test
-test:
-	SKIP_SQUASH=$(SKIP_SQUASH) VERSIONS=$(VERSIONS) TAG_ON_SUCCESS=$(TAG_ON_SUCCESS) TEST_MODE=true hack/build.sh $(OS) $(VERSION)
+# Include common Makefile code.
+include hack/common.mk
