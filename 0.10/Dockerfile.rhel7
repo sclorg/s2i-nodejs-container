@@ -11,7 +11,10 @@ LABEL summary="Platform for building and running Node.js 0.10 applications" \
       io.k8s.description="Platform for building and running Node.js 0.10 applications" \
       io.k8s.display-name="Node.js 0.10" \
       io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,nodejs,nodejs010"
+      io.openshift.tags="builder,nodejs,nodejs010" \
+      com.redhat.dev-mode="DEV_MODE:false" \
+      com.redhat.deployments-dir="/opt/app-root/src" \
+      com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
 # Labels consumed by Red Hat build service
 LABEL com.redhat.component="nodejs010" \
@@ -23,6 +26,7 @@ LABEL com.redhat.component="nodejs010" \
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum install -y --setopt=tsflags=nodocs nodejs010 && \
+    yum install -y nodejs-nodemon && \
     yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH

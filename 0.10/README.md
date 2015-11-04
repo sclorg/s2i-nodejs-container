@@ -90,18 +90,81 @@ file inside your source code repository.
 
 Example: DATABASE_USER=sampleUser
 
-Hot deploy
+Development Mode
 ---------------------
-Hot deploy is not supported in this image. To support it, make sure that modules responsible for the server reload are installed upon the build process. Those modules are:
+This image supports development mode. This mode can be switched on and off with the environment variable `DEV_MODE`. `DEV_MODE` can either be set to `true` or `false`.
+Development mode supports two features:
+* Hot Deploy
+* Debugging
 
-* [Supervisor](https://github.com/petruisfan/node-supervisor)
-* [Nodemon](https://github.com/remy/nodemon)
+The debug port can be speicifed with the environment variable `DEBUG_PORT`. `DEBUG_PORT` is only valid if `DEV_MODE=true`.
 
-Please note that in order to be able to run your application in development mode, you need to modify the [S2I run script](https://github.com/openshift/source-to-image#anatomy-of-a-builder-image), so the web server is launched by the chosen module, which checks for changes in the source code.
-
-To change your source code in running container, use Docker's [exec](http://docker.io) command:
+A simple example command for running the docker container in production mode is:
 ```
-docker exec -it <CONTAINER_ID> /bin/bash
+docker run --env DEV_MODE=true my-image-id
 ```
 
-After you [Docker exec](http://docker.io) into the running container, your current directory is set to `/opt/app-root/src`, where the source code is located.
+To run the container in development mode with a debug port of 5454, run:
+```
+$ docker run --env DEV_MODE=true DEBUG_PORT=5454 my-image-id
+```
+
+To run the container in production mode, run:
+```
+$ docker run --env DEV_MODE=false my-image-id
+```
+
+By default, `DEV_MODE` is set to `false`, and `DEBUG_PORT` is set to `5858`, however the `DEBUG_PORT` is only relevant if `DEV_MODE=true`.
+
+Hot deploy
+--------------------
+
+As part of development mode, this image supports hot deploy. If development mode is enabled, any souce code that is changed in the running container will be immediately reflected in the running nodejs application.
+
+### Using Docker's exec
+
+To change your source code in a running container, use Docker's [exec](http://docker.io) command:
+```
+$ docker exec -it <CONTAINER_ID> /bin/bash
+```
+
+After you [Docker exec](http://docker.io) into the running container, your current directory is set to `/opt/app-root/src`, where the source code for your application is located.
+
+### Using OpenShift's rsync
+
+If you have deployed the container to OpenShift, you can use [oc rsync](https://docs.openshift.org/latest/dev_guide/copy_files_to_container.html) to copy local files to a remote container running in an OpenShift pod.
+
+#### Warning:
+
+The default behaviour of the sti-nodejs docker image is to run the Node.js application using the command `npm start`. This runs the _start_ script in the _package.json_ file. In developer mode, the application is run using the command `nodemon`. The default behaviour of nodemon is to look for the _main_ attribute in the _package.json_ file, and execute that script. If the _main_ attribute doesn't appear in the _package.json_ file, it executes the _start_ script. So, in order to achieve some sort of uniform functionality between production and development modes, the user should remove the _main_ attribute.
+
+Below is an example _package.json_ file with the _main_ attribute and _start_ script marked appropriately:
+
+```json
+{
+    "name": "node-echo",
+    "version": "0.0.1",
+    "description": "node-echo",
+    "main": "example.js", <--- main attribute
+    "dependencies": {
+    },
+    "devDependencies": {
+        "nodemon": "*"
+    },
+    "engine": {
+        "node": "*",
+        "npm": "*"
+    },
+    "scripts": {
+        "dev": "nodemon --ignore node_modules/ server.js",
+        "start": "node server.js" <-- start script
+    },
+    "keywords": [
+        "Echo"
+    ],
+    "license": "",
+}
+```
+
+#### Note:
+`oc rsync` is only available in versions 3.1+ of OpenShift.
