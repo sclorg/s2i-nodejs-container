@@ -1,0 +1,11 @@
+[rhel-7-server-ose-3.1-rpms]
+name=RHEL7 Red Hat Atomic OpenShift 3.1
+baseurl=https://mirror.ops.rhcloud.com/enterprise/enterprise-3.1/RH7-RHAOS-3.1/$basearch/os/
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta,https://mirror.ops.rhcloud.com/libra/keys/RPM-GPG-KEY-redhat-openshifthosted
+failovermethod=priority
+sslverify=0
+sslclientcert=/var/lib/yum/client-cert.pem
+sslclientkey=/var/lib/yum/client-key.pem
+

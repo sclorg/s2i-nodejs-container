@@ -20,9 +20,11 @@ LABEL com.redhat.component="nodejs010" \
       release="1" \
       architecture="x86_64"
 
+COPY rhaos.repo /etc/yum.repos.d/
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
-    yum install -y --setopt=tsflags=nodocs nodejs010 && \
+    yum-config-manager --enable rhel-7-server-ose-3.1-rpms && \
+    yum install -y --setopt=tsflags=nodocs nodejs010 nodejs-nodemon && \
     yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
