@@ -22,6 +22,7 @@ LABEL com.redhat.component="nodejs010" \
 
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
+    yum-config-manager --enable rhel-7-server-ose-3.1-rpms && \
     yum install -y --setopt=tsflags=nodocs nodejs010 nodejs-nodemon && \
     yum clean all -y
 
