@@ -90,6 +90,8 @@ file inside your source code repository.
 
 Example: DATABASE_USER=sampleUser
 
+Setting the HTTP_PROXY or HTTPS_PROXY environment variable will set the appropriate npm proxy configuration during assembly.
+
 Development Mode
 ---------------------
 This image supports development mode. This mode can be switched on and off with the environment variable `DEV_MODE`. `DEV_MODE` can either be set to `true` or `false`.
