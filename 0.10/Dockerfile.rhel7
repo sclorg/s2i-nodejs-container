@@ -8,7 +8,10 @@ EXPOSE 8080
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
 # available on the CLI without using npm's --global installation mode
 ENV NODEJS_VERSION=0.10 \
-    PATH=$HOME/node_modules/.bin/:$PATH
+    PATH=$HOME/node_modules/.bin/:$PATH \
+    DEBUG_PORT=5858 \
+    NODE_ENV="production" \
+    DEV_MODE=false
 
 LABEL summary="Platform for building and running Node.js 0.10 applications" \
       io.k8s.description="Platform for building and running Node.js 0.10 applications" \
