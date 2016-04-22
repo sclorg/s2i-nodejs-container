@@ -11,7 +11,7 @@ run_node() {
     exec nodemon --debug="$DEBUG_PORT"
   else
     echo "Launching via npm..."
-    exec npm start -d
+    exec npm run -d $NPM_RUN
   fi
 } 
 
