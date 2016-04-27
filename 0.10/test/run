@@ -31,6 +31,10 @@ container_ip() {
   docker inspect --format="{{ .NetworkSettings.IPAddress }}" $(cat $cid_file)
 }
 
+container_logs() {
+  docker logs $(cat $cid_file)
+}
+
 run_s2i_build() {
   s2i build ${s2i_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
@@ -50,7 +54,7 @@ prepare() {
 }
 
 run_test_application() {
-  docker run --user=100001 --rm --cidfile=${cid_file} -p ${test_port} ${IMAGE_NAME}-testapp
+  docker run --user=100001 --rm --cidfile=${cid_file} -p ${test_port} $1 ${IMAGE_NAME}-testapp
 }
 
 cleanup() {
@@ -68,14 +72,14 @@ cleanup() {
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
-    echo "STI image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
+    echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
     cleanup
     exit $result
   fi
 }
 
 wait_for_cid() {
-  local max_attempts=10
+  local max_attempts=20
   local sleep_time=1
   local attempt=1
   local result=1
@@ -181,38 +185,6 @@ validate_node_env() {
   fi
 }
 
-test_dev_mode_environment_variables() {
-  echo 'Testing Development Mode Environment Variable Setting...'
- 
-  result=0
- 
-  validate_default_value com.redhat.dev-mode
-  result=$(($result | $?))
- 
-  validate_default_value com.redhat.dev-mode.port
-  result=$(($result | $?))
-
-  validate_node_env "" false production
-  result=$(($result | $?))
-
-  validate_node_env "" true development
-  result=$(($result | $?))
-
-  validate_node_env production false production
-  result=$(($result | $?))
-
-  validate_node_env production true production
-  result=$(($result | $?))
-
-  validate_node_env development false development
-  result=$(($result | $?))
-
-  validate_node_env development true development
-  result=$(($result | $?))
-  
-  return $result
-}
-
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare
@@ -239,8 +211,30 @@ check_result $?
 test_connection
 check_result $?
 
-test_dev_mode_environment_variables
+echo "Testing DEV_MODE=false"
+logs=$(container_logs)
+echo ${logs} | grep -q DEV_MODE=false
 check_result $?
+echo ${logs} | grep -q NODE_ENV=production
+check_result $?
+echo ${logs} | grep -q DEBUG_PORT=5858
+check_result $?
+
+docker kill $(cat $cid_file)
+rm $cid_file
+
+echo "Testing DEV_MODE=true"
+run_test_application "-e DEV_MODE=true" &
+wait_for_cid
+
+logs=$(container_logs)
+echo ${logs} | grep -q DEV_MODE=true
+check_result $?
+echo ${logs} | grep -q NODE_ENV=development
+check_result $?
+echo ${logs} | grep -q DEBUG_PORT=5858
+check_result $?
+
 
 echo "Success!"
 cleanup
