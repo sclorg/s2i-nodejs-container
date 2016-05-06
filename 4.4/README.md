@@ -10,7 +10,7 @@ The resulting image can be run using [Docker](http://docker.io).
 
 Usage
 ---------------------
-To build a simple [nodejs-sample-app](https://github.com/openshift/sti-nodejs/tree/master/4.3/test/test-app) application
+To build a simple [nodejs-sample-app](https://github.com/openshift/sti-nodejs/tree/master/4.4/test/test-app) application
 using standalone [STI](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
