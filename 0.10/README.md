@@ -85,12 +85,23 @@ Repository organization
 Environment variables
 ---------------------
 
-To set environment variables, you can place them as a key value pair into a `.sti/environment`
-file inside your source code repository.
+Application developers can use the following environment variables to configure the runtime behavior of this image:
+
+NAME        | Description
+------------|-------------
+NODE_ENV    | NodeJS runtime mode (default: "production")
+DEV_MODE    | When set to "true", `nodemon` will be used to automatically reload the server while you work (default: "false"). Setting `DEV_MODE` to "true" will change the `NODE_ENV` default to "development" (if not explicitly set).
+NPM_RUN     | Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
+HTTP_PROXY  | use an npm proxy during assembly
+HTTPS_PROXY | use an npm proxy during assembly
+
+One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
 Example: DATABASE_USER=sampleUser
 
-Setting the HTTP_PROXY or HTTPS_PROXY environment variable will set the appropriate npm proxy configuration during assembly.
+#### NOTE: Define your own "`DEV_MODE`":
+
+The following `package.json` example includes a `scripts.dev` entry.  You can define your own custom [`NPM_RUN`](https://docs.npmjs.com/cli/run-script) scripts in your application's `package.json` file.
 
 Development Mode
 ---------------------
