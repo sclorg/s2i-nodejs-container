@@ -3,16 +3,16 @@ FROM openshift/base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
+MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
+
 EXPOSE 8080
 
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
 # available on the CLI without using npm's --global installation mode
-ENV NODEJS_VERSION 4.4 \
+ENV NODEJS_VERSION=4.4 \
     PATH=$HOME/node_modules/.bin/:$PATH
 
-
-LABEL summary="Platform for building and running Node.js 4.4 applications" \
-      io.k8s.description="Platform for building and running Node.js 4.4 applications" \
+LABEL io.k8s.description="Platform for building and running Node.js 4.4 applications" \
       io.k8s.display-name="Node.js 4.4.2" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs4" \
