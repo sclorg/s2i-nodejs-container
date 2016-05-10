@@ -54,7 +54,7 @@ prepare() {
 }
 
 run_test_application() {
-  docker run --user=100001 --rm --cidfile=${cid_file} -p ${test_port} ${IMAGE_NAME}-testapp
+  docker run --user=100001 --rm --cidfile=${cid_file} -p ${test_port} $1 ${IMAGE_NAME}-testapp
 }
 
 cleanup() {
@@ -72,7 +72,7 @@ cleanup() {
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
-    echo "STI image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
+    echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
     cleanup
     exit $result
   fi
@@ -226,9 +226,6 @@ rm $cid_file
 echo "Testing DEV_MODE=true"
 run_test_application "-e DEV_MODE=true" &
 wait_for_cid
-
-test_connection
-check_result $?
 
 logs=$(container_logs)
 echo ${logs} | grep -q DEV_MODE=true
