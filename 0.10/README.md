@@ -10,19 +10,19 @@ The resulting image can be run using [Docker](http://docker.io).
 
 Usage
 ---------------------
-To build a simple [nodejs-sample-app](https://github.com/openshift/sti-nodejs/tree/master/0.10/test/test-app) application
+To build a simple [nodejs-sample-app](https://github.com/openshift/s2i-nodejs/tree/master/0.10/test/test-app) application
 using standalone [STI](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
+    $ s2i build https://github.com/openshift/s2i-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
+    $ s2i build https://github.com/openshift/s2i-nodejs.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
@@ -149,7 +149,7 @@ If you have deployed the container to OpenShift, you can use [oc rsync](https://
 
 #### Warning:
 
-The default behaviour of the sti-nodejs docker image is to run the Node.js application using the command `npm start`. This runs the _start_ script in the _package.json_ file. In developer mode, the application is run using the command `nodemon`. The default behaviour of nodemon is to look for the _main_ attribute in the _package.json_ file, and execute that script. If the _main_ attribute doesn't appear in the _package.json_ file, it executes the _start_ script. So, in order to achieve some sort of uniform functionality between production and development modes, the user should remove the _main_ attribute.
+The default behaviour of the s2i-nodejs docker image is to run the Node.js application using the command `npm start`. This runs the _start_ script in the _package.json_ file. In developer mode, the application is run using the command `nodemon`. The default behaviour of nodemon is to look for the _main_ attribute in the _package.json_ file, and execute that script. If the _main_ attribute doesn't appear in the _package.json_ file, it executes the _start_ script. So, in order to achieve some sort of uniform functionality between production and development modes, the user should remove the _main_ attribute.
 
 Below is an example _package.json_ file with the _main_ attribute and _start_ script marked appropriately:
 
