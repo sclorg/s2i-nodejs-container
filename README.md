@@ -32,8 +32,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     subscribed RHEL machine.
 
     ```
-    $ git clone https://github.com/openshift/sti-nodejs.git
-    $ cd sti-nodejs
+    $ git clone https://github.com/openshift/s2i-nodejs.git
+    $ cd s2i-nodejs
     $ make build TARGET=rhel7 VERSION=0.10
     ```
 
@@ -48,8 +48,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     To build a Node.JS image from scratch run:
 
     ```
-    $ git clone https://github.com/openshift/sti-nodejs.git
-    $ cd sti-nodejs
+    $ git clone https://github.com/openshift/s2i-nodejs.git
+    $ cd s2i-nodejs
     $ make build VERSION=0.10
     ```
 
@@ -68,7 +68,7 @@ see [usage documentation](0.10/README.md).
 Test
 ---------------------
 This repository also provides a [S2I](https://github.com/openshift/source-to-image) test framework,
-which launches tests to check functionality of a simple Node.JS application built on top of the sti-nodejs image.
+which launches tests to check functionality of a simple Node.JS application built on top of the s2i-nodejs image.
 
 Users can choose between testing a Node.JS test application based on a RHEL or CentOS image.
 
@@ -78,14 +78,14 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     subscribed RHEL machine.
 
     ```
-    $ cd sti-nodejs
+    $ cd s2i-nodejs
     $ make test TARGET=rhel7 VERSION=0.10
     ```
 
 *  **CentOS based image**
 
     ```
-    $ cd sti-nodejs
+    $ cd s2i-nodejs
     $ make test VERSION=0.10
     ```
 
