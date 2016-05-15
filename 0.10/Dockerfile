@@ -22,7 +22,7 @@ LABEL io.k8s.description="Platform for building and running Node.js 0.10 applica
       com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
 RUN yum install -y centos-release-scl && \
-    INSTALL_PKGS="nodejs010 bzip2 nss_wrapper" && \
+    INSTALL_PKGS="nodejs010 nodejs010-nodejs-nodemon bzip2 nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y
