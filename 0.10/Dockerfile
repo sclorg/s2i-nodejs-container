@@ -37,7 +37,7 @@ COPY ./contrib/ /opt/app-root
 RUN $PROMPT_COMMAND && npm install -g nodemon
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 /opt/app-root
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
 USER 1001
 
 # Set the default CMD to print the usage of the language image
