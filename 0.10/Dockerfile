@@ -7,11 +7,13 @@ MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
-# Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
-# available on the CLI without using npm's --global installation mode
-ENV NODEJS_VERSION=0.10 \
-    NPM_RUN=start \
-    PATH=$HOME/node_modules/.bin/:$PATH
+# This image will be initialized with "npm run $NPM_RUN"
+# See https://docs.npmjs.com/misc/scripts, and your repo's package.json
+# file for possible values of NPM_RUN
+ENV NPM_RUN=start \
+    NODEJS_VERSION=0.10 \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL io.k8s.description="Platform for building and running Node.js 0.10 applications" \
       io.k8s.display-name="Node.js 0.10" \
