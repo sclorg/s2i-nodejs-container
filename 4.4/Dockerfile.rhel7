@@ -28,7 +28,7 @@ LABEL com.redhat.component="rh-nodejs4" \
       architecture="x86_64"
 
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum-config-manager --enable rhel-server-rhscl-beta-7-rpms && \
+    # yum-config-manager --enable rhel-server-rhscl-beta-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum-config-manager --disable epel >/dev/null || : && \
     INSTALL_PKGS="rh-nodejs4 rh-nodejs4-nodejs-nodemon" && \
