@@ -21,7 +21,7 @@ LABEL io.k8s.description="Platform for building and running Node.js 4.4 applicat
       com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
 RUN yum install -y centos-release-scl-rh && \
-    yum-config-manager --enable centos-sclo-rh-testing && \
+    # yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-nodejs4 bzip2" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
