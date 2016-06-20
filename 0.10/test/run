@@ -227,6 +227,9 @@ echo "Testing DEV_MODE=true"
 run_test_application "-e DEV_MODE=true" &
 wait_for_cid
 
+test_connection
+check_result $?
+
 logs=$(container_logs)
 echo ${logs} | grep -q DEV_MODE=true
 check_result $?

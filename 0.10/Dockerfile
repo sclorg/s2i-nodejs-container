@@ -7,10 +7,13 @@ MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
-# Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
-# available on the CLI without using npm's --global installation mode
-ENV NODEJS_VERSION=0.10 \
-    PATH=$HOME/node_modules/.bin/:$PATH
+# This image will be initialized with "npm run $NPM_RUN"
+# See https://docs.npmjs.com/misc/scripts, and your repo's package.json
+# file for possible values of NPM_RUN
+ENV NPM_RUN=start \
+    NODEJS_VERSION=0.10 \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL io.k8s.description="Platform for building and running Node.js 0.10 applications" \
       io.k8s.display-name="Node.js 0.10" \
@@ -21,7 +24,7 @@ LABEL io.k8s.description="Platform for building and running Node.js 0.10 applica
       com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
 RUN yum install -y centos-release-scl && \
-    INSTALL_PKGS="nodejs010 bzip2" && \
+    INSTALL_PKGS="nodejs010 nodejs010-nodejs-nodemon bzip2 nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y
@@ -36,7 +39,7 @@ COPY ./contrib/ /opt/app-root
 RUN $PROMPT_COMMAND && npm install -g nodemon
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 /opt/app-root
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
 USER 1001
 
 # Set the default CMD to print the usage of the language image
