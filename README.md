@@ -33,8 +33,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     subscribed RHEL machine.
 
     ```
-    $ git clone https://github.com/openshift/s2i-nodejs.git
-    $ cd s2i-nodejs
+    $ git clone https://github.com/sclorg/s2i-nodejs-container.git
+    $ cd s2i-nodejs-container
     $ make build TARGET=rhel7 VERSION=0.10
     ```
 
@@ -49,8 +49,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     To build a Node.JS image from scratch run:
 
     ```
-    $ git clone https://github.com/openshift/s2i-nodejs.git
-    $ cd s2i-nodejs
+    $ git clone https://github.com/sclorg/s2i-nodejs-container.git
+    $ cd s2i-nodejs-container
     $ make build VERSION=0.10
     ```
 
