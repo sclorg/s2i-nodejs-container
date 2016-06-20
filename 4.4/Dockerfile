@@ -9,8 +9,13 @@ EXPOSE 8080
 
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
 # # available on the CLI without using npm's --global installation mode
+# This image will be initialized with "npm run $NPM_RUN"
+# See https://docs.npmjs.com/misc/scripts, and your repo's package.json
+# file for possible values of NPM_RUN
 ENV NODEJS_VERSION 4.4 \
-    PATH=$HOME/node_modules/.bin/:$PATH
+    NPM_RUN=start \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL summary="Platform for building and running Node.js 4.4 applications" \
       io.k8s.description="Platform for building and running Node.js 4.4 applications" \
@@ -21,16 +26,6 @@ LABEL summary="Platform for building and running Node.js 4.4 applications" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
-#LABEL BZComponent="rh-nodejs4-docker" \
-#      Name="rhscl/nodejs-4-rhel7" \
-#      Version="4.4" \
-#      Release="11" \
-#      Architecture="x86_64"
-
-#RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-#    yum-config-manager --enable rhel-7-server-optional-rpms && \
-#    yum-config-manager --enable rhel-server-rhscl-7-beta-rpms && \
-#    yum-config-manager --disable epel >/dev/null || : && \
 RUN yum install -y centos-release-scl-rh && \
     INSTALL_PKGS="rh-nodejs4 rh-nodejs4-npm rh-nodejs4-nodejs-nodemon" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
@@ -46,7 +41,7 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 COPY ./contrib/ /opt/app-root
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 /opt/app-root
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
 USER 1001
 
 # Set the default CMD to print the usage of the language image
