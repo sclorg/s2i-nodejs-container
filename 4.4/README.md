@@ -16,7 +16,7 @@ resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ rhel/nodejs-4-rhel7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ rhscl/nodejs-4-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
