@@ -47,7 +47,7 @@ Repository organization
 
     * **`s2i/bin/`**
 
-        This folder contains scripts that are run by [S2I](https://github.com/openshift/source-to-image):
+        This folder contains scripts that are run by [STI](https://github.com/openshift/source-to-image):
 
         *   **assemble**
 
@@ -110,7 +110,7 @@ Development mode supports two features:
 * Hot Deploy
 * Debugging
 
-The debug port can be specified with the environment variable `DEBUG_PORT`. `DEBUG_PORT` is only valid if `DEV_MODE=true`.
+The debug port can be speicifed with the environment variable `DEBUG_PORT`. `DEBUG_PORT` is only valid if `DEV_MODE=true`.
 
 A simple example command for running the docker container in production mode is:
 ```
