@@ -11,18 +11,18 @@ The resulting image can be run using [Docker](http://docker.io).
 Usage
 ---------------------
 To build a simple [nodejs-sample-app](https://github.com/openshift/sti-nodejs/tree/master/4.4/test/test-app) application
-using standalone [STI](https://github.com/openshift/source-to-image) and then run the
+using standalone [S2I](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=4.4/test/test-app/ openshift/nodejs-4-rhel7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ rhel/nodejs-4-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ s2i build https://github.com/openshift/sti-nodejs.git --context-dir=4.4/test/test-app/ openshift/nodejs-4-centos7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ centos/nodejs-44-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
