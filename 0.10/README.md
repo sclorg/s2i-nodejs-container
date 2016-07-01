@@ -94,6 +94,7 @@ DEV_MODE    | When set to "true", `nodemon` will be used to automatically reload
 NPM_RUN     | Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
 HTTP_PROXY  | use an npm proxy during assembly
 HTTPS_PROXY | use an npm proxy during assembly
+NPM_MIRROR  | use a custom NPM registry mirror to download packages during the build process
 
 One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
