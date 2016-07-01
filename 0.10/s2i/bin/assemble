@@ -41,6 +41,11 @@ if [ ! -z $https_proxy ]; then
 	npm config set https-proxy $https_proxy
 fi
 
+# Change the npm registry mirror if provided
+if [ -n "$NPM_MIRROR" ]; then
+	npm config set registry $NPM_MIRROR
+fi
+
 echo "---> Building your Node application from source"
 npm install -d
 
