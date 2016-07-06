@@ -49,7 +49,7 @@ prepare() {
   pushd ${test_dir}/test-app >/dev/null
   git init
   git config user.email "build@localhost" && git config user.name "builder"
-  git add -A && git commit -m "Sample commit"
+  git add -A && git commit --no-gpg-sign -m "Sample commit"
   popd >/dev/null
 }
 
