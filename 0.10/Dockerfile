@@ -7,6 +7,8 @@ MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
+# Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
+# available on the CLI without using npm's --global installation mode
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN

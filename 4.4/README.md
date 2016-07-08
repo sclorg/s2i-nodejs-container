@@ -10,19 +10,19 @@ The resulting image can be run using [Docker](http://docker.io).
 
 Usage
 ---------------------
-To build a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/0.10/test/test-app) application
+To build a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/4.4/test/test-app) application
 using standalone [S2I](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-rhel7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ rhscl/nodejs-4-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=0.10/test/test-app/ openshift/nodejs-010-centos7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=4.4/test/test-app/ centos/nodejs-44-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
@@ -47,7 +47,7 @@ Repository organization
 
     * **`s2i/bin/`**
 
-        This folder contains scripts that are run by [STI](https://github.com/openshift/source-to-image):
+        This folder contains scripts that are run by [S2I](https://github.com/openshift/source-to-image):
 
         *   **assemble**
 
@@ -80,7 +80,6 @@ Repository organization
         * **run**
 
             This script runs the [S2I](https://github.com/openshift/source-to-image) test framework.
-
 
 Environment variables
 ---------------------
