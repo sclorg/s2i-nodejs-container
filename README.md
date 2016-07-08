@@ -15,6 +15,7 @@ Versions
 ---------------
 Node.JS versions currently provided are:
 * nodejs-0.10
+* nodejs-4.4.2
 
 RHEL versions currently supported are:
 * RHEL7
@@ -32,8 +33,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     subscribed RHEL machine.
 
     ```
-    $ git clone https://github.com/openshift/s2i-nodejs.git
-    $ cd s2i-nodejs
+    $ git clone https://github.com/sclorg/s2i-nodejs-container.git
+    $ cd s2i-nodejs-container
     $ make build TARGET=rhel7 VERSION=0.10
     ```
 
@@ -48,14 +49,13 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     To build a Node.JS image from scratch run:
 
     ```
-    $ git clone https://github.com/openshift/s2i-nodejs.git
-    $ cd s2i-nodejs
+    $ git clone https://github.com/sclorg/s2i-nodejs-container.git
+    $ cd s2i-nodejs-container
     $ make build VERSION=0.10
     ```
 
 **Notice: By omitting the `VERSION` parameter, the build/test action will be performed
-on all provided versions of Node.JS. Since we are currently providing only version `0.10`,
-you can omit this parameter.**
+on all provided versions of Node.JS.**
 
 
 Usage
@@ -64,6 +64,8 @@ Usage
 For information about usage of Dockerfile for NodeJS 0.10,
 see [usage documentation](0.10/README.md).
 
+For information about usage of Dockerfile for NodeJS 4.4,
+see [usage documentation](4.4/README.md).
 
 Test
 ---------------------
@@ -90,8 +92,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
 
 **Notice: By omitting the `VERSION` parameter, the build/test action will be performed
-on all provided versions of Node.JS. Since we are currently providing only version `0.10`
-you can omit this parameter.**
+on all provided versions of Node.JS.**
 
 
 Repository organization
