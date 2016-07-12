@@ -15,7 +15,7 @@ Versions
 ---------------
 Node.JS versions currently provided are:
 * nodejs-0.10
-* nodejs-4.4.2
+* nodejs-4
 
 RHEL versions currently supported are:
 * RHEL7
@@ -64,8 +64,8 @@ Usage
 For information about usage of Dockerfile for NodeJS 0.10,
 see [usage documentation](0.10/README.md).
 
-For information about usage of Dockerfile for NodeJS 4.4,
-see [usage documentation](4.4/README.md).
+For information about usage of Dockerfile for NodeJS 4,
+see [usage documentation](4/README.md).
 
 Test
 ---------------------

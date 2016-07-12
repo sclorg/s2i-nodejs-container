@@ -209,7 +209,7 @@ run_test_application &
 # Wait for the container to write it's CID file
 wait_for_cid
 
-test_scl_usage "node --version" "v4.4.2"
+test_scl_usage "node --version" "v4."
 check_result $?
 test_connection
 check_result $?
