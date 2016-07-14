@@ -42,7 +42,7 @@ if [ ! -z $https_proxy ]; then
 fi
 
 # Change the npm registry mirror if provided
-if [ -n "$NPM_MIRROR" ]; then
+if [ !-z "$NPM_MIRROR" ]; then
 	npm config set registry $NPM_MIRROR
 fi
 
