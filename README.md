@@ -1,6 +1,8 @@
 NodeJS Docker images
 ====================
 
+[![Build Status](https://ci.openshift.redhat.com/jenkins/buildStatus/icon?job=sti-nodejs)](https://ci.openshift.redhat.com/jenkins/job/sti-nodejs/)
+
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible Docker image using
 [source-to-image](https://github.com/openshift/source-to-image).
@@ -115,4 +117,3 @@ Image name structure
 3. Base builder image - centos7/rhel7
 
 Examples: `openshift/nodejs-010-centos7`, `openshift/nodejs-010-rhel7`
-
