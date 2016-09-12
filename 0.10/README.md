@@ -92,9 +92,9 @@ NAME        | Description
 NODE_ENV    | NodeJS runtime mode (default: "production")
 DEV_MODE    | When set to "true", `nodemon` will be used to automatically reload the server while you work (default: "false"). Setting `DEV_MODE` to "true" will change the `NODE_ENV` default to "development" (if not explicitly set).
 NPM_RUN     | Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
-HTTP_PROXY  | use an npm proxy during assembly
-HTTPS_PROXY | use an npm proxy during assembly
-NPM_MIRROR  | use a custom NPM registry mirror to download packages during the build process
+HTTP_PROXY  | Use an npm proxy during assembly
+HTTPS_PROXY | Use an npm proxy during assembly
+NPM_MIRROR  | Use a custom NPM registry mirror to download packages during the build process
 
 One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
@@ -103,6 +103,9 @@ Example: DATABASE_USER=sampleUser
 #### NOTE: Define your own "`DEV_MODE`":
 
 The following `package.json` example includes a `scripts.dev` entry.  You can define your own custom [`NPM_RUN`](https://docs.npmjs.com/cli/run-script) scripts in your application's `package.json` file.
+
+#### Note: Setting logging output verbosity
+To alter the level of logs output during an `npm install` the npm_config_loglevel environment variable can be set. See [npm-config](https://docs.npmjs.com/misc/config).
 
 Development Mode
 ---------------------
