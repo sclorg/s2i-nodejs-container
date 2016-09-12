@@ -22,6 +22,9 @@ shopt -s dotglob
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
+echo "--> Setting npm loglevel to ${NPM_LOG_LEVEL:-warn}"
+npm config set loglevel ${NPM_LOG_LEVEL:-warn}
+
 if [ ! -z $HTTP_PROXY ]; then
 	echo "---> Setting npm http proxy to $HTTP_PROXY"
 	npm config set proxy $HTTP_PROXY
@@ -48,7 +51,7 @@ if [ -n "$NPM_MIRROR" ]; then
 fi
 
 echo "---> Building your Node application from source"
-npm install -d
+npm install
 
 # Fix source directory permissions
 fix-permissions ./
