@@ -48,7 +48,7 @@ if [ -n "$NPM_MIRROR" ]; then
 fi
 
 echo "---> Building your Node application from source"
-npm install -d
+npm install
 
 # Fix source directory permissions
 fix-permissions ./
