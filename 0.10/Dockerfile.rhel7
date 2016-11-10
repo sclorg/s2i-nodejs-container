@@ -31,7 +31,10 @@ LABEL com.redhat.component="nodejs010" \
       release="1" \
       architecture="x86_64"
 
-RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+# To use subscription inside container yum command has to be run first (before yum-config-manager)
+# https://access.redhat.com/solutions/1443553
+RUN yum repolist > /dev/null && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum-config-manager --disable epel >/dev/null || : && \
     INSTALL_PKGS="nodejs010 nodejs010-nodejs-nodemon bzip2 nss_wrapper" && \
