@@ -31,7 +31,10 @@ LABEL com.redhat.component="rh-nodejs4-docker" \
       release="1" \
       architecture="x86_64"
 
-RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+# To use subscription inside container yum command has to be run first (before yum-config-manager)
+# https://access.redhat.com/solutions/1443553
+RUN yum repolist > /dev/null && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum-config-manager --disable epel >/dev/null || : && \
     INSTALL_PKGS="rh-nodejs4 rh-nodejs4-npm rh-nodejs4-nodejs-nodemon nss_wrapper" && \
