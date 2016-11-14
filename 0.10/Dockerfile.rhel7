@@ -36,6 +36,7 @@ LABEL com.redhat.component="nodejs010" \
 RUN yum repolist > /dev/null && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
+    yum-config-manager --enable rhel-7-server-ose-3.2-rpms && \
     yum-config-manager --disable epel >/dev/null || : && \
     INSTALL_PKGS="nodejs010 nodejs010-nodejs-nodemon bzip2 nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
