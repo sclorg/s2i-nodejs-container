@@ -58,7 +58,7 @@ prepare() {
 }
 
 run_test_application() {
-  docker run --user=100001 --rm --cidfile=${cid_file} -p ${test_port} $1 ${IMAGE_NAME}-testapp
+  docker run --user=100001 --rm --cidfile=${cid_file} $1 ${IMAGE_NAME}-testapp
 }
 
 cleanup() {
