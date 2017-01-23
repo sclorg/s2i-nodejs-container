@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# echo ${HOME}  ---> /opt/app-root/src
+echo "Incremental build triggered"
+
+pushd ${HOME} >/dev/null
+
+if [ -d ./node_modules ]; then
+  tar cf - ./node_modules
+fi
+
+popd >/dev/null
