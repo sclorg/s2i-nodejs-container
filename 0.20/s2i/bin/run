@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+echo "Running with NODE_ENV=$NODE_ENV"
+
+# Set the debug port to 5858 by default.
+if [ -z "$DEBUG_PORT" ]; then
+    DEBUG_PORT=5858
+fi
+
+# Set the environment to development by default.
+if [ -z "$NODE_ENV" ]; then
+    NODE_ENV=development    
+fi
+
+# Runs the nodejs application server. The sever is also run
+# with nodemon if the NODE_ENV environment variable is appropriately set.
+run_node() {
+  if [ $NODE_ENV == development ]; then
+      exec nodemon --debug=$DEBUG_PORT
+  else
+      exec npm start -d
+  fi
+} 
+
+# If the official dockerhub node image is used, skip the SCL setup below
+# and just run the nodejs server
+if [ -d "/usr/src/app" ]; then
+ run_node
+fi
+
+# Allow users to inspect/debug the builder image itself, by using:
+# $ docker run -i -t openshift/centos-nodejs-builder --debug
+#
+[ "$1" == "--debug" ] && exec /bin/bash
+
+run_node
+
