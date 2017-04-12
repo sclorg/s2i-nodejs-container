@@ -115,7 +115,7 @@ Development mode supports two features:
 
 The debug port can be specified with the environment variable `DEBUG_PORT`. `DEBUG_PORT` is only valid if `DEV_MODE=true`.
 
-A simple example command for running the docker container in production mode is:
+A simple example command for running the docker container in development mode is:
 ```
 docker run --env DEV_MODE=true my-image-id
 ```
