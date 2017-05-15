@@ -15,8 +15,16 @@ ENV NODEJS_VERSION=4 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
-LABEL summary="Platform for building and running Node.js 4 applications" \
-      io.k8s.description="Platform for building and running Node.js 4 applications" \
+ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
+    DESCRIPTION="NodeJS $NODEJS_VERSION available as docker container, is a base platform for \
+building and running various NodeJS $NODEJS_VERSION applications and frameworks. \
+Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable \
+network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight \
+and efficient, perfect for data-intensive real-time applications that run across distributed devices."
+
+LABEL summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$SUMMARY" \
       io.k8s.display-name="Node.js 4" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs4" \
