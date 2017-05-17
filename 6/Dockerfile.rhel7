@@ -1,9 +1,7 @@
-FROM centos/s2i-base-centos7
+FROM rhscl/s2i-base-rhel7:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
-
-LABEL MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
@@ -12,7 +10,7 @@ EXPOSE 8080
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN
-ENV NODEJS_VERSION=4 \
+ENV NODEJS_VERSION=6 \
     NPM_RUN=start \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
@@ -35,8 +33,21 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"
 
-RUN yum install -y centos-release-scl-rh && \
-    INSTALL_PKGS="rh-nodejs4 rh-nodejs4-npm rh-nodejs4-nodejs-nodemon nss_wrapper" && \
+# Labels consumed by Red Hat build service
+LABEL com.redhat.component="rh-nodejs6-docker" \
+      name="rhscl/nodejs-6-rhel7" \
+      version="6" \
+      release="14.1" \
+      architecture="x86_64"
+
+# To use subscription inside container yum command has to be run first (before yum-config-manager)
+# https://access.redhat.com/solutions/1443553
+RUN yum repolist > /dev/null && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+    yum-config-manager --enable rhel-7-server-optional-rpms && \
+    yum-config-manager --enable rhel-7-server-ose-3.2-rpms && \
+    yum-config-manager --disable epel >/dev/null || : && \
+    INSTALL_PKGS="rh-nodejs6 rh-nodejs6-npm rh-nodejs6-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
