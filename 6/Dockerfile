@@ -3,6 +3,8 @@ FROM centos/s2i-base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
+LABEL MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
+
 EXPOSE 8080
 
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts

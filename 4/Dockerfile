@@ -3,7 +3,7 @@ FROM centos/s2i-base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
-MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
+LABEL MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 
 EXPOSE 8080
 
