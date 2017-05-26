@@ -3,8 +3,6 @@ FROM centos/s2i-base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
-LABEL MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
-
 EXPOSE 8080
 
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
@@ -33,7 +31,12 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"
+      com.redhat.dev-mode.port="DEBUG_PORT:5858"\
+      com.redhat.component="rh-nodejs6-docker" \
+      name="centos/nodejs-6-centos7" \
+      version="6" \
+      release="1" \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 RUN yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
