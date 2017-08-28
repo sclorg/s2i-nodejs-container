@@ -37,12 +37,14 @@ LABEL summary="$SUMMARY" \
       version="6" \
       release="14.1"
 
-# To use subscription inside container yum command has to be run first (before yum-config-manager)
-# https://access.redhat.com/solutions/1443553
+# We need to call 2 (!) yum commands before being able to enable repositories properly
+# This is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1479388
 RUN yum repolist > /dev/null && \
+    yum install -y yum-utils && \
+    yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+    yum-config-manager --enable rhel-7-server-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
-    yum-config-manager --disable epel >/dev/null || : && \
     INSTALL_PKGS="rh-nodejs6 rh-nodejs6-npm rh-nodejs6-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
