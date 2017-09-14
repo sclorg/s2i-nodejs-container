@@ -10,11 +10,17 @@ The resulting image can be run using [Docker](http://docker.io).
 For more information about using these images with OpenShift, please see the
 official [OpenShift Documentation](https://docs.openshift.org/latest/using_images/s2i_images/nodejs.html).
 
+For more information about contributing, see
+[the Contribution Guidelines](https://github.com/sclorg/welcome/blob/master/contribution.md).
+For more information about concepts used in these docker images, see the
+[Landing page](https://github.com/sclorg/welcome).
+
 
 Versions
 ---------------
 Node.JS versions currently provided are:
-* nodejs-4
+* [NodeJS 4](4)
+* [NodeJS 6](6)
 
 RHEL versions currently supported are:
 * RHEL7
@@ -28,13 +34,20 @@ Installation
 To build a Node.JS image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
+    This image is available in Red Hat Container Registry. To download it run:
+
+    ```
+    $ docker pull registry.access.redhat.com/rhscl/nodejs-6-rhel7
+    ```
+
     To build a RHEL based Node.JS image, you need to run the build on a properly
     subscribed RHEL machine.
 
     ```
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
-    $ make build TARGET=rhel7 VERSIONS=4
+    $ git submodule update --init
+    $ make build TARGET=rhel7 VERSIONS=6
     ```
 
 *  **CentOS based image**
@@ -42,7 +55,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     This image is available on DockerHub. To download it run:
 
     ```
-    $ docker pull centos/nodejs-4-centos7
+    $ docker pull centos/nodejs-6-centos7
     ```
 
     To build a Node.JS image from scratch run:
@@ -50,7 +63,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     ```
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
-    $ make build TARGET=centos7 VERSIONS=4
+    $ git submodule update --init
+    $ make build TARGET=centos7 VERSIONS=6
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
@@ -62,6 +76,8 @@ Usage
 
 For information about usage of Dockerfile for NodeJS 4,
 see [usage documentation](4/README.md).
+For information about usage of Dockerfile for NodeJS 6,
+see [usage documentation](6/README.md).
 
 Test
 ---------------------
@@ -76,39 +92,18 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     subscribed RHEL machine.
 
     ```
-    $ cd s2i-nodejs
-    $ make test TARGET=rhel7 VERSIONS=4
+    $ cd s2i-nodejs-container
+    $ git submodule update --init
+    $ make test TARGET=rhel7 VERSIONS=6
     ```
 
 *  **CentOS based image**
 
     ```
-    $ cd s2i-nodejs
-    $ make test TARGET=centos7 VERSIONS=4
+    $ cd s2i-nodejs-container
+    $ git submodule update --init
+    $ make test TARGET=centos7 VERSIONS=6
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
 on all provided versions of Node.JS.**
-
-
-Repository organization
-------------------------
-* **`<nodejs-version>`**
-
-    Dockerfile and scripts to build container images from.
-
-* **`hack/`**
-
-    Folder containing scripts which are responsible for the build and test actions performed by the `Makefile`.
-
-
-Image name structure
-------------------------
-##### Structure: openshift/1-2-3
-
-1. Platform name (lowercase) - nodejs
-2. Platform version(without dots) - 4
-3. Base builder image - centos7/rhel7
-
-Examples: `centos/nodejs-4-centos7`, `rhscl/nodejs-4-rhel7`
-
