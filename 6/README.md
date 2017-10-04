@@ -1,12 +1,23 @@
-NodeJS Docker image
+NodeJS 6 Docker image
 ===================
 
-This repository contains the source for building various versions of
-the Node.JS application as a reproducible Docker image using
-[source-to-image](https://github.com/openshift/source-to-image).
+This container image includes Node.JS 6 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 6 applications.
 Users can choose between RHEL and CentOS based builder images.
+The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-6-rhel7)
+as registry.access.redhat.com/rhscl/nodejs-6-rhel7.
+The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/nodejs-6-centos7/)
+as centos/nodejs-6-centos7. 
 The resulting image can be run using [Docker](http://docker.io).
 
+Description
+-----------
+
+Node.js 6 available as docker container is a base platform for 
+building and running various Node.js 6 applications and frameworks. 
+Node.js is a platform built on Chrome's JavaScript runtime for easily building 
+fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
+that makes it lightweight and efficient, perfect for data-intensive real-time applications 
+that run across distributed devices.
 
 Usage
 ---------------------
@@ -30,56 +41,6 @@ resulting image with [Docker](http://docker.io) execute:
 ```
 $ curl 127.0.0.1:8080
 ```
-
-
-Repository organization
-------------------------
-* **`<nodejs-version>`**
-
-    * **Dockerfile**
-
-        CentOS based Dockerfile.
-
-    * **Dockerfile.rhel7**
-
-        RHEL based Dockerfile. In order to perform build or test actions on this
-        Dockerfile you need to run the action on a properly subscribed RHEL machine.
-
-    * **`s2i/bin/`**
-
-        This folder contains scripts that are run by [S2I](https://github.com/openshift/source-to-image):
-
-        *   **assemble**
-
-            Used to install the sources into the location where the application
-            will be run and prepare the application for deployment (eg. installing
-            modules using npm, etc.)
-
-        *   **run**
-
-            This script is responsible for running the application, by using the
-            application web server.
-
-        *   **usage***
-
-            This script prints the usage of this image.
-
-    * **`contrib/`**
-
-        This folder contains a file with commonly used modules.
-
-    * **`test/`**
-
-        This folder contains the [S2I](https://github.com/openshift/source-to-image)
-        test framework with simple Node.JS echo server.
-
-        * **`test-app/`**
-
-            A simple Node.JS echo server used for testing purposes by the [S2I](https://github.com/openshift/source-to-image) test framework.
-
-        * **run**
-
-            This script runs the [S2I](https://github.com/openshift/source-to-image) test framework.
 
 Environment variables
 ---------------------
@@ -184,3 +145,10 @@ Below is an example _package.json_ file with the _main_ attribute and _start_ sc
 
 #### Note:
 `oc rsync` is only available in versions 3.1+ of OpenShift.
+
+
+See also
+--------
+Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
+In that repository you also can find another versions of Python environment Dockerfiles.
+Dockerfile for CentOS is called Dockerfile, Dockerfile for RHEL is called Dockerfile.rhel7.
