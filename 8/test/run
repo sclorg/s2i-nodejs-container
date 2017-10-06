@@ -6,7 +6,7 @@
 # IMAGE_NAME specifies a name of the candidate image used for testing.
 # The image has to be available before this script is executed.
 #
-IMAGE_NAME=${IMAGE_NAME-centos/nodejs-6-centos7-candidate}
+IMAGE_NAME=${IMAGE_NAME-centos/nodejs-8-centos7-candidate}
 
 test_dir="$(readlink -zf $(dirname "${BASH_SOURCE[0]}"))"
 image_dir=$(readlink -zf ${test_dir}/..)
@@ -209,7 +209,7 @@ run_test_application &
 # Wait for the container to write it's CID file
 wait_for_cid
 
-test_scl_usage "node --version" "v6."
+test_scl_usage "node --version" "v8."
 check_result $?
 test_connection
 check_result $?

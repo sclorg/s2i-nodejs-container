@@ -10,7 +10,7 @@ EXPOSE 8080
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN
-ENV NODEJS_VERSION=6 \
+ENV NODEJS_VERSION=8 \
     NPM_RUN=start \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
@@ -32,15 +32,14 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
-      com.redhat.component="rh-nodejs6-docker" \
-      name="centos/nodejs-6-centos7" \
-      version="6" \
-      release="1" \
+      com.redhat.component="rh-nodejs8-docker" \
+      name="centos/nodejs-8-centos7" \
+      version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 RUN yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
-    INSTALL_PKGS="rh-nodejs6 rh-nodejs6-npm rh-nodejs6-nodejs-nodemon nss_wrapper" && \
+    INSTALL_PKGS="rh-nodejs8 rh-nodejs8-npm rh-nodejs8-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \

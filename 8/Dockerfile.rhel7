@@ -10,7 +10,7 @@ EXPOSE 8080
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN
-ENV NODEJS_VERSION=6 \
+ENV NODEJS_VERSION=8 \
     NPM_RUN=start \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
@@ -32,10 +32,9 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
-      com.redhat.component="rh-nodejs6-docker" \
-      name="rhscl/nodejs-6-rhel7" \
-      version="6" \
-      release="14.1"
+      com.redhat.component="rh-nodejs8-docker" \
+      name="rhscl/nodejs-8-rhel7" \
+      version="1"
 
 # We need to call 2 (!) yum commands before being able to enable repositories properly
 # This is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1479388
@@ -43,9 +42,10 @@ RUN yum repolist > /dev/null && \
     yum install -y yum-utils && \
     yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+    yum-config-manager --enable rhel-server-rhscl-7-beta-rpms && \
     yum-config-manager --enable rhel-7-server-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
-    INSTALL_PKGS="rh-nodejs6 rh-nodejs6-npm rh-nodejs6-nodejs-nodemon nss_wrapper" && \
+    INSTALL_PKGS="rh-nodejs8 rh-nodejs8-npm rh-nodejs8-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
