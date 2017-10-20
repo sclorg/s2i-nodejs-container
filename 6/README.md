@@ -33,7 +33,7 @@ resulting image with [Docker](http://docker.io) execute:
 
 *  **For CentOS based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=6/test/test-app/ centos/nodejs-69-centos7 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=6/test/test-app/ centos/nodejs-6-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
