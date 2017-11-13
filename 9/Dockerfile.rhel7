@@ -1,4 +1,4 @@
-FROM centos/s2i-base-centos7
+FROM rhscl/s2i-base-rhel7:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -31,18 +31,25 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"\
-      version="8.9.1" \
-      name="bucharestgold/centos7-s2i-nodejs-8" \
-      maintainer="Bucharest Gold <lball@redhat.com>"
+      com.redhat.dev-mode.port="DEBUG_PORT:5858" \
+      com.redhat.component="rh-nodejs8-docker" \
+      name="rhscl/nodejs-8-rhel7" \
+      version="1"
 
-RUN yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v8.9.1/rhoar-nodejs-8.9.1-1.el7.centos.x86_64.rpm && \
-    yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v8.9.1/npm-5.5.1-1.8.9.1.1.el7.centos.x86_64.rpm && \
-    yum install -y openssl && \
-    npm install -g nodemon && \
+# We need to call 2 (!) yum commands before being able to enable repositories properly
+# This is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1479388
+RUN yum repolist > /dev/null && \
+    yum install -y yum-utils && \
+    yum-config-manager --disable \* &> /dev/null && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+    yum-config-manager --enable rhel-server-rhscl-7-beta-rpms && \
+    yum-config-manager --enable rhel-7-server-rpms && \
+    yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum remove -y rh-nodejs6\* && \
+    INSTALL_PKGS="rh-nodejs8 rh-nodejs8-npm rh-nodejs8-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
-    yum install -y --setopt=tsflags=nodocs nss_wrapper && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
     yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH

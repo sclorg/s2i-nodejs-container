@@ -32,14 +32,16 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
-      version="8.9.1" \
-      name="bucharestgold/centos7-s2i-nodejs-8" \
-      maintainer="Bucharest Gold <lball@redhat.com>"
+      com.redhat.component="rh-nodejs9-docker" \
+      name="bucharestgold/centos7-s2i-nodejs-9" \
+      version="9.1.0" \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-RUN yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v8.9.1/rhoar-nodejs-8.9.1-1.el7.centos.x86_64.rpm && \
-    yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v8.9.1/npm-5.5.1-1.8.9.1.1.el7.centos.x86_64.rpm && \
+RUN yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v9.1.0/rhoar-nodejs-9.1.0-1.el7.centos.x86_64.rpm && \
+    yum install -y https://github.com/bucharest-gold/node-rpm/releases/download/v9.1.0/npm-5.5.1-1.9.1.0.1.el7.centos.x86_64.rpm && \
     yum install -y openssl && \
     npm install -g nodemon && \
+    # yum install -y centos-release-scl-rh && \
     yum remove -y rh-nodejs6\* && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs nss_wrapper && \
