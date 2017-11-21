@@ -3,13 +3,20 @@ FROM centos/s2i-base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
-EXPOSE 8080
-
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
 # available on the CLI without using npm's --global installation mode
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN
+# Description
+# Environment:
+# * $HOME_APP_ROOT - Root directory of application
+# * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
+# Expose ports:
+# * 8080 - Unprivileged port used by nodejs application
+# Additional packages
+# * findutils are needed to help fix permissions
+
 ENV NODEJS_VERSION=4 \
     NPM_RUN=start \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -29,6 +36,8 @@ LABEL summary="$SUMMARY" \
       io.k8s.display-name="Node.js $NODEJS_VERSION" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
+      io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
@@ -36,7 +45,10 @@ LABEL summary="$SUMMARY" \
       name="centos/nodejs-4-centos7" \
       version="4" \
       release="1" \
-      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
+      usage="s2i build <SOURCE-REPOSITORY> nodejs:4 <APP-NAME>
+
 
 RUN yum install -y centos-release-scl-rh && \
     yum remove -y rh-nodejs6\* && \
@@ -45,6 +57,8 @@ RUN yum install -y centos-release-scl-rh && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y
+
+EXPOSE 8080
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH

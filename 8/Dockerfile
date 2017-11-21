@@ -37,7 +37,8 @@ LABEL summary="$SUMMARY" \
       io.k8s.display-name="Node.js $NODEJS_VERSION" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
-      io.openshift.s2i.scripts-url="image:///usr/local/s2i" \
+      io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
@@ -45,7 +46,7 @@ LABEL summary="$SUMMARY" \
       name="centos/nodejs-8-centos7" \
       version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
-      help="For more information visit https://github.com/container-images/nodejs" \
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> nodejs:8 <APP-NAME>
 
 EXPOSE 8080
@@ -66,7 +67,8 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN mkdir -p ${HOME_APP_ROOT}
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root && \
+    rpm-file-permissions
 
 USER 1001
 

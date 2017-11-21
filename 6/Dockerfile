@@ -37,7 +37,8 @@ LABEL summary="$SUMMARY" \
       io.k8s.display-name="Node.js $NODEJS_VERSION" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
-      io.openshift.s2i.scripts-url="image:///usr/local/s2i" \
+      io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
@@ -46,11 +47,8 @@ LABEL summary="$SUMMARY" \
       version="6" \
       release="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
-      help="For more information visit https://github.com/container-images/nodejs" \
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> nodejs:6 <APP-NAME>
-
-# Defines the location of S2I
-COPY ./.s2i/bin/ /usr/local/s2i
 
 RUN yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
@@ -69,8 +67,8 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN mkdir -p ${HOME_APP_ROOT}
-
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root && \
+    rpm-file-permissions
 USER 1001
 
 # Set the default CMD to print the usage of the language image
