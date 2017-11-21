@@ -18,27 +18,35 @@ set -e
 # Link the modules
 #npm link $module_list
 
+safeLogging () {
+    if [[ $1 =~ http[s]?://.*@.*$ ]]; then
+        echo $1 | sed 's/^.*@/redacted@/'
+    else
+        echo $1
+    fi
+}
+
 shopt -s dotglob
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
 if [ ! -z $HTTP_PROXY ]; then
-	echo "---> Setting npm http proxy to $HTTP_PROXY"
+    echo "---> Setting npm http proxy to" $(safeLogging $HTTP_PROXY)
 	npm config set proxy $HTTP_PROXY
 fi
 
 if [ ! -z $http_proxy ]; then
-	echo "---> Setting npm http proxy to $http_proxy"
+    echo "---> Setting npm http proxy to" $(safeLogging $http_proxy)
 	npm config set proxy $http_proxy
 fi
 
 if [ ! -z $HTTPS_PROXY ]; then
-	echo "---> Setting npm https proxy to $HTTPS_PROXY"
+    echo "---> Setting npm https proxy to" $(safeLogging $HTTPS_PROXY)
 	npm config set https-proxy $HTTPS_PROXY
 fi
 
 if [ ! -z $https_proxy ]; then
-	echo "---> Setting npm https proxy to $https_proxy"
+    echo "---> Setting npm https proxy to" $(safeLogging $https_proxy)
 	npm config set https-proxy $https_proxy
 fi
 
