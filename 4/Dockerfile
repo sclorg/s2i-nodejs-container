@@ -47,7 +47,7 @@ LABEL summary="$SUMMARY" \
       release="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> nodejs:4 <APP-NAME>
+      usage="s2i build <SOURCE-REPOSITORY> nodejs:4 <APP-NAME>"
 
 
 RUN yum install -y centos-release-scl-rh && \

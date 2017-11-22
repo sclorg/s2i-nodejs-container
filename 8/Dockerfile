@@ -19,7 +19,6 @@ FROM centos/s2i-base-centos7
 
 ENV NODEJS_VERSION=8 \
     NPM_RUN=start \
-    HOME_APP_ROOT=/opt/app_root \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
@@ -47,7 +46,7 @@ LABEL summary="$SUMMARY" \
       version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> nodejs:8 <APP-NAME>
+      usage="s2i build <SOURCE-REPOSITORY> nodejs:8 <APP-NAME>"
 
 EXPOSE 8080
 
@@ -63,7 +62,7 @@ RUN yum install -y centos-release-scl-rh && \
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
-# Copy extra files to the image. Including help file.
+# Copy extra files to the image, including help file.
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
