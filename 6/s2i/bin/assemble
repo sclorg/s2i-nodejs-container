@@ -22,12 +22,6 @@ shopt -s dotglob
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
-if [[ "$1" == "-h" ]]; then
-    # If the 'nodejs' assemble script is executed with '-h' flag,
-    # print the usage.
-    exec /usr/local/s2i/usage
-fi
-
 if [ ! -z $HTTP_PROXY ]; then
 	echo "---> Setting npm http proxy to $HTTP_PROXY"
 	npm config set proxy $HTTP_PROXY
