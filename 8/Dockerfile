@@ -3,6 +3,8 @@ FROM centos/s2i-base-centos7
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
+EXPOSE 8080
+
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
 # available on the CLI without using npm's --global installation mode
 # This image will be initialized with "npm run $NPM_RUN"
@@ -10,12 +12,9 @@ FROM centos/s2i-base-centos7
 # file for possible values of NPM_RUN
 # Description
 # Environment:
-# * $HOME_APP_ROOT - Root directory of application
 # * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
-# Additional packages
-# * findutils are needed to help fix permissions
 
 ENV NODEJS_VERSION=8 \
     NPM_RUN=start \
@@ -47,8 +46,6 @@ LABEL summary="$SUMMARY" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> nodejs:8 <APP-NAME>"
-
-EXPOSE 8080
 
 RUN yum install -y centos-release-scl-rh && \
     yum remove -y rh-nodejs6\* && \
