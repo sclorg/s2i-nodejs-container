@@ -45,6 +45,10 @@ run_s2i_build() {
   s2i build ${s2i_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
 
+run_s2i_build_proxy() {
+    s2i build ${s2i_args} -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2 file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw
+}
+
 prepare() {
   if ! image_exists ${IMAGE_NAME}; then
     echo "ERROR: The image ${IMAGE_NAME} must exist before this script is executed."
@@ -52,7 +56,14 @@ prepare() {
   fi
   # TODO: STI build require the application is a valid 'GIT' repository, we
   # should remove this restriction in the future when a file:// is used.
-  pushd ${test_dir}/test-app >/dev/null
+  if [[ $1 == 'app' ]]; then
+      pushd ${test_dir}/test-app >/dev/null
+  elif [[ $1 == 'hw' ]]; then
+      pushd ${test_dir}/test-hw >/dev/null
+  else
+      echo "Please specify a valid test application"
+      exit 1
+  fi
   git init
   git config user.email "build@localhost" && git config user.name "builder"
   git add -A && git commit --no-gpg-sign -m "Sample commit"
@@ -60,19 +71,30 @@ prepare() {
 }
 
 run_test_application() {
-  docker run --user=100001 --rm --cidfile=${cid_file} $1 ${IMAGE_NAME}-testapp
+    if [[ $1 == app ]]; then
+        docker run --user=100001 --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
+    elif [[ $1 == hw ]]; then
+        docker run --user=100001 --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
+    else
+        echo "No such test application"
+        exit 1
+    fi
 }
 
 cleanup() {
   if [ -f $cid_file ]; then
-    if container_exists; then
-      docker stop $(cat $cid_file)
-    fi
+      if container_exists; then
+          docker stop $(cat $cid_file)
+      fi
   fi
   if image_exists ${IMAGE_NAME}-testapp; then
-    docker rmi -f ${IMAGE_NAME}-testapp
+      docker rmi -f ${IMAGE_NAME}-testapp
+  fi
+  if image_exists ${IMAGE_NAME}-test-hw; then
+      docker rmi -f ${IMAGE_NAME}-testhw
   fi
   rm -rf ${test_dir}/test-app/.git
+  rm -rf ${test_dir}/test-hw/.git
 }
 
 check_result() {
@@ -193,7 +215,7 @@ validate_node_env() {
 
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
-prepare
+prepare app
 run_s2i_build
 check_result $?
 
@@ -206,7 +228,7 @@ test_docker_run_usage
 check_result $?
 
 # Verify that the HTTP connection can be established to test application container
-run_test_application &
+run_test_application app &
 
 # Wait for the container to write it's CID file
 wait_for_cid
@@ -230,7 +252,7 @@ docker kill $(cat $cid_file)
 rm $cid_file
 
 echo "Testing DEV_MODE=true"
-run_test_application "-e DEV_MODE=true" &
+run_test_application app "-e DEV_MODE=true" &
 wait_for_cid
 
 test_connection
@@ -243,6 +265,27 @@ echo ${logs} | grep -q NODE_ENV=development
 check_result $?
 echo ${logs} | grep -q DEBUG_PORT=5858
 check_result $?
+
+docker kill $(cat $cid_file)
+rm $cid_file
+
+echo "Testing proxy safe logging..."
+prepare hw
+run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
+if [[ $(grep redacted /tmp/build-log | wc -l) -eq 4 ]]; then
+    grep redacted /tmp/build-log
+    check_result 0
+else
+    echo "Some proxy log-in credentials were left in log file"
+    grep Setting /tmp/build-log
+    check_result 1
+fi
+
+run_test_application hw &
+wait_for_cid
+
+docker kill $(cat $cid_file)
+rm $cid_file
 
 
 echo "Success!"
