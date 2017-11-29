@@ -46,7 +46,7 @@ container_logs() {
 }
 
 run_s2i_build() {
-  s2i build ${s2i_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
+  s2i build ${s2i_args} $1 file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
 
 run_s2i_build_proxy() {
@@ -75,6 +75,11 @@ prepare() {
 }
 
 run_test_application() {
+    if [ -f $cid_file ]; then
+        docker kill $(cat $cid_file)
+        rm $cid_file
+    fi
+
     if [[ $1 == app ]]; then
         docker run --user=100001 --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
     elif [[ $1 == hw ]]; then
@@ -217,9 +222,32 @@ validate_node_env() {
   fi
 }
 
+test_dev_mode() {
+  local app=$1
+  local dev_mode=$2
+  local node_env=$3
+
+  echo "Testing $app DEV_MODE=$dev_mode NODE_ENV=$node_env"
+
+  run_test_application $app "-e DEV_MODE=$dev_mode" &
+  wait_for_cid
+
+  test_connection
+  check_result $?
+
+  logs=$(container_logs)
+  echo ${logs} | grep -q DEV_MODE=$dev_mode
+  check_result $?
+  echo ${logs} | grep -q DEBUG_PORT=5858
+  check_result $?
+  echo ${logs} | grep -q NODE_ENV=$node_env
+  check_result $?
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
+echo "Testing the production image build"
 run_s2i_build
 check_result $?
 
@@ -243,35 +271,67 @@ check_result $?
 test_connection
 check_result $?
 
-echo "Testing DEV_MODE=false"
-logs=$(container_logs)
-echo ${logs} | grep -q DEV_MODE=false
-check_result $?
-echo ${logs} | grep -q NODE_ENV=production
-check_result $?
-echo ${logs} | grep -q DEBUG_PORT=5858
+# Test that the development dependencies (nodemon) have been removed (npm prune)
+# The node v8 comes with npm 5.3.* that has bug and prune fails. See https://github.com/npm/npm/issues/17781
+if [ "v$VERSION" != "v8" ]; then
+	devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ~/node_modules/nodemon")
+	check_result $?
+fi
+
+# Test that the npm cache has been cleared
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")
 check_result $?
 
-docker kill $(cat $cid_file)
-rm $cid_file
+# Test that the npm tmp has been cleared
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
+check_result $?
 
-echo "Testing DEV_MODE=true"
-run_test_application app "-e DEV_MODE=true" &
+test_dev_mode app false production
+test_dev_mode app true development
+
+echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
+run_s2i_build "-e NODE_ENV=development"
+check_result $?
+
+# Verify that the HTTP connection can be established to test application container
+run_test_application app &
 wait_for_cid
 
 test_connection
 check_result $?
 
-logs=$(container_logs)
-echo ${logs} | grep -q DEV_MODE=true
-check_result $?
-echo ${logs} | grep -q NODE_ENV=development
-check_result $?
-echo ${logs} | grep -q DEBUG_PORT=5858
+# Test that the development dependencies (nodemon) have NOT been removed
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ~/node_modules/nodemon")
 check_result $?
 
-docker kill $(cat $cid_file)
-rm $cid_file
+# Test that the npm cache has NOT been cleared
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
+check_result $?
+
+test_dev_mode app true development
+test_dev_mode app false development
+
+echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
+run_s2i_build "-e DEV_MODE=true"
+check_result $?
+
+# Verify that the HTTP connection can be established to test application container
+run_test_application app &
+wait_for_cid
+
+test_connection
+check_result $?
+
+# Test that the development dependencies (nodemon) have NOT been removed
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ~/node_modules/nodemon")
+check_result $?
+
+# Test that the npm cache has NOT been cleared
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
+check_result $?
+
+test_dev_mode app true development
+test_dev_mode app false production
 
 echo "Testing proxy safe logging..."
 prepare hw
