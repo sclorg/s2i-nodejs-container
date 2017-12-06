@@ -10,8 +10,15 @@ EXPOSE 8080
 # This image will be initialized with "npm run $NPM_RUN"
 # See https://docs.npmjs.com/misc/scripts, and your repo's package.json
 # file for possible values of NPM_RUN
+# Description
+# Environment:
+# * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
+# Expose ports:
+# * 8080 - Unprivileged port used by nodejs application
+
 ENV NODEJS_VERSION=6 \
     NPM_RUN=start \
+    NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
@@ -28,15 +35,19 @@ LABEL summary="$SUMMARY" \
       io.k8s.description="$DESCRIPTION" \
       io.k8s.display-name="Node.js $NODEJS_VERSION" \
       io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,nodejs,nodejs$NODEJS_VERSION" \
+      io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION" \
+      io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="/opt/app-root/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
-      com.redhat.component="rh-nodejs6-docker" \
-      name="centos/nodejs-6-centos7" \
-      version="6" \
+      com.redhat.component="rh-$NAME$NODEJS_VERSION-docker" \
+      name="centos/$NAME-$NODEJS_VERSION-centos7" \
+      version="$NODEJS_VERSION" \
       release="1" \
-      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
+      usage="s2i build <SOURCE-REPOSITORY> centos/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
 
 RUN yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
@@ -49,13 +60,12 @@ RUN yum install -y centos-release-scl-rh && \
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
-# Copy extra files to the image.
+# Copy extra files to the image, including help file
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
 RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root && \
     rpm-file-permissions
-
 USER 1001
 
 # Set the default CMD to print the usage of the language image

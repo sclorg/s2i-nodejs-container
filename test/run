@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # The 'run' performs a simple test that verifies that STI image.
-# The main focus here is to excersise the STI scripts.
+# The main focus here is to exercise the STI scripts.
 #
 # IMAGE_NAME specifies a name of the candidate image used for testing.
 # The image has to be available before this script is executed.
@@ -10,8 +10,8 @@
 test -n $IMAGE_NAME \
   -a -n $VERSION
 
-test_dir="$(readlink -zf $(dirname "${BASH_SOURCE[0]}"))"
-image_dir=$(readlink -zf ${test_dir}/..)
+test_dir="$(readlink -zf $(dirname ${BASH_SOURCE[0]}))"
+image_dir="$(readlink -zf ${test_dir}/..)"
 cid_file=$(mktemp -u --suffix=.cid)
 
 # Since we built the candidate image locally, we don't want S2I attempt to pull
@@ -20,6 +20,10 @@ s2i_args="--pull-policy=never "
 
 # TODO: This should be part of the image metadata
 test_port=8080
+
+info() {
+  echo -e "\n\e[1m[INFO] $@...\e[0m\n"
+}
 
 if [ "$DEBUG" != "" ]; then
   set -x
