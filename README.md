@@ -35,10 +35,11 @@ Installation
 To build a Node.JS image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
-    This image is available in Red Hat Container Registry. To download it run:
+    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-8-rhel7).
+    To download it run:
 
     ```
-    $ docker pull registry.access.redhat.com/rhscl/nodejs-6-rhel7
+    $ docker pull registry.access.redhat.com/rhscl/nodejs-8-rhel7
     ```
 
     To build a RHEL based Node.JS image, you need to run the build on a properly
@@ -48,7 +49,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=rhel7 VERSIONS=6
+    $ make build TARGET=rhel7 VERSIONS=8
     ```
 
 *  **CentOS based image**
@@ -56,7 +57,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     This image is available on DockerHub. To download it run:
 
     ```
-    $ docker pull centos/nodejs-6-centos7
+    $ docker pull centos/nodejs-8-centos7
     ```
 
     To build a Node.JS image from scratch run:
@@ -65,7 +66,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=centos7 VERSIONS=6
+    $ make build TARGET=centos7 VERSIONS=8
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
@@ -97,7 +98,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=rhel7 VERSIONS=6
+    $ make test TARGET=rhel7 VERSIONS=8
     ```
 
 *  **CentOS based image**
@@ -105,7 +106,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=centos7 VERSIONS=6
+    $ make test TARGET=centos7 VERSIONS=8
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
