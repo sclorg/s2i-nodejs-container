@@ -44,7 +44,6 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="rh-$NAME$NODEJS_VERSION-docker" \
       name="centos/$NAME-$NODEJS_VERSION-centos7" \
       version="$NODEJS_VERSION" \
-      release="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> centos/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
