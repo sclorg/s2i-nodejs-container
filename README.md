@@ -1,8 +1,8 @@
-NodeJS Docker images
+NodeJS container images
 ====================
 
 This repository contains the source for building various versions of
-the Node.JS application as a reproducible Docker image using
+the Node.JS application as a reproducible container image using
 [source-to-image](https://github.com/openshift/source-to-image).
 Users can choose between RHEL and CentOS based builder images.
 The resulting image can be run using [Docker](http://docker.io).
@@ -12,7 +12,7 @@ official [OpenShift Documentation](https://docs.openshift.org/latest/using_image
 
 For more information about contributing, see
 [the Contribution Guidelines](https://github.com/sclorg/welcome/blob/master/contribution.md).
-For more information about concepts used in these docker images, see the
+For more information about concepts used in these container images, see the
 [Landing page](https://github.com/sclorg/welcome).
 
 
