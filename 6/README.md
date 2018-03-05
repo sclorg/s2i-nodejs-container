@@ -1,4 +1,4 @@
-NodeJS 6 Docker image
+NodeJS 6 container image
 ===================
 
 This container image includes Node.JS 6 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 6 applications.
@@ -12,7 +12,7 @@ The resulting image can be run using [Docker](http://docker.io).
 Description
 -----------
 
-Node.js 6 available as docker container is a base platform for 
+Node.js 6 available as container is a base platform for 
 building and running various Node.js 6 applications and frameworks. 
 Node.js is a platform built on Chrome's JavaScript runtime for easily building 
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
@@ -85,7 +85,7 @@ Development mode supports two features:
 
 The debug port can be specified with the environment variable `DEBUG_PORT`. `DEBUG_PORT` is only valid if `DEV_MODE=true`.
 
-A simple example command for running the docker container in development mode is:
+A simple example command for running the container in development mode is:
 ```
 docker run --env DEV_MODE=true my-image-id
 ```
@@ -122,7 +122,7 @@ If you have deployed the container to OpenShift, you can use [oc rsync](https://
 
 #### Warning:
 
-The default behaviour of the s2i-nodejs docker image is to run the Node.js application using the command `npm start`. This runs the _start_ script in the _package.json_ file. In developer mode, the application is run using the command `nodemon`. The default behaviour of nodemon is to look for the _main_ attribute in the _package.json_ file, and execute that script. If the _main_ attribute doesn't appear in the _package.json_ file, it executes the _start_ script. So, in order to achieve some sort of uniform functionality between production and development modes, the user should remove the _main_ attribute.
+The default behaviour of the s2i-nodejs container image is to run the Node.js application using the command `npm start`. This runs the _start_ script in the _package.json_ file. In developer mode, the application is run using the command `nodemon`. The default behaviour of nodemon is to look for the _main_ attribute in the _package.json_ file, and execute that script. If the _main_ attribute doesn't appear in the _package.json_ file, it executes the _start_ script. So, in order to achieve some sort of uniform functionality between production and development modes, the user should remove the _main_ attribute.
 
 Below is an example _package.json_ file with the _main_ attribute and _start_ script marked appropriately:
 
