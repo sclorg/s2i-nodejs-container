@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Test the NodeJS image in OpenShift.
+#
+# IMAGE_NAME specifies a name of the candidate image used for testing.
+# The image has to be available before this script is executed.
+#
+
+THISDIR=$(dirname ${BASH_SOURCE[0]})
+
+source "${THISDIR}/test-lib.sh"
+source "${THISDIR}/test-lib-openshift.sh"
+
+set -exo nounset
+
+test -n "${IMAGE_NAME-}" || false 'make sure $IMAGE_NAME is defined'
+test -n "${VERSION-}" || false 'make sure $VERSION is defined'
+
+ct_os_cluster_up
+# TODO: We can make the tests work against examples inside the same PR
+ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/s2i-nodejs-container.git" test/test-app "This is a node.js echo service"
+ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/openshift/nodejs-ex.git" . "Welcome to your Node.js application on OpenShift"
