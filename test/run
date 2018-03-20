@@ -274,11 +274,8 @@ test_connection
 check_result $?
 
 # Test that the development dependencies (nodemon) have been removed (npm prune)
-# The node v8 comes with npm 5.3.* that has bug and prune fails. See https://github.com/npm/npm/issues/17781
-if [ "v$VERSION" != "v8" ]; then
-	devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ~/node_modules/nodemon")
-	check_result $?
-fi
+devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ~/node_modules/nodemon")
+check_result $?
 
 # Test that the npm cache has been cleared
 devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")

@@ -85,7 +85,7 @@ else
 	npm run build --if-present
 
 	echo "---> Pruning the development dependencies"
-	npm prune || echo "!!!!!!!! Prune failed. See https://github.com/npm/npm/issues/17781 !!!!!!!!!"
+	npm prune
 
 	# Clear the npm's cache and tmp directories only if they are not a docker volumes
 	NPM_CACHE=$(npm config get cache)
