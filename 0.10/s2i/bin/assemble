@@ -20,7 +20,7 @@ set -e
 
 shopt -s dotglob
 echo "---> Installing application source ..."
-mv /tmp/src/* ./
+rm -rf ./ && mv /tmp/src/* ./
 
 if [ ! -z $HTTP_PROXY ]; then
 	echo "---> Setting npm http proxy to $HTTP_PROXY"
