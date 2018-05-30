@@ -7,6 +7,10 @@
 # The image has to be available before this script is executed.
 #
 
+THISDIR=$(dirname ${BASH_SOURCE[0]})
+
+source "${THISDIR}/test-lib.sh"
+
 test -n $IMAGE_NAME \
   -a -n $VERSION
 
@@ -353,6 +357,10 @@ fi
 run_test_application hw &
 wait_for_cid
 kill_test_application
+
+echo "Testing npm availibility"
+ct_npm_works
+check_result $?
 
 echo "Success!"
 cleanup
