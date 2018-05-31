@@ -358,7 +358,7 @@ run_test_application hw &
 wait_for_cid
 kill_test_application
 
-echo "Testing npm availibility"
+echo "Testing npm availability"
 ct_npm_works
 check_result $?
 
