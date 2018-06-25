@@ -1,4 +1,3 @@
-cd extract
 for subdir in `find . -type d` 
 do
 if [ -f ./$subdir/layer.tar ]   
