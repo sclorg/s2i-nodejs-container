@@ -17,3 +17,5 @@ script:
   - tar xvf test.tar
   - sh ../test.sh
   - find . -name package.json -print
+  
+  
