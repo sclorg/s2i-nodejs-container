@@ -13,7 +13,7 @@ script:
   - make build TARGET=centos7 VERSIONS=8
   - docker images
   - mkdir extract; cd extract
-  - docker save > test.tar
+  - docker save centos/s2i-base-centos7 > test.tar
   - tar xvf test.tar
   - sh ../test.sh
   - find . -name package.json -print
