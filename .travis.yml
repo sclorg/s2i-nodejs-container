@@ -14,7 +14,7 @@ script:
   - mkdir extract; cd extract
   - docker save centos/s2i-base-centos7 > test.tar
   - tar xvf test.tar >> log.text
-  - copy ../test.sh .
+  - cp ../test.sh .
   - sh ./test.sh >> log.text
   - docker images  
   - find . -name package.json -print >> log.text
