@@ -1,18 +1,14 @@
-- docker images
-   - mkdir extract	   - mkdir extract
-   - cd extract	   - cd extract
--  - docker export centos/s2i-base-centos7 test.tar	+  - docker save centos/s2i-base-centos7 > test.tar
-   - tar xf test.tar	   - tar xf test.tar
--  - for layer in */layer.tar; do tar -tf $layer | grep docker.cow && echo $layer; done	+  - echo "for subdir in `find . -type d` 
--  - ls -R	+do
-if [ -f ./$subdir/layer.tar ]   
-then   
-        echo "extracting"; echo $subdir
-        tar xvf ./$subdir/layer.tar -C ./$subdir 
-#       echo Yes;echo $subdir
- else 
-         echo "not";echo $subdir
- fi 
- done " > test.sh
-- sh test.sh
-- find . -name package.json -print
+language: go
+sudo: required
+services:
+  - docker
+go: 
+  - "1.10.x"
+script:
+  - echo "GETTING TO COMMAND **"
+  - docker images
+  - git submodule update --init
+  - which make
+  - go get github.com/cpuguy83/go-md2man
+  - make build TARGET=centos7 VERSIONS=8
+  - docker images
