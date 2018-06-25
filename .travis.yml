@@ -12,8 +12,8 @@ script:
   - go get github.com/cpuguy83/go-md2man
   - make build TARGET=centos7 VERSIONS=8
   - docker images
-  - cd extract
+  - mkdir extract; cd extract
   - docker save > test.tar
   - tar xvf test.tar
-  - sh test.sh
+  - sh ../test.sh
   - find . -name package.json -print
