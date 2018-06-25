@@ -7,15 +7,20 @@ go:
 script:
   - echo "GETTING TO COMMAND **"
   - docker images
-  - git submodule update --init
+  - git submodule update --init 
   - which make
-  - go get github.com/cpuguy83/go-md2man
-  - make build TARGET=centos7 VERSIONS=8
-  - docker images
+  - go get github.com/cpuguy83/go-md2man > log.text
+  - make build TARGET=centos7 VERSIONS=8 >> log.text
   - mkdir extract; cd extract
   - docker save centos/s2i-base-centos7 > test.tar
-  - tar xvf test.tar
-  - sh ../test.sh
+  - tar xvf test.tar >> log.text
+  - sh ../test.sh >> log.text
+  - docker images  
   - find . -name package.json -print
+  - export RECOMMENDER_API_TOKEN='Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBsTDB2WHM5WVJWcVpNb3d5dzh1TkxSX3lyMGlGYW96ZFFrOXJ6cTJPVlUiLCJ0eXAiOiJKV1QifQ.eyJhY3IiOiIwIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vYXV0aC5vcGVuc2hpZnQuaW8iLCJodHRwczovL29wZW5zaGlmdC5pbyJdLCJhcHByb3ZlZCI6dHJ1ZSwiYXVkIjoiZmFicmljOC1vbmxpbmUtcGxhdGZvcm0iLCJhdXRoX3RpbWUiOjE1Mjk0Nzk5NzMsImF6cCI6ImZhYnJpYzgtb25saW5lLXBsYXRmb3JtIiwiZW1haWwiOiJzYW11enphbEByZWRoYXQuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTUzMjA3MTk3MywiZmFtaWx5X25hbWUiOiJDaG91ZGh1cnkiLCJnaXZlbl9uYW1lIjoiU2FtdXp6YWwiLCJpYXQiOjE1Mjk0Nzk5NzMsImlzcyI6Imh0dHBzOi8vc3NvLm9wZW5zaGlmdC5pby9hdXRoL3JlYWxtcy9mYWJyaWM4IiwianRpIjoiOTAwNjgwMjUtMDk2Ni00NjA0LTlhN2UtOWViYTgzNTdjNDAxIiwibmFtZSI6IlNhbXV6emFsIENob3VkaHVyeSIsIm5iZiI6MCwicHJlZmVycmVkX3VzZXJuYW1lIjoic2FtdXp6YWwiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX0sImJyb2tlciI6eyJyb2xlcyI6WyJyZWFkLXRva2VuIl19fSwic2Vzc2lvbl9zdGF0ZSI6IjE5MWViMjZlLTM5NmQtNDk0OS1hYTI3LWQ5YTkwNDMzNDlmZSIsInN1YiI6IjUwMjkyOGQwLTZkNTMtNGJkZS1iYzIyLTVmNDg1MTYwYmI1YiIsInR5cCI6IkJlYXJlciJ9.YSy7SgF-pJUeMzAoVv6ev1EbxUkuRoRPuMtoCADsO45OF2YrD-5RCfA-uO3OJ06kxPEVUPZmuTEH_8MGRv2G-E89EqG3lhq8k1yQbAsbTT-SypDV2UmUG84Te3czOLDBcI6U2jJ0VDj-enhnsivTQsCGSB4gpv0rB2Igj8Mcz-hGSRc2vU1RrOtb0bxJYaNVQVDPOTyvcZsU7Cza8VYfiny0Z_coeXH2o5mVtUiHeIDz5PvbTWOBoaeTd-TYrW9rgOElVsSswPOlH5HMKPkMBB_5z99Uwl3CKr3XNewXNsWR7Yp820ZYUHyR4XE5LnaSla89FEnXCx7Se2MN9n6gGQ'
+  - curl -H"Authorization: $RECOMMENDER_API_TOKEN" -F"manifest[]=@./pom.xml" -F"filePath[]=/home/JohnDoe" http://bayesian-api-schoudhu-fabric8-analytics.dev.rdu2c.fabric8.io/api/v1/application-analysis
+  
+ 
+  
   
   
