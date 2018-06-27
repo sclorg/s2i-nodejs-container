@@ -5,7 +5,6 @@ services:
 go: 
   - "1.10.x"
 script:
-  - echo "GETTING TO COMMAND **"
   - docker images
   - git submodule update --init 
   - go get github.com/cpuguy83/go-md2man > log.text
@@ -18,7 +17,7 @@ script:
   - docker images  
   - find . -name package.json -print
   - filename=./862a73efea0f888bd4b6fa16ee12fef5cd2bd6b46e4bab9638d248b5f0cc1219/opt/rh/rh-nodejs8/root/usr/lib/node_modules/npm/package.json
-  - echo "*** Found CVE at dependency: serve-static:1.7.1 with ID CVE-2015-1164 and CVSS score 4.3 ***"
+  - sh ./figureoutCVEs.sh
   - exit 1
   
   
