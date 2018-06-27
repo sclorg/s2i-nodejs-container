@@ -17,7 +17,7 @@ script:
   - cp ../test.sh .
   - sh ./test.sh >> log.text
   - docker images  
-  - find . -name package.json -print >> log.text
+  - find . -name package.json -print
   - curl -v google.com  
  
   
