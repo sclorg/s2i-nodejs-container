@@ -5,7 +5,6 @@ services:
 go: 
   - "1.10.x"
 script:
-  - echo "GETTING TO COMMAND **"
   - docker images
   - git submodule update --init 
   - which make
@@ -17,9 +16,6 @@ script:
   - cp ../test.sh .
   - sh ./test.sh >> log.text
   - docker images  
-  - manifest_count=`find . -name package.json -print | wc -l` 
-  - echo "Manifest file count at this image"
-  - echo $manifest_count
   - filename=./862a73efea0f888bd4b6fa16ee12fef5cd2bd6b46e4bab9638d248b5f0cc1219/opt/rh/rh-nodejs8/root/usr/lib/node_modules/npm/package.json
   - curl -f -F"manifest[]=@$filenam" -F"filePath[]=/home/JohnDoe" http://bayesian-api-schoudhu-fabric8-analytics.dev.rdu2c.fabric8.io/api/v1/application-analysis
   - echo "Found CVE:  "
