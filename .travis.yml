@@ -1,0 +1,25 @@
+language: go
+sudo: required
+services:
+  - docker
+go: 
+  - "1.10.x"
+script:
+  - docker images
+  - git submodule update --init 
+  - go get github.com/cpuguy83/go-md2man > log.text
+  - make build TARGET=centos7 VERSIONS=8 >> log.text
+  - mkdir extract; cd extract
+  - docker save centos/s2i-base-centos7 > test.tar
+  - tar xvf test.tar >> log.text
+  - cp ../test.sh .
+  - sh ./test.sh >> log.text
+  - docker images  
+  - find . -name package.json -print
+  - sh ../figureoutCVEs.sh
+  
+  
+  
+  
+  
+  
