@@ -42,7 +42,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.access.redhat.com/openshift3/nodejs-010-rhel7:latest"
+          "name": "registry.redhat.io/openshift3/nodejs-010-rhel7:latest"
         },
         "referencePolicy": {
           "type": "Local"
@@ -62,7 +62,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.access.redhat.com/rhscl/nodejs-4-rhel7:latest"
+          "name": "registry.redhat.io/rhscl/nodejs-4-rhel7:latest"
         },
         "referencePolicy": {
           "type": "Local"
@@ -82,7 +82,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.access.redhat.com/rhscl/nodejs-6-rhel7:latest"
+          "name": "registry.redhat.io/rhscl/nodejs-6-rhel7:latest"
         },
         "referencePolicy": {
           "type": "Local"
@@ -101,7 +101,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.access.redhat.com/rhscl/nodejs-8-rhel7:latest"
+          "name": "registry.redhat.io/rhscl/nodejs-8-rhel7:latest"
         },
         "referencePolicy": {
           "type": "Local"
