@@ -118,7 +118,7 @@ After you [Docker exec](http://docker.io) into the running container, your curre
 
 ### Using OpenShift's rsync
 
-If you have deployed the container to OpenShift, you can use [oc rsync](https://docs.openshift.org/latest/dev_guide/copy_files_to_container.html) to copy local files to a remote container running in an OpenShift pod.
+If you have deployed the container to OpenShift, you can use [oc rsync](https://docs.okd.io/latest/dev_guide/copy_files_to_container.html) to copy local files to a remote container running in an OpenShift pod.
 
 #### Warning:
 
