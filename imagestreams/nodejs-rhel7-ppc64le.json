@@ -18,7 +18,7 @@
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs,ppc64le",
           "supports":"nodejs",
-          "sampleRepo": "https://github.com/openshift/nodejs-ex.git"
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "ImageStreamTag",
@@ -38,7 +38,7 @@
           "tags": "builder,nodejs,ppc64le",
           "supports":"nodejs:6,nodejs",
           "version": "6",
-          "sampleRepo": "https://github.com/openshift/nodejs-ex.git"
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
