@@ -19,4 +19,4 @@ test -n "${VERSION-}" || false 'make sure $VERSION is defined'
 ct_os_cluster_up
 # TODO: We can make the tests work against examples inside the same PR
 ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/s2i-nodejs-container.git" test/test-app "This is a node.js echo service"
-ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/openshift/nodejs-ex.git" . "Welcome to your Node.js application on OpenShift"
+ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/nodejs-ex.git" . "Welcome to your Node.js application on OpenShift"
