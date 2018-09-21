@@ -58,7 +58,7 @@
           "tags": "hidden,builder,nodejs",
           "supports":"nodejs:4,nodejs",
           "version": "4",
-          "sampleRepo": "https://github.com/openshift/nodejs-ex.git"
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
@@ -78,7 +78,7 @@
           "tags": "builder,nodejs",
           "supports":"nodejs:6,nodejs",
           "version": "6",
-          "sampleRepo": "https://github.com/openshift/nodejs-ex.git"
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
@@ -97,7 +97,7 @@
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
           "version": "8",
-          "sampleRepo": "https://github.com/openshift/nodejs-ex.git"
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
