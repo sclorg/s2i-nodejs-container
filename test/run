@@ -50,11 +50,11 @@ container_logs() {
 }
 
 run_s2i_build() {
-  s2i build ${s2i_args} $1 file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
+  ct_s2i_build_as_df file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $1
 }
 
 run_s2i_build_proxy() {
-    s2i build ${s2i_args} -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2 file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw
+    ct_s2i_build_as_df file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw ${s2i_args} -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2
 }
 
 prepare() {
@@ -134,7 +134,7 @@ wait_for_cid() {
 
 test_s2i_usage() {
   echo "Testing 's2i usage'..."
-  s2i usage ${s2i_args} ${IMAGE_NAME} &>/dev/null
+  ct_s2i_usage ${IMAGE_NAME} ${s2i_args} &>/dev/null
 }
 
 test_docker_run_usage() {
