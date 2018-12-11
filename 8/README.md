@@ -1,19 +1,21 @@
-NodeJS 10 container image
+NodeJS 8 container image
 ===================
 
-This container image includes Node.JS 10 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 10 applications.
+This container image includes Node.JS 8 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 8 applications.
 Users can choose between RHEL and CentOS based builder images.
-The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhel8/nodejs-10)
-as registry.access.redhat.com/rhel8/nodejs-10.
-The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/nodejs-10-centos8/)
-as centos/nodejs-10-centos8. 
+The RHEL7 image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-8-rhel7)
+as registry.access.redhat.com/rhscl/nodejs-8-rhel7.
+The RHEL8 image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhel8/nodejs-8)
+as registry.access.redhat.com/rhel8/nodejs-8.
+The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/nodejs-8-centos7/)
+as centos/nodejs-8-centos7. 
 The resulting image can be run using [Docker](http://docker.io).
 
 Description
 -----------
 
-Node.js 10 available as container is a base platform for 
-building and running various Node.js 10 applications and frameworks. 
+Node.js 8 available as container is a base platform for 
+building and running various Node.js 8 applications and frameworks. 
 Node.js is a platform built on Chrome's JavaScript runtime for easily building 
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
 that makes it lightweight and efficient, perfect for data-intensive real-time applications 
@@ -21,19 +23,19 @@ that run across distributed devices.
 
 Usage
 ---------------------
-To build a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/10/test/test-app) application
+To build a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/8/test/test-app) application
 using standalone [S2I](https://github.com/openshift/source-to-image) and then run the
 resulting image with [Docker](http://docker.io) execute:
 
 *  **For RHEL based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=8/test/test-app/ rhel8/nodejs-10 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=8/test/test-app/ rhscl/nodejs-8-rhel7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
 *  **For CentOS based image**
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=8/test/test-app/ centos/nodejs-10-centos8 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=8/test/test-app/ centos/nodejs-8-centos7 nodejs-sample-app
     $ docker run -p 8080:8080 nodejs-sample-app
     ```
 
@@ -118,7 +120,7 @@ After you [Docker exec](http://docker.io) into the running container, your curre
 
 ### Using OpenShift's rsync
 
-If you have deployed the container to OpenShift, you can use [oc rsync](https://docs.openshift.org/latest/dev_guide/copy_files_to_container.html) to copy local files to a remote container running in an OpenShift pod.
+If you have deployed the container to OpenShift, you can use [oc rsync](https://docs.okd.io/latest/dev_guide/copy_files_to_container.html) to copy local files to a remote container running in an OpenShift pod.
 
 #### Warning:
 
