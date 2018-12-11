@@ -1,4 +1,4 @@
-FROM centos/s2i-base-centos7
+FROM centos/s2i-base-centos7:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -16,7 +16,7 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=8 \
+ENV NODEJS_VERSION=10 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -50,7 +50,7 @@ LABEL summary="$SUMMARY" \
 
 RUN yum install -y centos-release-scl-rh && \
     ( [ "rh-${NAME}${NODEJS_VERSION}" != "${NODEJS_SCL}" ] && yum remove -y ${NODEJS_SCL}\* || : ) && \
-    INSTALL_PKGS="rh-nodejs8 rh-nodejs8-npm rh-nodejs8-nodejs-nodemon nss_wrapper" && \
+    INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
