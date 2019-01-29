@@ -5,8 +5,6 @@ This container image includes Node.JS 8 as a [S2I](https://github.com/openshift/
 Users can choose between RHEL and CentOS based builder images.
 The RHEL7 image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-8-rhel7)
 as registry.access.redhat.com/rhscl/nodejs-8-rhel7.
-The RHEL8 image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhel8/nodejs-8)
-as registry.access.redhat.com/rhel8/nodejs-8.
 The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/nodejs-8-centos7/)
 as centos/nodejs-8-centos7. 
 The resulting image can be run using [Docker](http://docker.io).
