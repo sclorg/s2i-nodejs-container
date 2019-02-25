@@ -250,6 +250,12 @@ test_dev_mode() {
   kill_test_application
 }
 
+test_incremental_build() {
+  first=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} | grep -o -e "added [0-9]* packages in" | awk '{ print $2 }')
+  second=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} --incremental | grep -o -e "added [0-9]* packages in" | awk '{ print $2 }')
+  [ "$first" == "$second" ] && ("ERROR Incremental build failed: both builds installed $first packages"; check_result 1)
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -361,6 +367,9 @@ kill_test_application
 echo "Testing npm availability"
 ct_npm_works
 check_result $?
+
+echo "Testing incremental build"
+test_incremental_build
 
 echo "Success!"
 cleanup
