@@ -252,7 +252,9 @@ test_dev_mode() {
 
 test_incremental_build() {
   build_log1=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args})
+  check_result $?
   build_log2=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} --incremental)
+  check_result $?
   if [ "$VERSION" == "6" ]; then
       # Different npm output for version 6
       if echo "$build_log2" | grep -e "\-\- yarn@[0-9\.]*"; then
