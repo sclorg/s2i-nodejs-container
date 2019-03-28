@@ -4,8 +4,8 @@ NodeJS container images
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
 [source-to-image](https://github.com/openshift/source-to-image).
-Users can choose between RHEL and CentOS based builder images.
-The resulting image can be run using [Docker](http://docker.io).
+Users can choose between RHEL, CentOS and Fedora based builder images.
+The resulting image can be run using [podman](https://github.com/containers/libpod).
 
 For more information about using these images with OpenShift, please see the
 official [OpenShift Documentation](https://docs.okd.io/latest/using_images/s2i_images/nodejs.html).
@@ -21,6 +21,7 @@ Versions
 Node.JS versions currently provided are:
 * [NodeJS 6](6)
 * [NodeJS 8](8)
+* [NodeJS 10](10)
 
 RHEL versions currently supported are:
 * RHEL7
@@ -38,7 +39,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     To download it run:
 
     ```
-    $ docker pull registry.access.redhat.com/rhscl/nodejs-8-rhel7
+    $ podman pull registry.access.redhat.com/rhscl/nodejs-8-rhel7
     ```
 
     To build a RHEL based Node.JS image, you need to run the build on a properly
@@ -56,7 +57,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     This image is available on DockerHub. To download it run:
 
     ```
-    $ docker pull centos/nodejs-8-centos7
+    $ podman pull centos/nodejs-8-centos7
     ```
 
     To build a Node.JS image from scratch run:
@@ -67,6 +68,8 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git submodule update --init
     $ make build TARGET=centos7 VERSIONS=8
     ```
+
+Note: while the installation steps are calling `podman`, you can replace any such calls by `docker` with the same arguments.
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
 on all provided versions of Node.JS.**
@@ -79,6 +82,8 @@ For information about usage of Dockerfile for NodeJS 6,
 see [usage documentation](6/README.md).
 For information about usage of Dockerfile for NodeJS 8,
 see [usage documentation](8/README.md).
+For information about usage of Dockerfile for NodeJS 10,
+see [usage documentation](10/README.md).
 
 Test
 ---------------------
