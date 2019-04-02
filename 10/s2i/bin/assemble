@@ -27,6 +27,11 @@ safeLogging () {
 }
 
 shopt -s dotglob
+if [ -d /tmp/artifacts ] && [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+    echo "---> Restoring previous build artifacts ..."
+    mv -T --verbose /tmp/artifacts/node_modules "${HOME}/node_modules"
+fi
+
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
