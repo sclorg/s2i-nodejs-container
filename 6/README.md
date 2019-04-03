@@ -1,13 +1,13 @@
 NodeJS 6 container image
 ===================
-
-This container image includes Node.JS 6 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 6 applications.
+This container image includes Node.JS 8 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 8 applications.
 Users can choose between RHEL and CentOS based builder images.
-The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-6-rhel7)
-as registry.access.redhat.com/rhscl/nodejs-6-rhel7.
-The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/nodejs-6-centos7/)
-as centos/nodejs-6-centos7. 
-The resulting image can be run using [Docker](http://docker.io).
+The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
+the CentOS images are available on [Podman Hub](https://hub.docker.com/r/centos/),
+and the Fedora images are available in [Fedora Registry](https://registry.fedoraproject.org/).
+The resulting image can be run using [podman](https://github.com/containers/libpod).
+
+Note: while the examples in this README are calling `podman`, you can replace any such calls by `docker` with the same arguments
 
 Description
 -----------
@@ -21,21 +21,20 @@ that run across distributed devices.
 
 Usage
 ---------------------
-To build a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/6/test/test-app) application
-using standalone [S2I](https://github.com/openshift/source-to-image) and then run the
-resulting image with [Docker](http://docker.io) execute:
+For this, we will assume that you are using the `rhscl/nodejs-6-rhel7 image`, available via `nodejs:6` imagestream tag in Openshift.
+Building a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/6/test/test-app) application
+in Openshift can be achieved with the following step:
 
-*  **For RHEL based image**
+    ```
+    oc new-app nodejs:6~https://github.com/sclorg/s2i-nodejs-container.git --context-dir=6/test/test-app/
+    ```
+
+The same application can also be built using the standalone [S2I](https://github.com/openshift/source-to-image) application on systems that have it available:
+
     ```
     $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=6/test/test-app/ rhscl/nodejs-6-rhel7 nodejs-sample-app
-    $ docker run -p 8080:8080 nodejs-sample-app
-    ```
+    ``
 
-*  **For CentOS based image**
-    ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=6/test/test-app/ centos/nodejs-6-centos7 nodejs-sample-app
-    $ docker run -p 8080:8080 nodejs-sample-app
-    ```
 
 **Accessing the application:**
 ```
@@ -87,17 +86,17 @@ The debug port can be specified with the environment variable `DEBUG_PORT`. `DEB
 
 A simple example command for running the container in development mode is:
 ```
-docker run --env DEV_MODE=true my-image-id
+podman run --env DEV_MODE=true my-image-id
 ```
 
 To run the container in development mode with a debug port of 5454, run:
 ```
-$ docker run --env DEV_MODE=true DEBUG_PORT=5454 my-image-id
+$ podman run --env DEV_MODE=true DEBUG_PORT=5454 my-image-id
 ```
 
 To run the container in production mode, run:
 ```
-$ docker run --env DEV_MODE=false my-image-id
+$ podman run --env DEV_MODE=false my-image-id
 ```
 
 By default, `DEV_MODE` is set to `false`, and `DEBUG_PORT` is set to `5858`, however the `DEBUG_PORT` is only relevant if `DEV_MODE=true`.
@@ -107,14 +106,14 @@ Hot deploy
 
 As part of development mode, this image supports hot deploy. If development mode is enabled, any souce code that is changed in the running container will be immediately reflected in the running nodejs application.
 
-### Using Docker's exec
+### Using Podman's exec
 
-To change your source code in a running container, use Docker's [exec](http://docker.io) command:
+To change your source code in a running container, use Podman's [exec](https://github.com/containers/libpod) command:
 ```
-$ docker exec -it <CONTAINER_ID> /bin/bash
+$ podman exec -it <CONTAINER_ID> /bin/bash
 ```
 
-After you [Docker exec](http://docker.io) into the running container, your current directory is set to `/opt/app-root/src`, where the source code for your application is located.
+After you [Podman exec](https://github.com/containers/libpod) into the running container, your current directory is set to `/opt/app-root/src`, where the source code for your application is located.
 
 ### Using OpenShift's rsync
 
@@ -160,4 +159,5 @@ See also
 --------
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
 In that repository you also can find another versions of Python environment Dockerfiles.
-Dockerfile for CentOS is called Dockerfile, Dockerfile for RHEL is called Dockerfile.rhel7.
+Dockerfile for CentOS is called `Dockerfile`, Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
+for RHEL8 it's `Dockerfile.rhel8` and the Fedora Dockerfile is called Dockerfile.fedora.
