@@ -22,7 +22,7 @@ that run across distributed devices.
 
 Usage
 ---------------------
-For this, we will assume that you are using the `rhel8/nodejs-10 image`, available via `nodejs:10` imagestream tag in Openshift.
+For this, we will assume that you are using the `ubi8/nodejs-10 image`, available via `nodejs:10` imagestream tag in Openshift.
 Building a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/10/test/test-app) application
 in Openshift can be achieved with the following step:
 
@@ -33,7 +33,7 @@ in Openshift can be achieved with the following step:
 The same application can also be built using the standalone [S2I](https://github.com/openshift/source-to-image) application on systems that have it available:
 
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=10/test/test-app/ rhel8/nodejs-10 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=10/test/test-app/ ubi8/nodejs-10 nodejs-sample-app
     ```
 
 **Accessing the application:**
