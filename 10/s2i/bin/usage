@@ -11,5 +11,5 @@ Sample invocation:
 s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=8/test/test-app/ ${NAMESPACE}/nodejs-8-${DISTRO}7 nodejs-sample-app
 
 You can then run the resulting image via:
-docker run -p 8080:8080 nodejs-sample-app
+podman run -p 8080:8080 nodejs-sample-app
 EOF
