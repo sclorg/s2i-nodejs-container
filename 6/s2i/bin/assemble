@@ -35,6 +35,9 @@ fi
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
+# Fix source directory permissions
+fix-permissions ./
+
 if [ ! -z $HTTP_PROXY ]; then
     echo "---> Setting npm http proxy to" $(safeLogging $HTTP_PROXY)
 	npm config set proxy $HTTP_PROXY
