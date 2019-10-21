@@ -1,0 +1,3 @@
+This is a new file that will never conflict with anything.
+It only serves for keeping the PR on github.com opened for longer time without need to rebase.
+The PR is supposed to serve as a testing PR to see whether our testing infrastructure works.
