@@ -50,11 +50,11 @@ container_logs() {
 }
 
 run_s2i_build() {
-  ct_s2i_build_as_df file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $1
+  ct_s2i_build_as_df file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $(ct_build_s2i_npm_variables) $1
 }
 
 run_s2i_build_proxy() {
-    ct_s2i_build_as_df file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw ${s2i_args} -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2
+    ct_s2i_build_as_df file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw ${s2i_args} $(ct_build_s2i_npm_variables) -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2
 }
 
 prepare() {
@@ -80,9 +80,9 @@ prepare() {
 
 run_test_application() {
     if [[ $1 == app ]]; then
-        docker run --user=100001 --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
+        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
     elif [[ $1 == hw ]]; then
-        docker run --user=100001 --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
+        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
     else
         echo "No such test application"
         exit 1
@@ -251,9 +251,9 @@ test_dev_mode() {
 }
 
 test_incremental_build() {
-  build_log1=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args})
+  build_log1=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $(ct_build_s2i_npm_variables))
   check_result $?
-  build_log2=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} --incremental)
+  build_log2=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $(ct_build_s2i_npm_variables) --incremental)
   check_result $?
   if [ "$VERSION" == "6" ]; then
       # Different npm output for version 6
@@ -294,8 +294,8 @@ run_test_application app &
 wait_for_cid
 
 test_scl_usage "node --version" "v$VERSION."
-
 check_result $?
+
 test_connection
 check_result $?
 
@@ -309,6 +309,10 @@ check_result $?
 
 # Test that the npm tmp has been cleared
 devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
+check_result $?
+
+echo "Testing npm availability"
+ct_npm_works
 check_result $?
 
 kill_test_application
@@ -379,10 +383,6 @@ fi
 run_test_application hw &
 wait_for_cid
 kill_test_application
-
-echo "Testing npm availability"
-ct_npm_works
-check_result $?
 
 echo "Testing incremental build"
 test_incremental_build
