@@ -44,6 +44,7 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="rh-${NAME}${NODEJS_VERSION}-container" \
       name="rhscl/$NAME-$NODEJS_VERSION-rhel7" \
       version="1" \
+      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> rhscl/$NAME-$NODEJS_VERSION-rhel7:latest <APP-NAME>"
