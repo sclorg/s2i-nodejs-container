@@ -20,9 +20,11 @@ Versions
 ---------------
 Node.JS versions currently provided are:
 * [NodeJS 10](10)
+* [NodeJS 12](12)
 
 RHEL versions currently supported are:
 * RHEL7
+* RHEL8
 
 CentOS versions currently supported are:
 * CentOS7
@@ -78,6 +80,8 @@ Usage
 
 For information about usage of Dockerfile for NodeJS 10,
 see [usage documentation](10/README.md).
+For information about usage of Dockerfile for NodeJS 12,
+see [usage documentation](12/README.md).
 
 Test
 ---------------------

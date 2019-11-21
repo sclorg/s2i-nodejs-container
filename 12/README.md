@@ -1,7 +1,7 @@
-NodeJS 10 container image
+NodeJS 12 container image
 ===================
 
-This container image includes Node.JS 10 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 10 applications.
+This container image includes Node.JS 12 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 12 applications.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
 the CentOS images are available on [Podman Hub](https://hub.docker.com/r/centos/),
@@ -13,8 +13,8 @@ Note: while the examples in this README are calling `podman`, you can replace an
 Description
 -----------
 
-Node.js 10 available as container is a base platform for 
-building and running various Node.js 10 applications and frameworks. 
+Node.js 12 available as container is a base platform for 
+building and running various Node.js 12 applications and frameworks. 
 Node.js is a platform built on Chrome's JavaScript runtime for easily building 
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
 that makes it lightweight and efficient, perfect for data-intensive real-time applications 
@@ -22,18 +22,18 @@ that run across distributed devices.
 
 Usage
 ---------------------
-For this, we will assume that you are using the `ubi8/nodejs-10 image`, available via `nodejs:10` imagestream tag in Openshift.
-Building a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/10/test/test-app) application
+For this, we will assume that you are using the `ubi8/nodejs-12 image`, available via `nodejs:12` imagestream tag in Openshift.
+Building a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/12/test/test-app) application
 in Openshift can be achieved with the following step:
 
     ```
-    oc new-app nodejs:10~https://github.com/sclorg/s2i-nodejs-container.git --context-dir=10/test/test-app/
+    oc new-app nodejs:12~https://github.com/sclorg/s2i-nodejs-container.git --context-dir=12/test/test-app/
     ```
 
 The same application can also be built using the standalone [S2I](https://github.com/openshift/source-to-image) application on systems that have it available:
 
     ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=10/test/test-app/ ubi8/nodejs-10 nodejs-sample-app
+    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=12/test/test-app/ ubi8/nodejs-12 nodejs-sample-app
     ```
 
 **Accessing the application:**
