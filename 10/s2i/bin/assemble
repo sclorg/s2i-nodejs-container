@@ -100,7 +100,9 @@ else
 	if ! mountpoint $NPM_CACHE; then
 		echo "---> Cleaning the npm cache $NPM_CACHE"
 		#As of npm@5 even the 'npm cache clean --force' does not fully remove the cache directory
-		rm $NPM_CACHE* -rf
+		# instead of $NPM_CACHE* use $NPM_CACHE/*.
+		# We do not want to delete .npmrc file.
+		rm -rf "${NPM_CACHE:?}/"
 	fi
 	NPM_TMP=$(npm config get tmp)
 	if ! mountpoint $NPM_TMP; then
