@@ -19,8 +19,6 @@ For more information about concepts used in these container images, see the
 Versions
 ---------------
 Node.JS versions currently provided are:
-* [NodeJS 6](6)
-* [NodeJS 8](8)
 * [NodeJS 10](10)
 
 RHEL versions currently supported are:
@@ -78,10 +76,6 @@ on all provided versions of Node.JS.**
 Usage
 ---------------------------------
 
-For information about usage of Dockerfile for NodeJS 6,
-see [usage documentation](6/README.md).
-For information about usage of Dockerfile for NodeJS 8,
-see [usage documentation](8/README.md).
 For information about usage of Dockerfile for NodeJS 10,
 see [usage documentation](10/README.md).
 
