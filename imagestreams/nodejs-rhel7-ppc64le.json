@@ -29,45 +29,6 @@
         }
       },
       {
-        "name": "6",
-        "annotations": {
-          "openshift.io/display-name": "Node.js 6",
-          "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 6 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/4/README.md.",
-          "iconClass": "icon-nodejs",
-          "tags": "hidden,builder,nodejs,ppc64le",
-          "supports":"nodejs:6,nodejs",
-          "version": "6",
-          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
-        },
-        "from": {
-          "kind": "DockerImage",
-          "name": "registry.redhat.io/rhscl/nodejs-6-rhel7:latest"
-        },
-        "referencePolicy": {
-          "type": "Local"
-        }
-      },
-      {
-        "name": "8",
-        "annotations": {
-          "openshift.io/display-name": "Node.js 8",
-          "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 8 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/8/README.md.",
-          "iconClass": "icon-nodejs",
-          "tags": "hidden,builder,nodejs,ppc64le",
-          "version": "8",
-          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
-        },
-        "from": {
-          "kind": "DockerImage",
-          "name": "registry.redhat.io/rhscl/nodejs-8-rhel7:latest"
-        },
-        "referencePolicy": {
-          "type": "Local"
-        }
-      },
-      {
         "name": "10",
         "annotations": {
           "openshift.io/display-name": "Node.js 10",
