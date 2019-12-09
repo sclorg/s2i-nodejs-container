@@ -312,10 +312,6 @@ check_result $?
 devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
 check_result $?
 
-echo "Testing npm availability"
-ct_npm_works
-check_result $?
-
 kill_test_application
 
 test_dev_mode app false production
@@ -387,6 +383,10 @@ kill_test_application
 
 echo "Testing incremental build"
 test_incremental_build
+
+echo "Testing npm availability"
+ct_npm_works
+check_result $?
 
 echo "Success!"
 cleanup
