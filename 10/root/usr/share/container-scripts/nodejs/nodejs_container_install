@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -ex
+
+# Ensure git uses https instead of ssh for NPM install
+# See: https://github.com/npm/npm/issues/5257
+echo -e "Setting git config rules"
+git config --system url."https://github.com".insteadOf git@github.com:
+git config --global url."https://github.com".insteadOf ssh://git@github.com
+git config --system url."https://".insteadOf git://
+git config --system url."https://".insteadOf ssh://
+git config --list
+
+# Since the shebang in the *.js files below is !#/usr/bin/env node, we can
+# just create symlinks and if needed, SCL environment is gonna be enabled properly
+
+# Make sure npx is available on standard path
+if [ ! -h /usr/bin/npx ] ; then
+  ln -s "${NODEJS_PREFIX}/lib/node_modules/npm/bin/npx-cli.js" /usr/bin/npx
+fi
+
+# Make sure nodemon is available on standard path
+if [ ! -h /usr/bin/nodemon ] ; then
+  ln -s "${NODEJS_PREFIX}/lib/node_modules/nodemon/bin/nodemon.js" /usr/bin/nodemon
+fi
+
+# Drop the root user and make the content of /opt/app-root owned by user 1001
+echo "---> Setting directory write permissions"
+fix-permissions "${APP_ROOT}"
+
+# Fix permissions for files installed by RPM
+rpm-file-permissions
