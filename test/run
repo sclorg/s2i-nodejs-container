@@ -113,8 +113,8 @@ cleanup() {
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
-    echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
     cleanup
+    echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
     exit $result
   fi
 }
@@ -263,8 +263,8 @@ test_incremental_build() {
           check_result 1
       fi
   else
-      first=$(echo "$build_log1" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
-      second=$(echo "$build_log2" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
+      first=$(echo "$build_log1" | grep -o -e "added [0-9]* package" | awk '{ print $2 }')
+      second=$(echo "$build_log2" | grep -o -e "added [0-9]* package" | awk '{ print $2 }')
       if [ "$first" == "$second" ]; then
           echo "ERROR Incremental build failed: both builds installed $first packages"
           check_result 1
