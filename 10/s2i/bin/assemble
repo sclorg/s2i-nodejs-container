@@ -38,6 +38,10 @@ mv /tmp/src/* ./
 # Fix source directory permissions
 fix-permissions ./
 
+if [ "$DEV_MODE" == true ] ; then
+  set -x
+fi
+
 if [ ! -z $HTTP_PROXY ]; then
     echo "---> Setting npm http proxy to" $(safeLogging $HTTP_PROXY)
 	npm config set proxy $HTTP_PROXY
@@ -60,6 +64,7 @@ fi
 
 # Change the npm registry mirror if provided
 if [ -n "$NPM_MIRROR" ]; then
+	echo "---> Setting the npm package mirror to $NPM_MIRROR"
 	npm config set registry $NPM_MIRROR
 fi
 
@@ -78,19 +83,37 @@ if [ -z "$NODE_ENV" ]; then
   fi
 fi
 
-if [ "$NODE_ENV" != "production" ]; then
+echo -e "Current git config"
+git config --list
+
+if [ -n "$YARN_ENABLED" ]; then
+	echo "---> Using 'yarn install' with YARN_ARGS"
+	yarn install $YARN_ARGS
+
+elif [ "$NODE_ENV" != "production" ]; then
 
 	echo "---> Building your Node application from source"
 	npm install
 
+	# Do not fail when there is no build script
+	echo "---> Building in development mode"
+	npm run build --if-present
 else
 
-	echo "---> Installing all dependencies"
-	NODE_ENV=development npm install
+	HAS_BUILD=$(node -e "console.log(require('./package.json').scripts.build ? true : false)")
 
-	#do not fail when there is no build script
-	echo "---> Building in production mode"
-	npm run build --if-present
+	# Check to see if there is a build script by inspecting the package.json
+	if [ "$HAS_BUILD" == true ]; then
+		# Do a npm install to get the dev depdencies
+		echo "---> Installing dev dependencies"
+		NODE_ENV=development npm install
+		# Do not fail when there is no build script
+		echo "---> Building in production mode"
+		npm run build --if-present
+	else
+		echo "---> Using 'npm install -s --only=production'"
+		npm install -s --only=production
+	fi
 
 	echo "---> Pruning the development dependencies"
 	npm prune
@@ -111,6 +134,9 @@ else
 	fi
 
 fi
+
+echo "---> Cleaning up npm cache"
+rm -rf .npm
 
 # Fix source directory permissions
 fix-permissions ./
