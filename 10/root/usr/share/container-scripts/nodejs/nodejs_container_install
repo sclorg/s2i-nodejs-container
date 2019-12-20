@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 # Ensure git uses https instead of ssh for NPM install
 # See: https://github.com/npm/npm/issues/5257
