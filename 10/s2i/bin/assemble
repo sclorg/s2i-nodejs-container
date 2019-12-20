@@ -135,8 +135,11 @@ else
 
 fi
 
-echo "---> Cleaning up npm cache"
-rm -rf .npm
+# TODO: Do we need cache or not actually?
+# based on the following commit, it doesn't seem so:
+# https://github.com/sclorg/s2i-nodejs-container/commit/0e9b5cbb2fe719c447ed3a96fd534f6b2e2ca888
+# echo "---> Cleaning up npm cache"
+# rm -rf .npm
 
 # Fix source directory permissions
 fix-permissions ./
