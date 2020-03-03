@@ -20,6 +20,9 @@ ENV NODEJS_VERSION=10 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    DEBUG_PORT=5858 \
+    CONTAINER_SCRIPTS_PATH=/usr/share/container-scripts/nodejs \
+    NODEJS_PREFIX=/opt/rh/rh-$NAME$NODEJS_VERSION/root/usr \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
@@ -40,7 +43,7 @@ LABEL summary="$SUMMARY" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"\
+      com.redhat.dev-mode.port="DEBUG_PORT:${DEBUG_PORT}"\
       com.redhat.component="rh-$NAME$NODEJS_VERSION-container" \
       name="centos/$NAME-$NODEJS_VERSION-centos7" \
       version="$NODEJS_VERSION" \
@@ -51,7 +54,6 @@ LABEL summary="$SUMMARY" \
 RUN yum install -y centos-release-scl-rh && \
     ( [ "rh-${NAME}${NODEJS_VERSION}" != "${NODEJS_SCL}" ] && yum remove -y ${NODEJS_SCL}\* || : ) && \
     INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
-    ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
@@ -62,9 +64,8 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 # Copy extra files to the image, including help file.
 COPY ./root/ /
 
-# Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
-    rpm-file-permissions
+# Run further installation commands
+RUN ${CONTAINER_SCRIPTS_PATH}/nodejs_container_install
 
 USER 1001
 

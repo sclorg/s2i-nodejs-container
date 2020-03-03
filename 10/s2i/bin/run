@@ -13,25 +13,32 @@ if [ -e "/opt/app-root/etc/generate_container_user" ]; then
   source /opt/app-root/etc/generate_container_user
 fi
 
+export GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-unknown}"
+export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-unknown@localhost.com}"
+git --version
+
 # Runs the nodejs application server. If the container is run in development mode,
 # hot deploy and debugging are enabled.
 run_node() {
   echo -e "Environment: \n\tDEV_MODE=${DEV_MODE}\n\tNODE_ENV=${NODE_ENV}\n\tDEBUG_PORT=${DEBUG_PORT}"
+  echo -e "Running as user $(id)"
   if [ "$DEV_MODE" == true ]; then
+    echo "Installing dev dependencies..."
+    npm install
     echo "Launching via nodemon..."
-    exec nodemon --inspect="$DEBUG_PORT"
+    exec npx nodemon --inspect="$DEBUG_PORT"
   else
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
   fi
 } 
 
-#Set the debug port to 5858 by default.
+# Set the debug port to 5858 by default.
 if [ -z "$DEBUG_PORT" ]; then
   export DEBUG_PORT=5858
 fi
 
-# Set the environment to development by default.
+# Set the DEV_MODE to false by default.
 if [ -z "$DEV_MODE" ]; then
   export DEV_MODE=false
 fi
