@@ -459,5 +459,9 @@ prepare express
 run_s2i_build_express; check_result $?
 run_express_test_suite; check_result $?
 
+echo "Testing npm availability in Dockerfile"
+ct_binary_found_from_df npm
+check_result $?
+
 echo "Success!"
 cleanup
