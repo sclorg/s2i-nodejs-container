@@ -273,6 +273,21 @@ test_incremental_build() {
 
 }
 
+test_express_test_suite() {
+  # this ensures all the express features work fine inside the container
+  local express_test_suite_script='
+    git clone https://github.com/expressjs/express.git
+    cd express
+    latest_express=$(npm show express version)
+    git checkout "${latest_express}"
+    npm install
+    npm test | tee test.out
+    grep "Test failed" test.out && exit 1
+    exit 0'
+
+  docker run --rm "$IMAGE_NAME" /bin/bash -c "${express_test_suite_script}"
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -386,6 +401,10 @@ test_incremental_build
 
 echo "Testing npm availability"
 ct_npm_works
+check_result $?
+
+echo "Testing express test_suite"
+test_express_test_suite
 check_result $?
 
 echo "Success!"
