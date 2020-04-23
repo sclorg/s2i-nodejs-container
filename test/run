@@ -89,9 +89,11 @@ prepare_express_repo() {
     --config advice.detachedHead="false" \
     --branch "${EXPRESS_REVISION}" --depth 1 \
     'https://github.com/expressjs/express.git' "$1"
+  pushd "$1" >/dev/null || return
   for key in "${!gitconfig[@]}"; do
-    git -C "$1" config --local "$key" "${gitconfig[$key]}"
+    git config --local "$key" "${gitconfig[$key]}"
   done
+  popd "$1" >/dev/null || return
 }
 
 prepare() {
