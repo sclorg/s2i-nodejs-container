@@ -126,7 +126,7 @@ run_test_application() {
     elif [[ $1 == hw ]]; then
         docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
     elif [[ $1 == express-webapp ]]; then
-        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
+        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpress-webapp
     else
         echo "No such test application"
         exit 1
