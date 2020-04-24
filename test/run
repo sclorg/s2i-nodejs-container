@@ -126,7 +126,7 @@ run_test_application() {
     elif [[ $1 == hw ]]; then
         docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
     elif [[ $1 == express-webapp ]]; then
-        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpress-webapp
+        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
     else
         echo "No such test application"
         exit 1
@@ -149,7 +149,7 @@ cleanup() {
       fi
   fi
 
-  for image in "${IMAGE_NAME}"-{test{app,hw,express-webapp},express}; do
+  for image in "${IMAGE_NAME}"-{test{app,hw},express,express-webapp}; do
     image_exists "$image" || continue
     docker rmi -f "$image"
   done
@@ -436,7 +436,7 @@ test_incremental_build
 
 # test express webapp
 prepare express-webapp
-ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpress-webapp ${s2i_args} $(ct_build_s2i_npm_variables)
+ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
 run_test_application express-webapp &
 wait_for_cid
 ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
