@@ -101,9 +101,7 @@ else
 	# npm ci will fail if certain conditions aren't met as mentioned in
 	# https://docs.npmjs.com/cli-commands/ci.html#description
 	echo "---> npm ci failed, installing dependencies with npm install"; \
-	npm install
-
-	NODE_ENV=development
+	NODE_ENV=development npm install
 
 	#do not fail when there is no build script
 	echo "---> Building in production mode"
