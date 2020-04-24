@@ -436,7 +436,7 @@ test_incremental_build
 
 # test express webapp
 prepare express-webapp
-ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
+ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpress-webapp ${s2i_args} $(ct_build_s2i_npm_variables)
 run_test_application express-webapp &
 wait_for_cid
 ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
