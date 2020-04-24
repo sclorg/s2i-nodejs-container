@@ -6,6 +6,9 @@
 # IMAGE_NAME specifies a name of the candidate image used for testing.
 # The image has to be available before this script is executed.
 #
+# EXPRESS_REVISION specifies which express.js branch or tag should be tested;
+# by default it uses the latest released version as reported by
+# `npm show express version`.
 
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 
@@ -13,6 +16,7 @@ source "${THISDIR}/test-lib.sh"
 
 test -n $IMAGE_NAME \
   -a -n $VERSION
+readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 
 test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 image_dir="$(readlink -f ${test_dir}/..)"
@@ -24,6 +28,13 @@ s2i_args="--pull-policy=never "
 
 # TODO: This should be part of the image metadata
 test_port=8080
+
+# Common git configuration
+readonly -A gitconfig=(
+  [user.name]="builder"
+  [user.email]="build@localhost"
+  [commit.gpgsign]="false"
+)
 
 info() {
   echo -e "\n\e[1m[INFO] $@...\e[0m\n"
@@ -57,25 +68,56 @@ run_s2i_build_proxy() {
   ct_s2i_build_as_df file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw ${s2i_args} $(ct_build_s2i_npm_variables) -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2
 }
 
+run_s2i_build_express() {
+  ct_s2i_build_as_df \
+    "file://${test_dir}/express.js" "${IMAGE_NAME}" "${IMAGE_NAME}-express" \
+    ${s2i_args} \
+    $(ct_build_s2i_npm_variables) -e NODE_ENV=development
+}
+
+prepare_dummy_git_repo() {
+  git init
+  for key in "${!gitconfig[@]}"; do
+    git config --local "$key" "${gitconfig[$key]}"
+  done
+  git add --all
+  git commit -m "Sample commit"
+}
+
+prepare_express_repo() {
+  git clone \
+    --config advice.detachedHead="false" \
+    --branch "${EXPRESS_REVISION}" --depth 1 \
+    'https://github.com/expressjs/express.git' "$1"
+  pushd "$1" >/dev/null || return
+  for key in "${!gitconfig[@]}"; do
+    git config --local "$key" "${gitconfig[$key]}"
+  done
+  popd "$1" >/dev/null || return
+}
+
 prepare() {
   if ! image_exists ${IMAGE_NAME}; then
     echo "ERROR: The image ${IMAGE_NAME} must exist before this script is executed."
     exit 1
   fi
-  # TODO: STI build require the application is a valid 'GIT' repository, we
-  # should remove this restriction in the future when a file:// is used.
-  if [[ $1 == 'app' ]]; then
-      pushd ${test_dir}/test-app >/dev/null
-  elif [[ $1 == 'hw' ]]; then
-      pushd ${test_dir}/test-hw >/dev/null
-  else
+
+  case "$1" in
+    # TODO: STI build require the application is a valid 'GIT' repository, we
+    # should remove this restriction in the future when a file:// is used.
+    app|hw)
+      pushd "${test_dir}/test-${1}" >/dev/null
+      prepare_dummy_git_repo
+      popd >/dev/null
+      ;;
+    express)
+      prepare_express_repo "${test_dir}/express.js"
+      ;;
+    *)
       echo "Please specify a valid test application"
       exit 1
-  fi
-  git init
-  git config user.email "build@localhost" && git config user.name "builder"
-  git add -A && git commit --no-gpg-sign -m "Sample commit"
-  popd >/dev/null
+      ;;
+  esac
 }
 
 run_test_application() {
@@ -89,6 +131,10 @@ run_test_application() {
     fi
 }
 
+run_express_test_suite() {
+  docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} ${IMAGE_NAME}-express npm test
+}
+
 kill_test_application() {
 	docker kill $(cat $cid_file)
 	rm $cid_file
@@ -100,14 +146,15 @@ cleanup() {
           docker stop $(cat $cid_file)
       fi
   fi
-  if image_exists ${IMAGE_NAME}-testapp; then
-      docker rmi -f ${IMAGE_NAME}-testapp
-  fi
-  if image_exists ${IMAGE_NAME}-test-hw; then
-      docker rmi -f ${IMAGE_NAME}-testhw
-  fi
+
+  for image in "${IMAGE_NAME}"-{test{app,hw},express}; do
+    image_exists "$image" || continue
+    docker rmi -f "$image"
+  done
+
   rm -rf ${test_dir}/test-app/.git
   rm -rf ${test_dir}/test-hw/.git
+  rm -rf "${test_dir}/express.js"
 }
 
 check_result() {
@@ -189,7 +236,7 @@ test_scl_usage() {
 validate_default_value() {
   local label=$1
 
-  IFS=':' read -a label_vals <<< $(docker inspect -f "{{index .Config.Labels \"$label\"}}" ${IMAGE_NAME}) 
+  IFS=':' read -a label_vals <<< $(docker inspect -f "{{index .Config.Labels \"$label\"}}" ${IMAGE_NAME})
   label_var=${label_vals[0]}
   default_label_val=${label_vals[1]}
 
@@ -387,6 +434,11 @@ test_incremental_build
 echo "Testing npm availability"
 ct_npm_works
 check_result $?
+
+echo "Running express.js test suite"
+prepare express
+run_s2i_build_express; check_result $?
+run_express_test_suite; check_result $?
 
 echo "Success!"
 cleanup
