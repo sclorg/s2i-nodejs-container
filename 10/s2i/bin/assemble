@@ -98,7 +98,7 @@ else
 	# We will be using npm CI by default for more information please refer to
 	# https://github.com/sclorg/s2i-nodejs-container/issues/212
 	echo "---> Installing dependencies with npm ci"
-	npm ci || \
+	NODE_ENV=development npm ci || \
 	# npm ci will fail if certain conditions aren't met as mentioned in
 	# https://docs.npmjs.com/cli-commands/ci.html#description
 	echo "---> npm ci failed, installing dependencies with npm install"; \
