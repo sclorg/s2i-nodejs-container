@@ -43,24 +43,20 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
       com.redhat.component="$NAME" \
       name="$FGC/$NAME" \
-      version="$VERSION" \
+      version="$NODEJS_VERSION" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="s2i build <SOURCE-REPOSITORY> centos/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
 
+# TODO: Add nodejs-nodemon into Fedora
+# https://bugzilla.redhat.com/show_bug.cgi?id=1433784
+# meanwhile install it during s2i assemble step
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
     INSTALL_PKGS="nodejs npm nss_wrapper" && \
     yum remove $INSTALL_PKGS -y && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
-
-# TODO: Add nodejs-nodemon into Fedora
-# https://bugzilla.redhat.com/show_bug.cgi?id=1433784
-RUN NPM_CONFIG_PREFIX=$HOME/../ npm install -g nodemon && \
-    rm $(npm config get cache)/* -rf && \
-    rm -rf $(npm config get tmp)/npm-*
-
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
