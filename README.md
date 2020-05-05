@@ -19,6 +19,7 @@ For more information about concepts used in these container images, see the
 Versions
 ---------------
 Node.JS versions currently provided are:
+* [NodeJS 10](10)
 * [NodeJS 12](12)
 
 RHEL versions currently supported are:
@@ -34,11 +35,11 @@ Installation
 To build a Node.JS image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
-    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-12-rhel7).
+    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-8-rhel7).
     To download it run:
 
     ```
-    $ podman pull registry.access.redhat.com/rhscl/nodejs-12-rhel7
+    $ podman pull registry.access.redhat.com/rhscl/nodejs-8-rhel7
     ```
 
     To build a RHEL based Node.JS image, you need to run the build on a properly
@@ -48,7 +49,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=rhel7 VERSIONS=12
+    $ make build TARGET=rhel7 VERSIONS=8
     ```
 
 *  **CentOS based image**
@@ -56,7 +57,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     This image is available on DockerHub. To download it run:
 
     ```
-    $ podman pull centos/nodejs-12-centos7
+    $ podman pull centos/nodejs-8-centos7
     ```
 
     To build a Node.JS image from scratch run:
@@ -65,7 +66,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=centos7 VERSIONS=12
+    $ make build TARGET=centos7 VERSIONS=8
     ```
 
 Note: while the installation steps are calling `podman`, you can replace any such calls by `docker` with the same arguments.
@@ -77,6 +78,8 @@ on all provided versions of Node.JS.**
 Usage
 ---------------------------------
 
+For information about usage of Dockerfile for NodeJS 10,
+see [usage documentation](10/README.md).
 For information about usage of Dockerfile for NodeJS 12,
 see [usage documentation](12/README.md).
 
@@ -95,7 +98,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=rhel7 VERSIONS=12
+    $ make test TARGET=rhel7 VERSIONS=8
     ```
 
 *  **CentOS based image**
@@ -103,7 +106,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=centos7 VERSIONS=12
+    $ make test TARGET=centos7 VERSIONS=8
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
