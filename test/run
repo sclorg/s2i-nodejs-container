@@ -149,7 +149,7 @@ cleanup() {
       fi
   fi
 
-  for image in "${IMAGE_NAME}"-{test{app,hw},express,express-webapp}; do
+  for image in "${IMAGE_NAME}"-{test{app,hw,expresswebapp},express}; do
     image_exists "$image" || continue
     docker rmi -f "$image"
   done
