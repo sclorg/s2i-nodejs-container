@@ -93,7 +93,7 @@ prepare_express_repo() {
   for key in "${!gitconfig[@]}"; do
     git config --local "$key" "${gitconfig[$key]}"
   done
-  popd "$1" >/dev/null || return
+  popd >/dev/null || return
 }
 
 prepare() {
