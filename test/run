@@ -323,6 +323,19 @@ test_incremental_build() {
 
 }
 
+# test express webapp
+run_s2i_build_express_webapp() {
+  local result
+  prepare express-webapp
+  ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
+  run_test_application express-webapp &
+  wait_for_cid
+  ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
+  result=$?
+  kill_test_application
+  return $result
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -434,14 +447,8 @@ kill_test_application
 echo "Testing incremental build"
 test_incremental_build
 
-# test express webapp
-prepare express-webapp
-ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
-run_test_application express-webapp &
-wait_for_cid
-ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
-check_result $?
-kill_test_application
+echo "Running express webapp test"
+run_s2i_build_express_webapp ; check_result $?
 
 echo "Testing npm availability"
 ct_npm_works
