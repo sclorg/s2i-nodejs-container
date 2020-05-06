@@ -93,7 +93,7 @@ prepare_express_repo() {
   for key in "${!gitconfig[@]}"; do
     git config --local "$key" "${gitconfig[$key]}"
   done
-  popd "$1" >/dev/null || return
+  popd >/dev/null || return
 }
 
 prepare() {
@@ -105,7 +105,7 @@ prepare() {
   case "$1" in
     # TODO: STI build require the application is a valid 'GIT' repository, we
     # should remove this restriction in the future when a file:// is used.
-    app|hw)
+    app|hw|express-webapp)
       pushd "${test_dir}/test-${1}" >/dev/null
       prepare_dummy_git_repo
       popd >/dev/null
@@ -125,6 +125,8 @@ run_test_application() {
         docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
     elif [[ $1 == hw ]]; then
         docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
+    elif [[ $1 == express-webapp ]]; then
+        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
     else
         echo "No such test application"
         exit 1
@@ -147,7 +149,7 @@ cleanup() {
       fi
   fi
 
-  for image in "${IMAGE_NAME}"-{test{app,hw},express}; do
+  for image in "${IMAGE_NAME}"-{test{app,hw,expresswebapp},express}; do
     image_exists "$image" || continue
     docker rmi -f "$image"
   done
@@ -155,6 +157,7 @@ cleanup() {
   rm -rf ${test_dir}/test-app/.git
   rm -rf ${test_dir}/test-hw/.git
   rm -rf "${test_dir}/express.js"
+  rm -rf ${test_dir}/test-express-webapp/.git
 }
 
 check_result() {
@@ -320,6 +323,19 @@ test_incremental_build() {
 
 }
 
+# test express webapp
+run_s2i_build_express_webapp() {
+  local result
+  prepare express-webapp
+  ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
+  run_test_application express-webapp &
+  wait_for_cid
+  ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
+  result=$?
+  kill_test_application
+  return $result
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -430,6 +446,9 @@ kill_test_application
 
 echo "Testing incremental build"
 test_incremental_build
+
+echo "Running express webapp test"
+run_s2i_build_express_webapp ; check_result $?
 
 echo "Testing npm availability"
 ct_npm_works
