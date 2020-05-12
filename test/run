@@ -21,7 +21,9 @@ readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}"
 test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 image_dir="$(readlink -f ${test_dir}/..)"
 cid_file=$(mktemp -u --suffix=.cid)
+CID_FILE_DIR=$(mktemp -d)
 
+ct_enable_cleanup
 # Since we built the candidate image locally, we don't want S2I attempt to pull
 # it from Docker hub
 s2i_args="--pull-policy=never "
@@ -461,6 +463,10 @@ run_express_test_suite; check_result $?
 
 echo "Testing npm availability in Dockerfile"
 ct_binary_found_from_df npm
+check_result $?
+
+echo "Testing variable presence during \`docker exec\`"
+ct_check_exec_env_vars
 check_result $?
 
 echo "Success!"
