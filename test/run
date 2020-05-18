@@ -469,5 +469,9 @@ echo "Testing variable presence during \`docker exec\`"
 ct_check_exec_env_vars
 check_result $?
 
+echo "Checking if all scl variables are defined in Dockerfile"
+ct_check_scl_enable_vars
+check_result $?
+
 echo "Success!"
 cleanup
