@@ -461,17 +461,20 @@ prepare express
 run_s2i_build_express; check_result $?
 run_express_test_suite; check_result $?
 
+# These tests only make sense for rhscl
+if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
 echo "Testing npm availability in Dockerfile"
-ct_binary_found_from_df npm
-check_result $?
+ ct_binary_found_from_df npm
+ check_result $?
 
-echo "Testing variable presence during \`docker exec\`"
-ct_check_exec_env_vars
-check_result $?
+ echo "Testing variable presence during \`docker exec\`"
+ ct_check_exec_env_vars
+ check_result $?
 
-echo "Checking if all scl variables are defined in Dockerfile"
-ct_check_scl_enable_vars
-check_result $?
+ echo "Checking if all scl variables are defined in Dockerfile"
+ ct_check_scl_enable_vars
+ check_result $?
+fi
 
 echo "Success!"
 cleanup
