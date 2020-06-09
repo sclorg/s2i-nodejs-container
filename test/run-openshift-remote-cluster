@@ -22,9 +22,15 @@ trap ct_os_cleanup EXIT SIGINT
 
 ct_os_check_compulsory_vars
 
-ct_os_enable_print_logs
+oc status || false "It looks like oc is not properly logged in."
 
-ct_os_cluster_up
+export CT_SKIP_NEW_PROJECT=true
+export CT_SKIP_UPLOAD_IMAGE=true
+export CT_NAMESPACE=openshift
+
+test -n "${IMAGE_NAME-}" || false 'make sure $IMAGE_NAME is defined'
+test -n "${VERSION-}" || false 'make sure $VERSION is defined'
+
 # TODO: We can make the tests work against examples inside the same PR
 ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/s2i-nodejs-container.git" test/test-app "This is a node.js echo service"
 ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/nodejs-ex.git" . "Welcome to your Node.js application on OpenShift"
@@ -41,8 +47,6 @@ done
 test_nodejs_imagestream
 
 OS_TESTSUITE_RESULT=0
-
-ct_os_cluster_down
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
 
