@@ -21,6 +21,7 @@ Versions
 Node.JS versions currently provided are:
 * [NodeJS 10](10)
 * [NodeJS 12](12)
+* [NodeJS 14](14)
 
 RHEL versions currently supported are:
 * RHEL7
@@ -82,6 +83,8 @@ For information about usage of Dockerfile for NodeJS 10,
 see [usage documentation](10/README.md).
 For information about usage of Dockerfile for NodeJS 12,
 see [usage documentation](12/README.md).
+For information about usage of Dockerfile for NodeJS 14,
+see [usage documentation](14/README.md).
 
 Test
 ---------------------

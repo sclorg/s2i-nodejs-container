@@ -16,7 +16,7 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=12 \
+ENV NODEJS_VERSION=14 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
