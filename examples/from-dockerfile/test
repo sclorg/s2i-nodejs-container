@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -xe
+
+function ct_test_app_dockerfile() {
+  local dockerfile=$1
+  local app_url=$2
+  local expected_text=$3
+  local port=$4
+  local app_dir=app-src
+  local app_image_name=myapp
+  local app_cont_name=myapp1
+
+  git clone "${app_url}" "${app_dir}"
+  docker build -f "${dockerfile}" -t "${app_image_name}" .
+  docker run -d --rm --name "${app_cont_name}" "${app_image_name}"
+  sleep 2
+  ip=$(docker inspect --format='{{.NetworkSettings.IPAddress}}' "${app_cont_name}")
+  curl "http://$ip:${port}" | grep "${expected_text}"
+  docker kill "${app_cont_name}"
+  sleep 2
+  docker rmi "${app_image_name}"
+  rm -rf "${app_dir}"
+}
+
+ct_test_app_dockerfile Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' 8080
+ct_test_app_dockerfile Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' 8080
