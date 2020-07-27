@@ -68,15 +68,6 @@ if [ -z "$DEV_MODE" ]; then
   export DEV_MODE=false
 fi
 
-# TODO: Add nodejs-nodemon into Fedora
-# https://bugzilla.redhat.com/show_bug.cgi?id=1433784
-# meanwhile install it during s2i assemble step
-if [ "$(source /etc/os-release ; echo $NAME)" == "Fedora" ] ; then
-  NPM_CONFIG_PREFIX=$HOME/../ npm install -g nodemon && \
-  rm $(npm config get cache)/* -rf && \
-  rm -rf $(npm config get tmp)/npm-*
-fi
-
 # If NODE_ENV is not set by the user, then NODE_ENV is determined by whether
 # the container is run in development mode.
 if [ -z "$NODE_ENV" ]; then
