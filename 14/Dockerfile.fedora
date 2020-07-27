@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/f31/s2i-base:latest
+FROM registry.fedoraproject.org/f33/s2i-base:latest
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -16,7 +16,7 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=10 \
+ENV NODEJS_VERSION=14 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -48,11 +48,8 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
 
-# TODO: Add nodejs-nodemon into Fedora
-# https://bugzilla.redhat.com/show_bug.cgi?id=1433784
-# meanwhile install it during s2i assemble step
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    INSTALL_PKGS="nodejs npm nss_wrapper" && \
+    INSTALL_PKGS="nodejs nodejs-nodemon npm nss_wrapper" && \
     yum remove $INSTALL_PKGS -y && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
