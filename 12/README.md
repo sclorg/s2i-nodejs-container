@@ -20,31 +20,114 @@ fast, scalable network applications. Node.js uses an event-driven, non-blocking 
 that makes it lightweight and efficient, perfect for data-intensive real-time applications 
 that run across distributed devices.
 
-Usage
+Usage in OpenShift
 ---------------------
 For this, we will assume that you are using the `ubi8/nodejs-12 image`, available via `nodejs:12` imagestream tag in Openshift.
-Building a simple [nodejs-sample-app](https://github.com/sclorg/s2i-nodejs-container/tree/master/12/test/test-app) application
+Building a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application
 in Openshift can be achieved with the following step:
 
-    ```
-    oc new-app nodejs:12~https://github.com/sclorg/s2i-nodejs-container.git --context-dir=12/test/test-app/
-    ```
-
-The same application can also be built using the standalone [S2I](https://github.com/openshift/source-to-image) application on systems that have it available:
-
-    ```
-    $ s2i build https://github.com/sclorg/s2i-nodejs-container.git --context-dir=12/test/test-app/ ubi8/nodejs-12 nodejs-sample-app
-    ```
+```
+oc new-app nodejs:12~https://github.com/sclorg/nodejs-ex.git
+```
 
 **Accessing the application:**
 ```
-$ curl 127.0.0.1:8080
+$ oc get pods
+$ oc exec <pod> -- curl 127.0.0.1:8080
 ```
 
-Environment variables
+Source-to-Image framework and scripts
+---------------------
+This image supports the [Source-to-Image](https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html)
+(S2I) strategy in OpenShift. The Source-to-Image is an OpenShift framework
+that makes it easy to write images that take application source code as
+an input, use a builder image like this Node.js container image, and produce
+a new image that runs the assembled application as output.
+
+In order to support the Source-to-Image framework, there are some interesting scripts inside the builder image:
+
+* The `/usr/libexec/s2i/assemble` script inside the image is run in order to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see **Environment variables** section below).
+* The `/usr/libexec/s2i/run` script executes the application and is set as a default command in the resulting container image.
+
+Build an application using a Dockerfile
+---------------------
+Compared to the Source-to-Image strategy, using a Dockerfile is a more
+flexible way to build an Node.js container image with an application.
+Use it when the Source-to-Image is not flexible enough for you or
+when you build the image outside of the OpenShift environment.
+
+In order to use this image in a Dockerfile, follow these steps:
+
+#### 1. Pull a base builder image to build on
+
+```
+podman pull ubi8/nodejs-12
+```
+
+An UBI image `ubi8/nodejs-12` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+
+#### 2. Pull an application code
+
+An example application available at https://github.com/sclorg/nodejs-ex.git is used here. Feel free to clone the repository for further experiments.
+
+```
+git clone https://github.com/sclorg/nodejs-ex.git app-src
+```
+
+#### 3. Prepare an application inside a container
+
+This step usually consists of at least these parts:
+
+* putting the application source into the container
+* installing the dependencies
+* setting the default command in the resulting image
+
+For all these three parts, we can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile (3.1.), or users can use the Source-to-Image scripts inside the image (3.2.; see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
+
+##### 3.1. To use own setup, create a Dockerfile with this content:
+```
+FROM ubi8/nodejs-12
+
+# Add application sources
+ADD app-src .
+
+# Install the dependencies
+RUN npm install
+
+# Run script uses standard ways to run the application
+CMD npm run -d start
+```
+
+##### 3.2. To use the Source-to-Image scripts and build an image using a Dockerfile, create a Dockerfile with this content:
+```
+FROM ubi8/nodejs-12
+
+# Source-to-Image scripts expect the source code to be available in /tmp/src
+ADD app-src /tmp/src
+
+# Install the dependencies
+RUN /usr/libexec/s2i/assemble
+
+# Set a default command for the resulting image
+CMD /usr/libexec/s2i/run
+```
+
+#### 4. Then, build a new image from a Dockerfile prepared in the previous step
+
+```
+podman build -t node-app .
+```
+
+#### 5. And finally, run the resulting image with the final application
+
+```
+podman run -d node-app
+```
+
+Environment variables for Source-to-Image
 ---------------------
 
-Application developers can use the following environment variables to configure the runtime behavior of this image:
+Application developers can use the following environment variables to configure the runtime behavior of this image in OpenShift:
 
 **`NODE_ENV`**  
        NodeJS runtime mode (default: "production")
@@ -158,6 +241,6 @@ Below is an example _package.json_ file with the _main_ attribute and _start_ sc
 See also
 --------
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
-In that repository you also can find another versions of Python environment Dockerfiles.
+In that repository you also can find another versions of Node.js environment Dockerfiles.
 Dockerfile for CentOS is called `Dockerfile`, Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
 for RHEL8 it's `Dockerfile.rhel8` and the Fedora Dockerfile is called Dockerfile.fedora.
