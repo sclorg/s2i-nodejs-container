@@ -122,11 +122,11 @@ prepare() {
 
 run_test_application() {
     if [[ $1 == app ]]; then
-        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
+        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
     elif [[ $1 == hw ]]; then
-        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
+        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
     elif [[ $1 == express-webapp ]]; then
-        docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
+        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
     else
         echo "No such test application"
         exit 1
@@ -283,7 +283,7 @@ test_dev_mode() {
 
   echo "Testing $app DEV_MODE=$dev_mode NODE_ENV=$node_env"
 
-  run_test_application $app "-e DEV_MODE=$dev_mode" &
+  run_test_application $app "-e DEV_MODE=$dev_mode"
   wait_for_cid
 
   test_connection
@@ -328,7 +328,7 @@ run_s2i_build_express_webapp() {
   local result
   prepare express-webapp
   ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
-  run_test_application express-webapp &
+  run_test_application express-webapp
   wait_for_cid
   ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
   result=$?
@@ -362,7 +362,7 @@ test_docker_run_usage
 check_result $?
 
 # Verify that the HTTP connection can be established to test application container
-run_test_application app &
+run_test_application app
 
 # Wait for the container to write it's CID file
 wait_for_cid
@@ -395,7 +395,7 @@ run_s2i_build "-e NODE_ENV=development"
 check_result $?
 
 # Verify that the HTTP connection can be established to test application container
-run_test_application app &
+run_test_application app
 wait_for_cid
 
 test_connection
@@ -419,7 +419,7 @@ run_s2i_build "-e DEV_MODE=true"
 check_result $?
 
 # Verify that the HTTP connection can be established to test application container
-run_test_application app &
+run_test_application app
 wait_for_cid
 
 test_connection
@@ -450,7 +450,7 @@ else
     check_result 1
 fi
 
-run_test_application hw &
+run_test_application hw
 wait_for_cid
 kill_test_application
 
