@@ -47,7 +47,7 @@ a new image that runs the assembled application as output.
 In order to support the Source-to-Image framework, there are some important scripts inside the builder image:
 
 * The `/usr/libexec/s2i/assemble` script inside the image is run in order to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see **Environment variables** section below).
-* The `/usr/libexec/s2i/run` script executes the application and is set as a default command in the resulting container image.
+* The `/usr/libexec/s2i/run` script is set as a default command in the resulting container image (the new image with the application artifacts). It runs `npm run` for production, or `nodemon` in case `DEV_MODE` is set to `true` (see **Environment variables** section below).
 
 Build an application using a Dockerfile
 ---------------------
@@ -82,7 +82,7 @@ This step usually consists of at least these parts:
 * installing the dependencies
 * setting the default command in the resulting image
 
-For all these three parts, we can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile (3.1.), or users can use the Source-to-Image scripts inside the image (3.2.; see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
+For all these three parts, we can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile ([3.1.](#31-to-use-own-setup-create-a-dockerfile-with-this-content)), or users can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content); see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
 
 ##### 3.1. To use own setup, create a Dockerfile with this content:
 ```
