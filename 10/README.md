@@ -44,7 +44,7 @@ that makes it easy to write images that take application source code as
 an input, use a builder image like this Node.js container image, and produce
 a new image that runs the assembled application as output.
 
-In order to support the Source-to-Image framework, there are some interesting scripts inside the builder image:
+In order to support the Source-to-Image framework, there are some important scripts inside the builder image:
 
 * The `/usr/libexec/s2i/assemble` script inside the image is run in order to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see **Environment variables** section below).
 * The `/usr/libexec/s2i/run` script executes the application and is set as a default command in the resulting container image.
