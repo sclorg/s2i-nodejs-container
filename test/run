@@ -493,8 +493,8 @@ test_latest_imagestreams
 check_result $?
 
 info "Check building using a Dockerfile"
-ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift'
-ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift'
+ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
+ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
 check_result $?
 
 echo "Success!"

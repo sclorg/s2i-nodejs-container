@@ -22,7 +22,7 @@ that run across distributed devices.
 
 Usage in OpenShift
 ---------------------
-For this, we will assume that you are using the `ubi8/nodejs-12 image`, available via `nodejs:12` imagestream tag in Openshift.
+For this, we will assume that you are using the `ubi8/nodejs-12` image, available via `nodejs:12` imagestream tag in Openshift.
 Building a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application
 in Openshift can be achieved with the following step:
 
