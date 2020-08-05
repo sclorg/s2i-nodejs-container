@@ -82,9 +82,9 @@ This step usually consists of at least these parts:
 * installing the dependencies
 * setting the default command in the resulting image
 
-For all these three parts, users can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile ([3.1.](#31-to-use-own-setup-create-a-dockerfile-with-this-content)), or users can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content); see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
+For all these three parts, users can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile ([3.1.](#31-to-use-your-own-setup-create-a-dockerfile-with-this-content)), or users can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content); see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
 
-##### 3.1. To use own setup, create a Dockerfile with this content:
+##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
 FROM ubi8/nodejs-10
 
@@ -112,17 +112,17 @@ USER 1001
 # Install the dependencies
 RUN /usr/libexec/s2i/assemble
 
-# Set a default command for the resulting image
+# Set the default command for the resulting image
 CMD /usr/libexec/s2i/run
 ```
 
-#### 4. Then, build a new image from a Dockerfile prepared in the previous step
+#### 4. Build a new image from a Dockerfile prepared in the previous step
 
 ```
 podman build -t node-app .
 ```
 
-#### 5. And finally, run the resulting image with the final application
+#### 5. Run the resulting image with the final application
 
 ```
 podman run -d node-app
