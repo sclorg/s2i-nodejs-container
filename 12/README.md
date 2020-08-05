@@ -23,14 +23,14 @@ that run across distributed devices.
 Usage in OpenShift
 ---------------------
 For this, we will assume that you are using the `ubi8/nodejs-12` image, available via `nodejs:12` imagestream tag in Openshift.
-Building a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application
-in Openshift can be achieved with the following step:
+
+To build a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application in Openshift:
 
 ```
 oc new-app nodejs:12~https://github.com/sclorg/nodejs-ex.git
 ```
 
-**Accessing the application:**
+To access the application:
 ```
 $ oc get pods
 $ oc exec <pod> -- curl 127.0.0.1:8080
@@ -40,23 +40,23 @@ Source-to-Image framework and scripts
 ---------------------
 This image supports the [Source-to-Image](https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html)
 (S2I) strategy in OpenShift. The Source-to-Image is an OpenShift framework
-that makes it easy to write images that take application source code as
+which makes it easy to write images that take application source code as
 an input, use a builder image like this Node.js container image, and produce
-a new image that runs the assembled application as output.
+a new image that runs the assembled application as an output.
 
-In order to support the Source-to-Image framework, there are some important scripts inside the builder image:
+To support the Source-to-Image framework, important scripts are included in the builder image:
 
-* The `/usr/libexec/s2i/assemble` script inside the image is run in order to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see **Environment variables** section below).
-* The `/usr/libexec/s2i/run` script is set as a default command in the resulting container image (the new image with the application artifacts). It runs `npm run` for production, or `nodemon` in case `DEV_MODE` is set to `true` (see **Environment variables** section below).
+* The `/usr/libexec/s2i/assemble` script inside the image is run to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see the **Environment variables** section below).
+* The `/usr/libexec/s2i/run` script is set as the default command in the resulting container image (the new image with the application artifacts). It runs `npm run` for production, or `nodemon` if `DEV_MODE` is set to `true` (see the **Environment variables** section below).
 
-Build an application using a Dockerfile
+Building an application using a Dockerfile
 ---------------------
 Compared to the Source-to-Image strategy, using a Dockerfile is a more
 flexible way to build a Node.js container image with an application.
-Use it when the Source-to-Image is not flexible enough for you or
+Use a Dockerfile when Source-to-Image is not sufficiently flexible for you or
 when you build the image outside of the OpenShift environment.
 
-In order to use this image in a Dockerfile, follow these steps:
+To use the Node.js image in a Dockerfile, follow these steps:
 
 #### 1. Pull a base builder image to build on
 
@@ -64,11 +64,11 @@ In order to use this image in a Dockerfile, follow these steps:
 podman pull ubi8/nodejs-12
 ```
 
-A UBI image `ubi8/nodejs-12` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). For more information about UBI, see [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+An UBI image `ubi8/nodejs-12` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 
-An example application available at https://github.com/sclorg/nodejs-ex.git is used here. To adjust the example application, clone the repository.
+An example application available at https://github.com/sclorg/nodejs-ex.git is used here. Feel free to clone the repository for further experiments.
 
 ```
 git clone https://github.com/sclorg/nodejs-ex.git app-src
@@ -82,7 +82,7 @@ This step usually consists of at least these parts:
 * installing the dependencies
 * setting the default command in the resulting image
 
-For all these three parts, you can either set up all manually and use the `nodejs` and `npm` commands explicitly in the Dockerfile ([3.1.](#31-to-use-own-setup-create-a-dockerfile-with-this-content)), or you can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content). For more information about these scripts, which enable you to set-up and run  common Node.js applications, see the "Source-to-Image framework and scripts" section above).
+For all these three parts, users can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile ([3.1.](#31-to-use-your-own-setup-create-a-dockerfile-with-this-content)), or users can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content); see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
 
 ##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
@@ -94,7 +94,7 @@ ADD app-src .
 # Install the dependencies
 RUN npm install
 
-# The run script uses standard ways to run the application
+# Run script uses standard ways to run the application
 CMD npm run -d start
 ```
 
@@ -106,8 +106,8 @@ FROM ubi8/nodejs-12
 # and set permissions so that the container runs without root access
 USER 0
 ADD app-src /tmp/src
-RUN chown -R 1201:0 /tmp/src
-USER 1201
+RUN chown -R 1001:0 /tmp/src
+USER 1001
 
 # Install the dependencies
 RUN /usr/libexec/s2i/assemble
