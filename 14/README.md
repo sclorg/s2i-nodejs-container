@@ -52,7 +52,7 @@ In order to support the Source-to-Image framework, there are some important scri
 Build an application using a Dockerfile
 ---------------------
 Compared to the Source-to-Image strategy, using a Dockerfile is a more
-flexible way to build an Node.js container image with an application.
+flexible way to build a Node.js container image with an application.
 Use it when the Source-to-Image is not flexible enough for you or
 when you build the image outside of the OpenShift environment.
 
@@ -64,7 +64,7 @@ In order to use this image in a Dockerfile, follow these steps:
 podman pull ubi8/nodejs-14
 ```
 
-An UBI image `ubi8/nodejs-14` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+A UBI image `ubi8/nodejs-14` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 

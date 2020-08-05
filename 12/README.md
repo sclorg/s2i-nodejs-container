@@ -52,7 +52,7 @@ In order to support the Source-to-Image framework, there are some important scri
 Build an application using a Dockerfile
 ---------------------
 Compared to the Source-to-Image strategy, using a Dockerfile is a more
-flexible way to build an Node.js container image with an application.
+flexible way to build a Node.js container image with an application.
 Use it when the Source-to-Image is not flexible enough for you or
 when you build the image outside of the OpenShift environment.
 
@@ -64,11 +64,11 @@ In order to use this image in a Dockerfile, follow these steps:
 podman pull ubi8/nodejs-12
 ```
 
-An UBI image `ubi8/nodejs-12` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+A UBI image `ubi8/nodejs-12` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). For more information about UBI, see [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 
-An example application available at https://github.com/sclorg/nodejs-ex.git is used here. Feel free to clone the repository for further experiments.
+An example application available at https://github.com/sclorg/nodejs-ex.git is used here. To adjust the example application, clone the repository.
 
 ```
 git clone https://github.com/sclorg/nodejs-ex.git app-src
@@ -82,9 +82,9 @@ This step usually consists of at least these parts:
 * installing the dependencies
 * setting the default command in the resulting image
 
-For all these three parts, users can either setup all manually and use commands `nodejs` and `npm` explicitly in the Dockerfile ([3.1.](#31-to-use-own-setup-create-a-dockerfile-with-this-content)), or users can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content); see more about these scripts in the section "Source-to-Image framework and scripts" above), that already know how to set-up and run some common Node.js applications.
+For all these three parts, you can either set up all manually and use the `nodejs` and `npm` commands explicitly in the Dockerfile ([3.1.](#31-to-use-own-setup-create-a-dockerfile-with-this-content)), or you can use the Source-to-Image scripts inside the image ([3.2.](#32-to-use-the-source-to-image-scripts-and-build-an-image-using-a-dockerfile-create-a-dockerfile-with-this-content). For more information about these scripts, which enable you to set-up and run  common Node.js applications, see the "Source-to-Image framework and scripts" section above).
 
-##### 3.1. To use own setup, create a Dockerfile with this content:
+##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
 FROM ubi8/nodejs-12
 
@@ -94,7 +94,7 @@ ADD app-src .
 # Install the dependencies
 RUN npm install
 
-# Run script uses standard ways to run the application
+# The run script uses standard ways to run the application
 CMD npm run -d start
 ```
 
@@ -112,17 +112,17 @@ USER 1201
 # Install the dependencies
 RUN /usr/libexec/s2i/assemble
 
-# Set a default command for the resulting image
+# Set the default command for the resulting image
 CMD /usr/libexec/s2i/run
 ```
 
-#### 4. Then, build a new image from a Dockerfile prepared in the previous step
+#### 4. Build a new image from a Dockerfile prepared in the previous step
 
 ```
 podman build -t node-app .
 ```
 
-#### 5. And finally, run the resulting image with the final application
+#### 5. Run the resulting image with the final application
 
 ```
 podman run -d node-app
