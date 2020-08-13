@@ -18,7 +18,7 @@ function test_nodejs_imagestream() {
     *) echo "Imagestream testing not supported for $OS environment." ; return 0 ;;
   esac
 
-  ct_os_test_image_stream_quickstart "${THISDIR}/../imagestreams/nodejs-${OS}.json" \
+  ct_os_test_image_stream_quickstart "${THISDIR}/../imagestreams/nodejs-${OS%[0-9]*}.json" \
                                      "https://raw.githubusercontent.com/sclorg/nodejs-ex/master/openshift/templates/nodejs.json" \
                                      "${IMAGE_NAME}" \
                                      'nodejs' \
