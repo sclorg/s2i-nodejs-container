@@ -48,11 +48,11 @@
         }
       },
       {
-        "name": "12-el7",
+        "name": "12-ubi7",
         "annotations": {
-          "openshift.io/display-name": "Node.js 12 (CentOS 7)",
+          "openshift.io/display-name": "Node.js 12 (UBI 7)",
           "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 12 applications on CentOS 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/12/README.md.",
+          "description": "Build and run Node.js 12 applications on UBI 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/12/README.md.",
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
           "version": "12",
@@ -60,7 +60,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "docker.io/centos/nodejs-12-centos7:latest"
+          "name": "registry.access.redhat.com/ubi7/nodejs-12:latest"
         },
         "referencePolicy": {
           "type": "Local"
@@ -105,11 +105,11 @@
         }
       },
       {
-        "name": "10-el7",
+        "name": "10-ubi7",
         "annotations": {
-          "openshift.io/display-name": "Node.js 10 (CentOS 7)",
+          "openshift.io/display-name": "Node.js 10 (UBI 7)",
           "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 10 applications on CentOS 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/10/README.md.",
+          "description": "Build and run Node.js 10 applications on UBI 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/10/README.md.",
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
           "version": "10",
@@ -117,7 +117,7 @@
         },
         "from": {
           "kind": "DockerImage",
-          "name": "docker.io/centos/nodejs-10-centos7:latest"
+          "name": "registry.access.redhat.com/ubi7/nodejs-10:latest"
         },
         "referencePolicy": {
           "type": "Local"
