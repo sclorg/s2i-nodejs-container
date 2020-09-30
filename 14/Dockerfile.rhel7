@@ -1,4 +1,4 @@
-FROM rhscl/s2i-base-rhel7:1
+FROM rhscl/s2i-core-rhel7:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -57,7 +57,6 @@ LABEL summary="$SUMMARY" \
 
 RUN yum install -y yum-utils && \
     prepare-yum-repositories rhel-server-rhscl-7-rpms && \
-    ( [ "rh-${NAME}${NODEJS_VERSION}" != "${NODEJS_SCL}" ] && yum remove -y ${NODEJS_SCL}\* || : ) && \
     INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
