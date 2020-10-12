@@ -1,4 +1,4 @@
-FROM centos/s2i-base-centos7:1
+FROM centos/s2i-core-centos7:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -53,8 +53,8 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> centos/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
 
 RUN yum install -y centos-release-scl-rh && \
-    ( [ "rh-${NAME}${NODEJS_VERSION}" != "${NODEJS_SCL}" ] && yum remove -y ${NODEJS_SCL}\* || : ) && \
-    INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
+    MODULE_DEPS="make gcc gcc-c++ libatomic_ops" && \
+    INSTALL_PKGS="$MODULE_DEPS rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \

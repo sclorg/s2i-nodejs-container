@@ -52,7 +52,8 @@ LABEL summary="$SUMMARY" \
 # https://bugzilla.redhat.com/show_bug.cgi?id=1433784
 # meanwhile install it during s2i assemble step
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    INSTALL_PKGS="nodejs npm nss_wrapper" && \
+    MODULE_DEPS="make gcc gcc-c++ libatomic_ops" && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs npm nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
