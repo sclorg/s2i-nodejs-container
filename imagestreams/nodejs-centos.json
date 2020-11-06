@@ -14,7 +14,7 @@
         "annotations": {
           "openshift.io/display-name": "Node.js (Latest)",
           "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js applications on UBI. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/12/README.md.\n\nWARNING: By selecting this tag, your application will automatically update to use the latest version of Node.js available on OpenShift, including major version updates.",
+          "description": "Build and run Node.js applications on UBI. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/14/README.md.\n\nWARNING: By selecting this tag, your application will automatically update to use the latest version of Node.js available on OpenShift, including major version updates.",
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
           "supports":"nodejs",
@@ -22,7 +22,26 @@
         },
         "from": {
           "kind": "ImageStreamTag",
-          "name": "12-ubi8"
+          "name": "14-ubi8"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "14-ubi8",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 14 (UBI 8)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 14 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/14/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "14",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.access.redhat.com/ubi8/nodejs-14:latest"
         },
         "referencePolicy": {
           "type": "Local"
