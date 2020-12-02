@@ -336,16 +336,6 @@ run_s2i_build_express_webapp() {
   return $result
 }
 
-test_latest_imagestreams() {
-  local result=1
-  # Switch to root directory of a container
-  pushd "${test_dir}/.." >/dev/null || return 1
-  ct_check_latest_imagestreams
-  result=$?
-  popd >/dev/null || return 1
-  return $result
-}
-
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -487,10 +477,6 @@ if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
   ct_check_scl_enable_vars
   check_result $?
 fi
-
-info "Check the latest version in imagestream"
-test_latest_imagestreams
-check_result $?
 
 info "Check building using a Dockerfile"
 ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
