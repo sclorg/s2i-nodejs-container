@@ -230,11 +230,13 @@ wait_for_cid() {
 test_s2i_usage() {
   echo "Testing 's2i usage'..."
   ct_s2i_usage ${IMAGE_NAME} ${s2i_args} &>/dev/null
+  check_result $?
 }
 
 test_docker_run_usage() {
   echo "Testing 'docker run' usage..."
   docker run --rm ${IMAGE_NAME} &>/dev/null
+  check_result $?
 }
 
 test_connection() {
@@ -283,6 +285,7 @@ scl_usage() {
 }
 function test_scl_usage() {
   scl_usage "node --version" "v$VERSION."
+  check_result $?
 }
 
 validate_default_value() {
@@ -377,6 +380,10 @@ function test_scl_variables_in_dockerfile() {
     # autocleanup only enabled here as only the following tests so far use it
     CID_FILE_DIR=$(mktemp -d)
     ct_enable_cleanup
+
+    echo "Testing npm availability in Dockerfile"
+    ct_binary_found_from_df npm
+    check_result $?
 
     info "Testing variable presence during \`docker exec\`"
     ct_check_exec_env_vars
