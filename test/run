@@ -12,6 +12,40 @@
 
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 
+TEST_LIST_APP="\
+test_run_app_application
+test_s2i_usage
+test_scl_usage
+test_connection
+test_docker_run_usage
+test_scl_variables_in_dockerfile
+test_npm_functionality
+test_check_build_using_dockerfile
+test_nodemon_removed
+test_npm_cache_cleared
+test_npm_tmp_cleared
+kill_test_application
+test_dev_mode_app_true_development
+test_dev_mode_app_false_production
+"
+
+TEST_LIST_DEV="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_app_true_development
+test_dev_mode_app_false_development
+"
+
+TEST_LIST_HW="\
+test_safe_logging
+test_run_hw_application
+test_incremental_build
+test_build_express_webapp
+test_running_express_js
+"
 source "${THISDIR}/test-lib.sh"
 
 test -n $IMAGE_NAME \
@@ -20,6 +54,8 @@ readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}"
 
 test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 image_dir="$(readlink -f ${test_dir}/..)"
+test_short_summary=''
+TESTSUITE_RESULT=0
 cid_file=$(mktemp -u --suffix=.cid)
 
 # Since we built the candidate image locally, we don't want S2I attempt to pull
@@ -158,15 +194,24 @@ cleanup() {
   rm -rf ${test_dir}/test-hw/.git
   rm -rf "${test_dir}/express.js"
   rm -rf ${test_dir}/test-express-webapp/.git
+
+  echo "$test_short_summary"
+
+  if [ $TESTSUITE_RESULT -eq 0 ] ; then
+    echo "Tests for ${IMAGE_NAME} succeeded."
+  else
+    echo "Tests for ${IMAGE_NAME} failed."
+  fi
+  exit $TESTSUITE_RESULT
 }
 
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
     echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
-    cleanup
-    exit $result
+    TESTCASE_RESULT=1
   fi
+  return $result
 }
 
 wait_for_cid() {
@@ -185,11 +230,13 @@ wait_for_cid() {
 test_s2i_usage() {
   echo "Testing 's2i usage'..."
   ct_s2i_usage ${IMAGE_NAME} ${s2i_args} &>/dev/null
+  check_result $?
 }
 
 test_docker_run_usage() {
   echo "Testing 'docker run' usage..."
   docker run --rm ${IMAGE_NAME} &>/dev/null
+  check_result $?
 }
 
 test_connection() {
@@ -214,7 +261,8 @@ test_connection() {
   return $result
 }
 
-test_scl_usage() {
+scl_usage() {
+  # Verify the 'usage' script is working properly when running the base image with 's2i usage ...'
   local run_cmd="$1"
   local expected="$2"
 
@@ -234,6 +282,10 @@ test_scl_usage() {
     echo "ERROR[exec /bin/sh -ic "${run_cmd}"] Expected '${expected}', got '${out}'"
     return 1
   fi
+}
+function test_scl_usage() {
+  scl_usage "node --version" "v$VERSION."
+  check_result $?
 }
 
 validate_default_value() {
@@ -323,6 +375,27 @@ test_incremental_build() {
 
 }
 
+function test_scl_variables_in_dockerfile() {
+  if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
+    # autocleanup only enabled here as only the following tests so far use it
+    CID_FILE_DIR=$(mktemp -d)
+    ct_enable_cleanup
+
+    echo "Testing npm availability in Dockerfile"
+    ct_binary_found_from_df npm
+    check_result $?
+
+    info "Testing variable presence during \`docker exec\`"
+    ct_check_exec_env_vars
+    check_result $?
+
+    info "Checking if all scl variables are defined in Dockerfile"
+    ct_check_scl_enable_vars
+    check_result $?
+ fi
+}
+
+
 # test express webapp
 run_s2i_build_express_webapp() {
   local result
@@ -336,6 +409,123 @@ run_s2i_build_express_webapp() {
   return $result
 }
 
+function test_build_express_webapp() {
+  echo "Running express webapp test"
+  run_s2i_build_express_webapp
+  check_result $?
+}
+
+function test_running_express_js {
+  echo "Running express.js test suite"
+  prepare express
+  run_s2i_build_express
+  check_result $?
+  run_express_test_suite
+  check_result $?
+}
+
+function test_check_build_using_dockerfile() {
+  info "Check building using a Dockerfile"
+  ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
+  check_result $?
+  ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
+  check_result $?
+}
+function test_npm_functionality() {
+  echo "Testing npm availability"
+  ct_npm_works
+  check_result $?
+}
+
+function test_nodemon_removed() {
+  # Test that the development dependencies (nodemon) have been removed (npm prune)
+  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ./node_modules/nodemon")
+  check_result "$?"
+}
+
+function test_nodemon_present() {
+  # Test that the development dependencies (nodemon) have been removed (npm prune)
+  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ./node_modules/nodemon")
+  check_result "$?"
+}
+
+
+function test_npm_cache_cleared() {
+  # Test that the npm cache has been cleared
+  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")
+  check_result "$?"
+}
+
+function test_npm_cache_exists() {
+  # Test that the npm cache has been cleared
+  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
+  check_result "$?"
+}
+
+function test_npm_tmp_cleared() {
+  # Test that the npm tmp has been cleared
+  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
+  check_result "$?"
+}
+
+function test_dev_mode_false_production() {
+  # DEV_MODE=false NODE_ENV=production
+  test_dev_mode app false production
+}
+
+function test_dev_mode_true_development() {
+  # DEV_MODE=true NODE_ENV=development
+  test_dev_mode app true development
+}
+
+function test_dev_mode_false_development() {
+  # DEV_MODE=false NODE_ENV=development
+  test_dev_mode app false development
+}
+
+function test_run_app_application() {
+  # Verify that the HTTP connection can be established to test application container
+  run_test_application app
+  # Wait for the container to write it's CID file
+  wait_for_cid
+}
+
+function test_run_hw_application() {
+  # Verify that the HTTP connection can be established to test application container
+  run_test_application hw
+  # Wait for the container to write it's CID file
+  wait_for_cid
+  kill_test_application
+}
+
+function test_safe_logging() {
+  if [[ $(grep redacted /tmp/build-log | wc -l) -eq 4 ]]; then
+      grep redacted /tmp/build-log
+      check_result 0
+  else
+      echo "Some proxy log-in credentials were left in log file"
+      grep Setting /tmp/build-log
+      check_result 1
+  fi
+}
+function run_all_tests() {
+  local APP_NAME="$1"
+  for test_case in $TEST_SET; do
+    info "Running test $test_case ...."
+    TESTCASE_RESULT=0
+    $test_case
+    local test_msg
+    if [ $TESTCASE_RESULT -eq 0 ]; then
+      test_msg="[PASSED]"
+    else
+      test_msg="[FAILED]"
+      TESTSUITE_RESULT=1
+    fi
+    printf -v test_short_summary "%s %s for '%s' %s\n" "${test_short_summary}" "${test_msg}" "${APP_NAME}" "$test_case"
+    [ -n "${FAIL_QUICKLY:-}" ] && cleanup "${APP_NAME}" && return 1
+  done;
+}
+
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
@@ -343,146 +533,23 @@ echo "Testing the production image build"
 run_s2i_build
 check_result $?
 
-# Verify the 'usage' script is working properly when running the base image with 's2i usage ...'
-test_s2i_usage
-check_result $?
-
-# Verify the 'usage' script is working properly when running the base image with 'docker run ...'
-test_docker_run_usage
-check_result $?
-
-# Verify that the HTTP connection can be established to test application container
-run_test_application app
-
-# Wait for the container to write it's CID file
-wait_for_cid
-
-test_scl_usage "node --version" "v$VERSION."
-check_result $?
-
-test_connection
-check_result $?
-
-# Test that the development dependencies (nodemon) have been removed (npm prune)
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ~/node_modules/nodemon")
-check_result $?
-
-# Test that the npm cache has been cleared
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")
-check_result $?
-
-# Test that the npm tmp has been cleared
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
-check_result $?
-
-kill_test_application
-
-test_dev_mode app false production
-test_dev_mode app true development
+TEST_SET=${TESTS:-$TEST_LIST_APP} run_all_tests "app"
 
 echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
 run_s2i_build "-e NODE_ENV=development"
 check_result $?
 
-# Verify that the HTTP connection can be established to test application container
-run_test_application app
-wait_for_cid
-
-test_connection
-check_result $?
-
-# Test that the development dependencies (nodemon) have NOT been removed
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ~/node_modules/nodemon")
-check_result $?
-
-# Test that the npm cache has NOT been cleared
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
-check_result $?
-
-kill_test_application
-
-test_dev_mode app true development
-test_dev_mode app false development
+TEST_SET=${TESTS:-$TEST_LIST_DEV} run_all_tests "development"
 
 echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
 run_s2i_build "-e DEV_MODE=true"
 check_result $?
 
-# Verify that the HTTP connection can be established to test application container
-run_test_application app
-wait_for_cid
-
-test_connection
-check_result $?
-
-# Test that the development dependencies (nodemon) have NOT been removed
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ~/node_modules/nodemon")
-check_result $?
-
-# Test that the npm cache has NOT been cleared
-devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
-check_result $?
-
-kill_test_application
-
-test_dev_mode app true development
-test_dev_mode app false production
-
 echo "Testing proxy safe logging..."
 prepare hw
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
-if [[ $(grep redacted /tmp/build-log | wc -l) -eq 4 ]]; then
-    grep redacted /tmp/build-log
-    check_result 0
-else
-    echo "Some proxy log-in credentials were left in log file"
-    grep Setting /tmp/build-log
-    check_result 1
-fi
 
-run_test_application hw
-wait_for_cid
-kill_test_application
-
-echo "Testing incremental build"
-test_incremental_build
-
-echo "Running express webapp test"
-run_s2i_build_express_webapp ; check_result $?
-
-echo "Testing npm availability"
-ct_npm_works
-check_result $?
-
-echo "Running express.js test suite"
-prepare express
-run_s2i_build_express; check_result $?
-run_express_test_suite; check_result $?
-
-# These tests only make sense for rhscl
-if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
-  # autocleanup only enabled here as only the following tests so far use it
-  CID_FILE_DIR=$(mktemp -d)
-  ct_enable_cleanup
-
-  echo "Testing npm availability in Dockerfile"
-  ct_binary_found_from_df npm
-  check_result $?
-
-  echo "Testing variable presence during \`docker exec\`"
-  ct_check_exec_env_vars
-  check_result $?
-
-  echo "Checking if all scl variables are defined in Dockerfile"
-  ct_check_scl_enable_vars
-  check_result $?
-fi
-
-info "Check building using a Dockerfile"
-ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
-check_result $?
-ct_test_app_dockerfile ${THISDIR}/../examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
-check_result $?
+TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
 
 echo "Success!"
 cleanup
