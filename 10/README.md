@@ -1,10 +1,10 @@
 NodeJS 10 container image
-===================
+=========================
 
 This container image includes Node.JS 10 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 10 applications.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
-the CentOS images are available on [Podman Hub](https://hub.docker.com/r/centos/),
+the CentOS images are available on [Quay.io](https://quay.io/organization/centos7),
 and the Fedora images are available in [Fedora Registry](https://registry.fedoraproject.org/).
 The resulting image can be run using [podman](https://github.com/containers/libpod).
 
@@ -21,7 +21,7 @@ that makes it lightweight and efficient, perfect for data-intensive real-time ap
 that run across distributed devices.
 
 Usage in OpenShift
----------------------
+------------------
 In this example, we will assume that you are using the `ubi8/nodejs-10` image, available via `nodejs:10` imagestream tag in Openshift.
 
 To build a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application in Openshift:
@@ -37,7 +37,7 @@ $ oc exec <pod> -- curl 127.0.0.1:8080
 ```
 
 Source-to-Image framework and scripts
----------------------
+-------------------------------------
 This image supports the [Source-to-Image](https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html)
 (S2I) strategy in OpenShift. The Source-to-Image is an OpenShift framework
 which makes it easy to write images that take application source code as
@@ -50,7 +50,7 @@ To support the Source-to-Image framework, important scripts are included in the 
 * The `/usr/libexec/s2i/run` script is set as the default command in the resulting container image (the new image with the application artifacts). It runs `npm run` for production, or `nodemon` if `DEV_MODE` is set to `true` (see the **Environment variables** section below).
 
 Building an application using a Dockerfile
----------------------
+------------------------------------------
 Compared to the Source-to-Image strategy, using a Dockerfile is a more
 flexible way to build a Node.js container image with an application.
 Use a Dockerfile when Source-to-Image is not sufficiently flexible for you or
@@ -129,7 +129,7 @@ podman run -d node-app
 ```
 
 Environment variables for Source-to-Image
----------------------
+-----------------------------------------
 
 Application developers can use the following environment variables to configure the runtime behavior of this image in OpenShift:
 
@@ -163,7 +163,7 @@ The following `package.json` example includes a `scripts.dev` entry.  You can de
 To alter the level of logs output during an `npm install` the npm_config_loglevel environment variable can be set. See [npm-config](https://docs.npmjs.com/misc/config).
 
 Development Mode
----------------------
+----------------
 This image supports development mode. This mode can be switched on and off with the environment variable `DEV_MODE`. `DEV_MODE` can either be set to `true` or `false`.
 Development mode supports two features:
 * Hot Deploy
@@ -189,7 +189,7 @@ $ podman run --env DEV_MODE=false my-image-id
 By default, `DEV_MODE` is set to `false`, and `DEBUG_PORT` is set to `5858`, however the `DEBUG_PORT` is only relevant if `DEV_MODE=true`.
 
 Hot deploy
---------------------
+----------
 
 As part of development mode, this image supports hot deploy. If development mode is enabled, any souce code that is changed in the running container will be immediately reflected in the running nodejs application.
 

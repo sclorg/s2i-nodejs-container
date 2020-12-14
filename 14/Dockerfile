@@ -1,4 +1,4 @@
-FROM centos/s2i-core-centos7:1
+FROM quay.io/centos7/s2i-core-centos7
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -46,11 +46,11 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
       com.redhat.component="rh-$NAME$NODEJS_VERSION-container" \
-      name="centos/$NAME-$NODEJS_VERSION-centos7" \
+      name="centos7/$NAME-$NODEJS_VERSION-centos7" \
       version="$NODEJS_VERSION" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> centos/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
+      usage="s2i build <SOURCE-REPOSITORY> quay.io/centos7/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
 
 RUN yum install -y centos-release-scl-rh && \
     MODULE_DEPS="make gcc gcc-c++" && \
