@@ -57,8 +57,6 @@ LABEL summary="$SUMMARY" \
 
 RUN yum install -y yum-utils && \
     prepare-yum-repositories rhel-server-rhscl-7-rpms && \
-    yum-config-manager --add-repo http://download-node-02.eng.bos.redhat.com/rhel-7/rel-eng/RHSCL-3.6-RHEL-7-Beta-1.0/compose/Server/x86_64/os/ && \
-    echo gpgcheck=0 >> /etc/yum.repos.d/download-node-02.eng.bos.redhat.com_rhel-7_rel-eng_RHSCL-3.6-RHEL-7-Beta-1.0_compose_Server_x86_64_os_.repo && \
     MODULE_DEPS="make gcc gcc-c++" && \
     INSTALL_PKGS="$MODULE_DEPS rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
