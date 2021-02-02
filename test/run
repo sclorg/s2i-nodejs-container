@@ -16,6 +16,7 @@ TEST_LIST_APP="\
 test_run_app_application
 test_s2i_usage
 test_scl_usage
+test_binary_npm
 test_connection
 test_docker_run_usage
 test_scl_variables_in_dockerfile
@@ -295,6 +296,11 @@ scl_usage() {
 }
 function test_scl_usage() {
   scl_usage "node --version" "v$VERSION."
+  check_result $?
+}
+
+function test_binary_npm() {
+  docker run --rm "${IMAGE_NAME}" /bin/bash -c "node install node-rdkafka"
   check_result $?
 }
 
