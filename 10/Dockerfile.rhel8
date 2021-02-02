@@ -52,6 +52,7 @@ LABEL summary="$SUMMARY" \
 RUN yum -y module reset nodejs && yum -y module enable nodejs:$NODEJS_VERSION && \
     INSTALL_PKGS="nodejs npm nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
+    ln -s /usr/libexec/platform-python /usr/bin/python3 && \
     yum remove -y $INSTALL_PKGS && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
