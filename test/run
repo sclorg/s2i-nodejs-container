@@ -16,7 +16,6 @@ TEST_LIST_APP="\
 test_run_app_application
 test_s2i_usage
 test_scl_usage
-test_binary_npm
 test_connection
 test_docker_run_usage
 test_scl_variables_in_dockerfile
@@ -28,6 +27,10 @@ test_npm_tmp_cleared
 kill_test_application
 test_dev_mode_true_development
 test_dev_mode_false_production
+"
+
+TEST_LIST_BINARY="\
+test_run_binary_application
 "
 
 TEST_LIST_NODE_ENV="\
@@ -57,6 +60,7 @@ test_incremental_build
 test_build_express_webapp
 test_running_express_js
 "
+
 source "${THISDIR}/test-lib.sh"
 
 test -n $IMAGE_NAME \
@@ -122,6 +126,10 @@ run_s2i_build_express() {
     $(ct_build_s2i_npm_variables) -e NODE_ENV=development
 }
 
+run_s2i_build_binary() {
+  ct_s2i_build_as_df file://${test_dir}/test-binary ${IMAGE_NAME} ${IMAGE_NAME}-testbinary ${s2i_args} $(ct_build_s2i_npm_variables) $1
+}
+
 prepare_dummy_git_repo() {
   git init
   for key in "${!gitconfig[@]}"; do
@@ -152,7 +160,7 @@ prepare() {
   case "$1" in
     # TODO: STI build require the application is a valid 'GIT' repository, we
     # should remove this restriction in the future when a file:// is used.
-    app|hw|express-webapp)
+    app|hw|express-webapp|binary)
       pushd "${test_dir}/test-${1}" >/dev/null
       prepare_dummy_git_repo
       popd >/dev/null
@@ -168,16 +176,15 @@ prepare() {
 }
 
 run_test_application() {
-    if [[ $1 == app ]]; then
-        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testapp
-    elif [[ $1 == hw ]]; then
-        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testhw
-    elif [[ $1 == express-webapp ]]; then
-        docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-testexpresswebapp
-    else
-        echo "No such test application"
-        exit 1
-    fi
+  case "$1" in
+    app|hw|express-webapp|binary)
+      docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-test$1
+      ;;
+    *)
+      echo "No such test application"
+      exit 1
+      ;;
+    esac
 }
 
 run_express_test_suite() {
@@ -196,13 +203,14 @@ cleanup() {
       fi
   fi
 
-  for image in "${IMAGE_NAME}"-{test{app,hw,expresswebapp},express}; do
+  for image in "${IMAGE_NAME}"-{test{app,hw,express-webapp,binary},express}; do
     image_exists "$image" || continue
     docker rmi -f "$image"
   done
 
   rm -rf ${test_dir}/test-app/.git
   rm -rf ${test_dir}/test-hw/.git
+  rm -rf ${test_dir}/test-binary/.git
   rm -rf "${test_dir}/express.js"
   rm -rf ${test_dir}/test-express-webapp/.git
 
@@ -296,11 +304,6 @@ scl_usage() {
 }
 function test_scl_usage() {
   scl_usage "node --version" "v$VERSION."
-  check_result $?
-}
-
-function test_binary_npm() {
-  docker run --rm "${IMAGE_NAME}" /bin/bash -c "node install node-rdkafka"
   check_result $?
 }
 
@@ -416,7 +419,7 @@ function test_scl_variables_in_dockerfile() {
 run_s2i_build_express_webapp() {
   local result
   prepare express-webapp
-  ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpresswebapp ${s2i_args} $(ct_build_s2i_npm_variables)
+  ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpress-webapp ${s2i_args} $(ct_build_s2i_npm_variables)
   run_test_application express-webapp
   wait_for_cid
   ct_test_response http://$(container_ip):${test_port} 200 'Welcome to Express Testing Application'
@@ -511,6 +514,18 @@ function test_run_hw_application() {
   run_test_application hw
   # Wait for the container to write it's CID file
   wait_for_cid
+  check_result $?
+  kill_test_application
+}
+
+function test_run_binary_application() {
+  prepare binary
+  run_s2i_build_binary
+  check_result $?
+  # Verify that the HTTP connection can be established to test application container
+  run_test_application binary
+  # Wait for the container to write it's CID file
+  wait_for_cid
   kill_test_application
 }
 
@@ -567,8 +582,12 @@ TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
 echo "Testing proxy safe logging..."
 prepare hw
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
+check_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
+
+check_result $?
+TEST_SET=${TESTS:-$TEST_LIST_BINARY} run_all_tests "binary"
 
 echo "Success!"
 cleanup
