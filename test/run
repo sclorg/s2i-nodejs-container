@@ -25,18 +25,28 @@ test_nodemon_removed
 test_npm_cache_cleared
 test_npm_tmp_cleared
 kill_test_application
-test_dev_mode_app_true_development
-test_dev_mode_app_false_production
+test_dev_mode_true_development
+test_dev_mode_false_production
 "
 
-TEST_LIST_DEV="\
+TEST_LIST_NODE_ENV="\
 test_run_app_application
 test_connection
 test_nodemon_present
 test_npm_cache_exists
 kill_test_application
-test_dev_mode_app_true_development
-test_dev_mode_app_false_development
+test_dev_mode_true_development
+test_dev_mode_false_development
+"
+
+TEST_LIST_DEV_MODE="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
 "
 
 TEST_LIST_HW="\
@@ -514,6 +524,7 @@ function run_all_tests() {
     info "Running test $test_case ...."
     TESTCASE_RESULT=0
     $test_case
+    check_result $?
     local test_msg
     if [ $TESTCASE_RESULT -eq 0 ]; then
       test_msg="[PASSED]"
@@ -539,11 +550,13 @@ echo "Testing the development image build: s2i build -e \"NODE_ENV=development\"
 run_s2i_build "-e NODE_ENV=development"
 check_result $?
 
-TEST_SET=${TESTS:-$TEST_LIST_DEV} run_all_tests "development"
+TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} run_all_tests "node_env_development"
 
 echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
 run_s2i_build "-e DEV_MODE=true"
 check_result $?
+
+TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
 
 echo "Testing proxy safe logging..."
 prepare hw
