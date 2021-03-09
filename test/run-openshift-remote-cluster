@@ -48,9 +48,8 @@ for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ;
 done
 
 
-# TODO Suppress test for now
 # Check the imagestream
-#test_nodejs_imagestream
+test_nodejs_imagestream
 
 OS_TESTSUITE_RESULT=0
 
