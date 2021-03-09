@@ -1,7 +1,4 @@
-FROM ubi8/s2i-core:1
-
-# This image provides a Node.JS environment you can use to run your Node.JS
-# applications.
+FROM ubi8/ubi-minimal:8.3
 
 EXPOSE 8080
 
@@ -15,16 +12,20 @@ EXPOSE 8080
 # * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
-
-ENV NODEJS_VERSION=14 \
+ENV APP_ROOT=/opt/app-root \
+    # The $HOME is not set by default, but some applications need this variable
+    HOME=/opt/app-root/src \
+    NPM_RUN=start \
+    PLATFORM="el8" \
+    NODEJS_VERSION=14 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
-ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
+ENV SUMMARY="Minimal image for running Node.js $NODEJS_VERSION applications" \
     DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
-building and running various Node.js $NODEJS_VERSION applications and frameworks. \
+running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
 that makes it lightweight and efficient, perfect for data-intensive real-time applications \
@@ -33,7 +34,7 @@ that run across distributed devices."
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="Node.js $NODEJS_VERSION" \
+      io.k8s.display-name="Node.js $NODEJS_VERSION Minimal" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
@@ -41,33 +42,22 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
-      com.redhat.component="${NAME}-${NODEJS_VERSION}-container" \
-      name="ubi8/$NAME-$NODEJS_VERSION" \
+      com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
+      name="ubi8/$NAME-$NODEJS_VERSION-minimal" \
       version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
-      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> ubi8/$NAME-$NODEJS_VERSION:latest <APP-NAME>"
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
-RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    MODULE_DEPS="make gcc gcc-c++ libatomic_ops" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper" && \
-    ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*'
+RUN INSTALL_PKGS="nodejs nodejs-nodemon npm" && \
+    echo -e "[nodejs]\nname=nodejs\nstream=$NODEJS_VERSION\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/nodejs.module && \
+    microdnf --nodocs install $INSTALL_PKGS && \
+    microdnf clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
-# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
-
-# Copy extra files to the image.
-COPY ./root/ /
+COPY ./s2i/bin/ /usr/libexec/s2i
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
-    rpm-file-permissions
-
+RUN mkdir -p "$HOME" && chown -R 1001:0 "$APP_ROOT" && chmod -R ug+rwx "$APP_ROOT"
+WORKDIR "$HOME"
 USER 1001
-
-# Set the default CMD to print the usage of the language image
-CMD $STI_SCRIPTS_PATH/usage
