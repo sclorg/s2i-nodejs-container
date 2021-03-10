@@ -29,10 +29,6 @@ test_dev_mode_true_development
 test_dev_mode_false_production
 "
 
-TEST_LIST_BINARY="\
-test_run_binary_application
-"
-
 TEST_LIST_NODE_ENV="\
 test_run_app_application
 test_connection
@@ -60,7 +56,6 @@ test_incremental_build
 test_build_express_webapp
 test_running_express_js
 "
-
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
 
@@ -117,12 +112,8 @@ TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
 echo "Testing proxy safe logging..."
 prepare hw
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
-check_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
-
-check_result $?
-TEST_SET=${TESTS:-$TEST_LIST_BINARY} run_all_tests "binary"
 
 echo "Success!"
 cleanup
