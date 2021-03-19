@@ -1,4 +1,4 @@
-FROM ubi8/ubi-minimal:8.3
+FROM ubi8/ubi-minimal:8.4
 
 EXPOSE 8080
 
