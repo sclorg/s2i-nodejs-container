@@ -19,8 +19,6 @@ test_scl_usage
 test_connection
 test_docker_run_usage
 test_scl_variables_in_dockerfile
-test_npm_functionality
-test_check_build_using_dockerfile
 test_nodemon_removed
 test_npm_cache_cleared
 test_npm_tmp_cleared
@@ -29,32 +27,9 @@ test_dev_mode_true_development
 test_dev_mode_false_production
 "
 
-TEST_LIST_NODE_ENV="\
-test_run_app_application
-test_connection
-test_nodemon_present
-test_npm_cache_exists
-kill_test_application
-test_dev_mode_true_development
-test_dev_mode_false_development
-"
-
-TEST_LIST_DEV_MODE="\
-test_run_app_application
-test_connection
-test_nodemon_present
-test_npm_cache_exists
-kill_test_application
-test_dev_mode_true_development
-test_dev_mode_false_production
-"
-
 TEST_LIST_HW="\
 test_safe_logging
 test_run_hw_application
-test_incremental_build
-test_build_express_webapp
-test_running_express_js
 "
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
@@ -92,26 +67,14 @@ fi
 # 'restore-artifacts' scripts are working properly
 prepare app
 echo "Testing the production image build"
-run_s2i_build
-check_result $?
+FULL_IMAGE=${FULL_IMAGE:-${IMAGE_NAME//-minimal/}}
+prepare_minimal_build testapp
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} run_all_tests "app"
 
-echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
-run_s2i_build "-e NODE_ENV=development"
-check_result $?
-
-TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} run_all_tests "node_env_development"
-
-echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
-run_s2i_build "-e DEV_MODE=true"
-check_result $?
-
-TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
-
 echo "Testing proxy safe logging..."
 prepare hw
-run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
+prepare_minimal_build testhw
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
 

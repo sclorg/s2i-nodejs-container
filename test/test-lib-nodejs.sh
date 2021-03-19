@@ -50,6 +50,10 @@ run_s2i_build_binary() {
   ct_s2i_build_as_df file://${test_dir}/test-binary ${IMAGE_NAME} ${IMAGE_NAME}-testbinary ${s2i_args} $(ct_build_s2i_npm_variables) $1
 }
 
+run_s2i_multistage_build() {
+  ct_s2i_multistage_build file://${test_dir}/test-app ${FULL_IMAGE} ${IMAGE_NAME} ${IMAGE_NAME}-testapp $(ct_build_s2i_npm_variables)
+}
+
 prepare_dummy_git_repo() {
   git init
   for key in "${!gitconfig[@]}"; do
@@ -69,6 +73,43 @@ prepare_client_repo() {
     git config --local "$key" "${gitconfig[$key]}"
   done
   popd >/dev/null || return
+}
+
+prepare_minimal_build() {
+  suffix=$1
+  # Build the app using the full assemble-capable image
+  [ -z "$(docker images -q "$FULL_IMAGE")" ] && docker pull "$FULL_IMAGE"
+  case "$suffix" in
+    testapp)
+      run_s2i_multistage_build #>/tmp/build-log 2>&1
+      ;;
+    testhw)
+      IMAGE_NAME=$FULL_IMAGE run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 >/tmp/build-log 2>&1
+      # Get the application from the assembled image and into the minimal
+      tempdir=$(mktemp -d)
+      chown 1001:0 "$tempdir"
+      docker run -u 0 --rm -ti -v "$tempdir:$tempdir:Z" "$FULL_IMAGE-$suffix"  bash -c "cp -ar /opt/app-root/src $tempdir"
+  pushd "$tempdir" >/dev/null || return
+  cat <<EOF >Dockerfile
+FROM $IMAGE_NAME
+ADD src/* /opt/app-root/src
+CMD /usr/libexec/s2i/run
+EOF
+      # Check if CA autority is present on host and add it into Dockerfile
+      [ -f "$(full_ca_file_path)" ] && cat <<EOF >>Dockerfile
+USER 0
+RUN cd /etc/pki/ca-trust/source/anchors && update-ca-trust extract
+USER 1001
+EOF
+      docker build -t "$IMAGE_NAME-$suffix" $(ct_build_s2i_npm_variables | grep -o -e '\(-v\)[[:space:]]\.*\S*') .
+      popd >/dev/null || return
+      ;;
+    *)
+      echo "Please specify a valid test application"
+      exit 1
+      ;;
+  esac
+
 }
 
 prepare() {
@@ -236,7 +277,7 @@ scl_usage() {
   fi
 }
 function test_scl_usage() {
-  scl_usage "node --version" "v$VERSION."
+  scl_usage "node --version" "v${VERSION//-minimal/}."
   check_result $?
 }
 
