@@ -65,25 +65,6 @@
         "referencePolicy": {
           "type": "Local"
         }
-      },
-      {
-        "name": "10-ubi8",
-        "annotations": {
-          "openshift.io/display-name": "Node.js 10 (UBI 8)",
-          "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 10 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/10/README.md.",
-          "iconClass": "icon-nodejs",
-          "tags": "builder,nodejs",
-          "version": "10",
-          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
-        },
-        "from": {
-          "kind": "DockerImage",
-          "name": "registry.redhat.io/ubi8/nodejs-10:latest"
-        },
-        "referencePolicy": {
-          "type": "Local"
-        }
       }
     ]
   }
