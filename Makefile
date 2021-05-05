@@ -1,6 +1,6 @@
 # Include common Makefile code.
 BASE_IMAGE_NAME = nodejs
-VERSIONS = 10 12 14
+VERSIONS = 12 14
 OPENSHIFT_NAMESPACES = 
 
 # HACK:  Ensure that 'git pull' for old clones doesn't cause confusion.
