@@ -49,7 +49,7 @@ LABEL summary="$SUMMARY" \
       usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
 
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    MODULE_DEPS="make gcc gcc-c++ libatomic_ops" && \
+    MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
     INSTALL_PKGS="$MODULE_DEPS nodejs nodejs-nodemon npm nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \

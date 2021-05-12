@@ -53,7 +53,7 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> quay.io/centos7/$NAME-$NODEJS_VERSION-centos7:latest <APP-NAME>"
 
 RUN yum install -y centos-release-scl-rh && \
-    MODULE_DEPS="make gcc gcc-c++" && \
+    MODULE_DEPS="make gcc gcc-c++ git openssl-devel" && \
     INSTALL_PKGS="$MODULE_DEPS rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
