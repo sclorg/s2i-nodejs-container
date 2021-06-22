@@ -1,7 +1,8 @@
-NodeJS 14 container image
+NodeJS 14 minimal container image
 =========================
 
-This container image includes Node.JS 14 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 14 applications.
+This container image includes Node.JS 14 on top of a minimal base image for your Node.JS 14 applications. This image is best used
+with the full-sized s2i-enabled Node.JS 14 image to build the application.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
 the CentOS images are available on [Quay.io](https://quay.io/organization/centos7),
@@ -13,27 +14,79 @@ Note: while the examples in this README are calling `podman`, you can replace an
 Description
 -----------
 
-Node.js 14 available as container is a base platform for 
-building and running various Node.js 14 applications and frameworks. 
-Node.js is a platform built on Chrome's JavaScript runtime for easily building 
-fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
-that makes it lightweight and efficient, perfect for data-intensive real-time applications 
+Node.js 14 available as a minimal container is a base platform for
+running various Node.js 14 applications and frameworks.
+Node.js is a platform built on Chrome's JavaScript runtime for easily building
+fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model
+that makes it lightweight and efficient, perfect for data-intensive real-time applications
 that run across distributed devices.
 
 Usage in OpenShift
 ------------------
-In this example, we will assume that you are using the `ubi8/nodejs-14` image, available via `nodejs:14` imagestream tag in Openshift.
+In this example, we will assume that you are using the `ubi8/nodejs-14` image, available via `nodejs:14-ubi8` imagestream tag in Openshift
+to build the application, as well as the `ubi8/nodejs-14-minimal` image, available via `nodejs:14-ubi8-minimal` image stream
+for running the resulting application.
 
-To build a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application in Openshift:
+With these two images we can create a [chained build](https://docs.openshift.com/container-platform/4.7/cicd/builds/advanced-build-operations.html#builds-chaining-builds_advanced-build-operations) in Openshift using two BuildConfigs:
+
+The first BuildConfig defines and builds the builder image, using the source-to-image strategy, and pushes the result into
+the `nodejs-builder-image` imagestream.
 
 ```
-oc new-app nodejs:14~https://github.com/sclorg/nodejs-ex.git
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: nodejs-builder-image
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: nodejs-builder-image:latest
+  source:
+    git:
+      uri: https://github.com/sclorg/nodejs-ex.git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:14-ubi8
+        namespace: openshift
 ```
 
-To access the application:
+The second BuildConfig takes the resulting image from the `nodejs-builder-image` imagestream, copies the application source (including build artifacts)
+from the image and creates a new runtime image on top of the nodejs minimal image, with the application copied in and prepared to run.
+The resulting runtime image is then pushed into the `nodejs-runtime-image` imagestream.
+
 ```
-$ oc get pods
-$ oc exec <pod> -- curl 127.0.0.1:8080
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: nodejs-runtime-image
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: nodejs-runtime-image:latest
+  source:
+    dockerfile: |-
+      FROM nodejs:14-ubi8-minimal
+      COPY src $HOME
+      CMD /usr/libexec/s2i/run
+    images:
+    - from:
+        kind: ImageStreamTag
+        name: nodejs-builder-image:latest
+      paths:
+      - sourcePath: /opt/app-root/src
+        destinationDir: "."
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:14-ubi8-minimal
+  triggers:
+  - imageChange: {}
+    type: ImageChange
 ```
 
 Source-to-Image framework and scripts
@@ -44,9 +97,8 @@ which makes it easy to write images that take application source code as
 an input, use a builder image like this Node.js container image, and produce
 a new image that runs the assembled application as an output.
 
-To support the Source-to-Image framework, important scripts are included in the builder image:
+To support the Source-to-Image framework, only the `run` script is included in this image.
 
-* The `/usr/libexec/s2i/assemble` script inside the image is run to produce a new image with the application artifacts. The script takes sources of a given application and places them into appropriate directories inside the image. It utilizes some common patterns in Node.js application development (see the **Environment variables** section below).
 * The `/usr/libexec/s2i/run` script is set as the default command in the resulting container image (the new image with the application artifacts). It runs `npm run` for production, or `nodemon` if `DEV_MODE` is set to `true` (see the **Environment variables** section below).
 
 Building an application using a Dockerfile
@@ -58,13 +110,14 @@ when you build the image outside of the OpenShift environment.
 
 To use the Node.js image in a Dockerfile, follow these steps:
 
-#### 1. Pull a base builder image to build on
+#### 1. Pull the base builder and minimal runtime images
 
 ```
 podman pull ubi8/nodejs-14
+podman pull ubi8/nodejs-14-minimal
 ```
 
-An UBI image `ubi8/nodejs-14` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+The UBI images `ubi8/nodejs-14` and `ubi8/nodejs-14-minimal` that are used in this example are both usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 
@@ -86,13 +139,20 @@ For all these three parts, users can either setup all manually and use commands 
 
 ##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
-FROM ubi8/nodejs-14
+# First stage builds the application
+FROM ubi8/nodejs-14 as builder
 
 # Add application sources
-ADD app-src .
+ADD app-src $HOME
 
 # Install the dependencies
 RUN npm install
+
+# Second stage copies the application to the minimal image
+FROM ubi8/nodejs-14-minimal
+
+# Copy the application source and build artifacts from the builder image to this one
+COPY --from=builder $HOME $HOME
 
 # Run script uses standard ways to run the application
 CMD npm run -d start
@@ -100,7 +160,8 @@ CMD npm run -d start
 
 ##### 3.2. To use the Source-to-Image scripts and build an image using a Dockerfile, create a Dockerfile with this content:
 ```
-FROM ubi8/nodejs-14
+# First stage builds the application
+FROM ubi8/nodejs-14 as builder
 
 # Add application sources to a directory that the assemble script expects them
 # and set permissions so that the container runs without root access
@@ -111,6 +172,12 @@ USER 1001
 
 # Install the dependencies
 RUN /usr/libexec/s2i/assemble
+
+# Second stage copies the application to the minimal image
+FROM ubi8/nodejs-14-minimal
+
+# Copy the application source and build artifacts from the builder image to this one
+COPY --from=builder $HOME $HOME
 
 # Set the default command for the resulting image
 CMD /usr/libexec/s2i/run
@@ -133,6 +200,8 @@ Environment variables for Source-to-Image
 
 Application developers can use the following environment variables to configure the runtime behavior of this image in OpenShift:
 
+#### Used in the minimal image
+
 **`NODE_ENV`**  
        NodeJS runtime mode (default: "production")
 
@@ -141,6 +210,8 @@ Application developers can use the following environment variables to configure 
 
 **`NPM_RUN`**  
        Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
+
+#### Additional variables used in the full-sized image
 
 **`HTTP_PROXY`**  
        Use an npm proxy during assembly
