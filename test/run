@@ -519,14 +519,19 @@ function test_run_hw_application() {
 }
 
 function test_run_binary_application() {
-  prepare binary
-  run_s2i_build_binary
-  check_result $?
-  # Verify that the HTTP connection can be established to test application container
-  run_test_application binary
-  # Wait for the container to write it's CID file
-  wait_for_cid
-  kill_test_application
+  # Test is suppressed because of https://github.com/Blizzard/node-rdkafka/issues/910
+  # The newest version of node-rdkafka works only with gcc-8 and higher
+  # On RHEL7 and CentOS7 is gcc-4.8
+  if [ "$OS" != "rhel7" ] && [ "$OS" != "centos7" ]; then
+    prepare binary
+    run_s2i_build_binary
+    check_result $?
+    # Verify that the HTTP connection can be established to test application container
+    run_test_application binary
+    # Wait for the container to write it's CID file
+    wait_for_cid
+    kill_test_application
+  fi
 }
 
 function test_safe_logging() {
