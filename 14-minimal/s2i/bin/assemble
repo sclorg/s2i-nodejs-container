@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# Prevent running assemble in builders different than official STI image.
+# The official nodejs:8-onbuild already run npm install and use different
+# application folder.
+[ -d "/usr/src/app" ] && exit 0
+
+set -e
+
+# FIXME: Linking of global modules is disabled for now as it causes npm failures
+#        under RHEL7
+# Global modules good to have
+# npmgl=$(grep "^\s*[^#\s]" ../etc/npm_global_module_list | sort -u)
+# Available global modules; only match top-level npm packages
+#global_modules=$(npm ls -g 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
+# List all modules in common
+#module_list=$(/usr/bin/comm -12 <(echo "${global_modules}") | tr '\n' ' ')
+# Link the modules
+#npm link $module_list
+
+safeLogging () {
+    if [[ $1 =~ http[s]?://.*@.*$ ]]; then
+        echo $1 | sed 's/^.*@/redacted@/'
+    else
+        echo $1
+    fi
+}
+
+shopt -s dotglob
+if [ -d /tmp/artifacts ] && [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+    echo "---> Restoring previous build artifacts ..."
+    mv -T --verbose /tmp/artifacts/node_modules "${HOME}/node_modules"
+fi
+
+echo "---> Installing application source ..."
+mv /tmp/src/* ./
+
+# Fix source directory permissions
+fix-permissions ./
+
+if [ ! -z $HTTP_PROXY ]; then
+    echo "---> Setting npm http proxy to" $(safeLogging $HTTP_PROXY)
+	npm config set proxy $HTTP_PROXY
+fi
+
+if [ ! -z $http_proxy ]; then
+    echo "---> Setting npm http proxy to" $(safeLogging $http_proxy)
+	npm config set proxy $http_proxy
+fi
+
+if [ ! -z $HTTPS_PROXY ]; then
+    echo "---> Setting npm https proxy to" $(safeLogging $HTTPS_PROXY)
+	npm config set https-proxy $HTTPS_PROXY
+fi
+
+if [ ! -z $https_proxy ]; then
+    echo "---> Setting npm https proxy to" $(safeLogging $https_proxy)
+	npm config set https-proxy $https_proxy
+fi
+
+# Change the npm registry mirror if provided
+if [ -n "$NPM_MIRROR" ]; then
+	npm config set registry $NPM_MIRROR
+fi
+
+# Set the DEV_MODE to false by default.
+if [ -z "$DEV_MODE" ]; then
+  export DEV_MODE=false
+fi
+
+# If NODE_ENV is not set by the user, then NODE_ENV is determined by whether
+# the container is run in development mode.
+if [ -z "$NODE_ENV" ]; then
+  if [ "$DEV_MODE" == true ]; then
+    export NODE_ENV=development
+  else
+    export NODE_ENV=production
+  fi
+fi
+
+if [ "$NODE_ENV" != "production" ]; then
+
+	echo "---> Building your Node application from source"
+	npm install
+
+else
+
+	echo "---> Installing all dependencies"
+	NODE_ENV=development npm install
+
+	#do not fail when there is no build script
+	echo "---> Building in production mode"
+	npm run build --if-present
+
+	echo "---> Pruning the development dependencies"
+	npm prune
+
+	# Clear the npm's cache and tmp directories only if they are not a docker volumes
+	NPM_CACHE=$(npm config get cache)
+	if ! mountpoint $NPM_CACHE; then
+		echo "---> Cleaning the npm cache $NPM_CACHE"
+		#As of npm@5 even the 'npm cache clean --force' does not fully remove the cache directory
+		# instead of $NPM_CACHE* use $NPM_CACHE/*.
+		# We do not want to delete .npmrc file.
+		rm -rf "${NPM_CACHE:?}/"
+	fi
+	NPM_TMP=$(npm config get tmp)
+	if ! mountpoint $NPM_TMP; then
+		echo "---> Cleaning the $NPM_TMP/npm-*"
+		rm -rf $NPM_TMP/npm-*
+	fi
+
+fi
+
+# Fix source directory permissions
+fix-permissions ./

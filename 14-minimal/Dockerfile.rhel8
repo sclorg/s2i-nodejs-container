@@ -49,13 +49,16 @@ LABEL summary="$SUMMARY" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
-RUN INSTALL_PKGS="nodejs nodejs-nodemon npm" && \
+RUN INSTALL_PKGS="nodejs nodejs-nodemon npm findutils tar" && \
     echo -e "[nodejs]\nname=nodejs\nstream=$NODEJS_VERSION\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/nodejs.module && \
     microdnf --nodocs install $INSTALL_PKGS && \
     microdnf clean all && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
 COPY ./s2i/bin/ /usr/libexec/s2i
+
+# Copy extra files to the image.
+COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
 RUN mkdir -p "$HOME" && chown -R 1001:0 "$APP_ROOT" && chmod -R ug+rwx "$APP_ROOT"

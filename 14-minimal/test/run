@@ -19,9 +19,30 @@ test_scl_usage
 test_connection
 test_docker_run_usage
 test_scl_variables_in_dockerfile
+test_check_build_using_dockerfile
 test_nodemon_removed
 test_npm_cache_cleared
 test_npm_tmp_cleared
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
+"
+
+TEST_LIST_NODE_ENV="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_development
+"
+
+TEST_LIST_DEV_MODE="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
 kill_test_application
 test_dev_mode_true_development
 test_dev_mode_false_production
@@ -77,6 +98,21 @@ prepare hw
 prepare_minimal_build testhw
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
+
+# Start of testing regular s2i build for minimal image
+
+echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
+run_s2i_build "-e NODE_ENV=development"
+check_result $?
+
+TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} run_all_tests "node_env_development"
+
+echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
+run_s2i_build "-e DEV_MODE=true"
+check_result $?
+
+TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
+
 
 echo "Success!"
 cleanup
