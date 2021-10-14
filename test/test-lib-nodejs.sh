@@ -130,6 +130,7 @@ prepare() {
       if [[ " ${CLIENT_LIST[*]} " =~ "${test_case} " ]];
       then
         PREFIX=$1
+        PREFIX=${PREFIX//-/}
         REPO="${PREFIX^^}"_REPO
         REVISION="${PREFIX^^}"_REVISION
         prepare_client_repo "${test_dir}/$1" "${!REPO}" "${!REVISION}"
