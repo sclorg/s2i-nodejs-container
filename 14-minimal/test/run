@@ -88,7 +88,7 @@ fi
 # 'restore-artifacts' scripts are working properly
 prepare app
 echo "Testing the production image build"
-FULL_IMAGE=${FULL_IMAGE:-${IMAGE_NAME//-minimal/}}
+FULL_IMAGE=${FULL_IMAGE:-ubi8/nodejs-${VERSION//-minimal/}:latest}
 prepare_minimal_build testapp
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} run_all_tests "app"
