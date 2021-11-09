@@ -3,7 +3,7 @@
 DISTRO=`cat /etc/*-release | grep ^ID= | grep -Po '".*?"' | tr -d '"'`
 
 cat <<EOF
-This is a S2I nodejs-14 ${DISTRO} base image:
+This is a S2I nodejs-14-minimal ${DISTRO} base image:
 To use it, install S2I: https://github.com/openshift/source-to-image
 
 Sample invocation:

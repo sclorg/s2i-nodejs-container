@@ -1,8 +1,9 @@
 NodeJS 14 minimal container image
 =========================
 
-This container image includes Node.JS 14 on top of a minimal base image for your Node.JS 14 applications. This image is best used
-with the full-sized s2i-enabled Node.JS 14 image to build the application.
+This container image includes Node.JS 14 on top of a minimal base image for your Node.JS 14 applications. This image is designed to be used
+with the full-sized s2i-enabled Node.JS 14 image to build the application. The image can be used as a standalone s2i-enabled image as well,
+but compared to the full-sized Node.JS 14 image it will be missing many build-time dependencies.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
 the CentOS images are available on [Quay.io](https://quay.io/organization/centos7),
