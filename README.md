@@ -5,6 +5,8 @@ s2i-nodejs-container 12 Quay.io status: [![Docker Repository on Quay](https://qu
 
 s2i-nodejs-container 14 Quay.io status: [![Docker Repository on Quay](https://quay.io/repository/centos7/nodejs-14-centos7/status "Docker Repository on Quay")](https://quay.io/repository/centos7/nodejs-14-centos7)
 
+s2i-nodejs-container 16 Quay.io status: [![Docker Repository on Quay](https://quay.io/repository/centos7/nodejs-16-centos7/status "Docker Repository on Quay")](https://quay.io/repository/centos7/nodejs-16-centos7)
+
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
@@ -26,6 +28,7 @@ Versions
 Node.JS versions currently provided are:
 * [NodeJS 12](12)
 * [NodeJS 14](14)
+* [NodeJS 16](16)
 
 RHEL versions currently supported are:
 * RHEL7
@@ -40,11 +43,11 @@ Installation
 To build a Node.JS image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
-    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-14-rhel7).
+    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/nodejs-16-rhel7).
     To download it run:
 
     ```
-    $ podman pull registry.access.redhat.com/rhscl/nodejs-14-rhel7
+    $ podman pull registry.access.redhat.com/rhscl/nodejs-16-rhel7
     ```
 
     To build a RHEL based Node.JS image, you need to run the build on a properly
@@ -54,7 +57,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=rhel7 VERSIONS=14
+    $ make build TARGET=rhel7 VERSIONS=16
     ```
 
 *  **CentOS based image**
@@ -62,7 +65,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     This image is available on DockerHub. To download it run:
 
     ```
-    $ podman pull quay.io/centos7/nodejs-14-centos7
+    $ podman pull quay.io/centos7/nodejs-16-centos7
     ```
 
     To build a Node.JS image from scratch run:
@@ -71,7 +74,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=centos7 VERSIONS=14
+    $ make build TARGET=centos7 VERSIONS=16
     ```
 
 Note: while the installation steps are calling `podman`, you can replace any such calls by `docker` with the same arguments.
@@ -89,6 +92,9 @@ see [usage documentation](12/README.md).
 For information about usage of Dockerfile for NodeJS 14,
 see [usage documentation](14/README.md).
 
+For information about usage of Dockerfile for NodeJS 16,
+see [usage documentation](16/README.md).
+
 Test
 ----
 This repository also provides a [S2I](https://github.com/openshift/source-to-image) test framework,
@@ -104,7 +110,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=rhel7 VERSIONS=14
+    $ make test TARGET=rhel7 VERSIONS=16
     ```
 
 *  **CentOS based image**
@@ -112,7 +118,7 @@ Users can choose between testing a Node.JS test application based on a RHEL or C
     ```
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make test TARGET=centos7 VERSIONS=14
+    $ make test TARGET=centos7 VERSIONS=16
     ```
 
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
