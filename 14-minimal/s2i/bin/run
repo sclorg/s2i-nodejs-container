@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# S2I run script for the 'nodejs' image.
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+set -e
+
+if [ -e "/opt/app-root/etc/generate_container_user" ]; then
+  source /opt/app-root/etc/generate_container_user
+fi
+
+# Runs the nodejs application server. If the container is run in development mode,
+# hot deploy and debugging are enabled.
+run_node() {
+  echo -e "Environment: \n\tDEV_MODE=${DEV_MODE}\n\tNODE_ENV=${NODE_ENV}\n\tDEBUG_PORT=${DEBUG_PORT}"
+  if [ "$DEV_MODE" == true ]; then
+    echo "Launching via nodemon..."
+    exec nodemon --inspect="$DEBUG_PORT"
+  else
+    echo "Launching via npm..."
+    exec npm run -d $NPM_RUN
+  fi
+} 
+
+#Set the debug port to 5858 by default.
+if [ -z "$DEBUG_PORT" ]; then
+  export DEBUG_PORT=5858
+fi
+
+# Set the environment to development by default.
+if [ -z "$DEV_MODE" ]; then
+  export DEV_MODE=false
+fi
+
+# If NODE_ENV is not set by the user, then NODE_ENV is determined by whether
+# the container is run in development mode.
+if [ -z "$NODE_ENV" ]; then
+  if [ "$DEV_MODE" == true ]; then
+    export NODE_ENV=development
+  else
+    export NODE_ENV=production
+  fi
+fi
+
+# If the official dockerhub node image is used, skip the SCL setup below
+# and just run the nodejs server
+if [ -d "/usr/src/app" ]; then
+  run_node
+fi
+
+# Allow users to inspect/debug the builder image itself, by using:
+# $ docker run -i -t openshift/centos-nodejs-builder --debug
+#
+[ "$1" == "--debug" ] && exec /bin/bash
+
+run_node
