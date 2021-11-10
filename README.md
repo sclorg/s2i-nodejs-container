@@ -5,8 +5,6 @@ s2i-nodejs-container 12 Quay.io status: [![Docker Repository on Quay](https://qu
 
 s2i-nodejs-container 14 Quay.io status: [![Docker Repository on Quay](https://quay.io/repository/centos7/nodejs-14-centos7/status "Docker Repository on Quay")](https://quay.io/repository/centos7/nodejs-14-centos7)
 
-s2i-nodejs-container 16 Quay.io status: [![Docker Repository on Quay](https://quay.io/repository/centos7/nodejs-16-centos7/status "Docker Repository on Quay")](https://quay.io/repository/centos7/nodejs-16-centos7)
-
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
