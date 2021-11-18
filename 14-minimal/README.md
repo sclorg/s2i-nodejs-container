@@ -34,7 +34,7 @@ The first BuildConfig defines and builds the builder image, using the source-to-
 the `nodejs-builder-image` imagestream.
 
 ```
-apiVersion: v1
+apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   name: nodejs-builder-image
@@ -59,7 +59,7 @@ from the image and creates a new runtime image on top of the nodejs minimal imag
 The resulting runtime image is then pushed into the `nodejs-runtime-image` imagestream.
 
 ```
-apiVersion: v1
+apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   name: nodejs-runtime-image
