@@ -54,8 +54,6 @@ test_nodejs_imagestream
 # check if latest imagestream version is correct
 test_latest_imagestreams
 
-OS_TESTSUITE_RESULT=0
-
 ct_os_cluster_down
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
