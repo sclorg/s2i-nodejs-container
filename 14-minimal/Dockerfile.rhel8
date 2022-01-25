@@ -50,7 +50,8 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 RUN INSTALL_PKGS="nodejs nodejs-nodemon npm findutils tar" && \
-    echo -e "[nodejs]\nname=nodejs\nstream=$NODEJS_VERSION\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/nodejs.module && \
+    microdnf module disable nodejs && \
+    microdnf module enable nodejs:$NODEJS_VERSION && \
     microdnf --nodocs install $INSTALL_PKGS && \
     microdnf clean all && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
