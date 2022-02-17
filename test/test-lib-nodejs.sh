@@ -446,8 +446,13 @@ function test_nodemon_present() {
 
 function test_npm_cache_cleared() {
   # Test that the npm cache has been cleared
-  devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")
-  check_result "$?"
+  # Do not run test on CentOS Stream 9.
+  # The directory container _logs directory.
+  if [ "${OS}" != "c9s" ]; then
+    devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d \$(npm config get cache)")
+    check_result "$?"
+  fi
+
 }
 
 function test_npm_cache_exists() {
