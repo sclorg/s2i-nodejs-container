@@ -13,12 +13,19 @@ source "${THISDIR}/test-lib-openshift.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
 source "${THISDIR}/test-lib-remote-openshift.sh"
 
+TEST_LIST="\
+test_nodejs_s2i_container
+test_nodejs_s2i_app_ex
+test_nodejs_s2i_templates
+test_nodejs_imagestream
+"
+
 
 # change the branch to a different value if a new change in the example
 # app needs to be tested
 BRANCH_TO_TEST=master
 
-set -eo nounset
+set -u
 
 trap ct_os_cleanup EXIT SIGINT
 
@@ -35,23 +42,8 @@ test -n "${VERSION-}" || false 'make sure $VERSION is defined'
 export CT_EXTERNAL_REGISTRY=true
 export CT_SKIP_UPLOAD_IMAGE=true
 
-# TODO: We can make the tests work against examples inside the same PR
-ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/s2i-nodejs-container.git" test/test-app "This is a node.js echo service"
-ct_os_test_s2i_app "${IMAGE_NAME}" "https://github.com/sclorg/nodejs-ex.git" . "Welcome to your Node.js application on OpenShift"
+TEST_SUMMARY=''
+TEST_SET=${TESTS:-$TEST_LIST} ct_run_tests_from_testset "openshift-remote-cluster"
 
-for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ; do
-  ct_os_test_template_app ${IMAGE_NAME} \
-                          https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/${template} \
-                          nodejs \
-                          "Welcome to your Node.js application on OpenShift" \
-                          8080 http 200 "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing"
-done
-
-
-# Check the imagestream
-test_nodejs_imagestream
-
-OS_TESTSUITE_RESULT=0
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
-
