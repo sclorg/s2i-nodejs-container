@@ -22,7 +22,6 @@ For more information about concepts used in these container images, see the
 Versions
 ---------------
 Node.JS versions currently provided are:
-* [NodeJS 12](12)
 * [NodeJS 14](14)
 * [NodeJS 16](16)
 
@@ -81,9 +80,6 @@ on all provided versions of Node.JS.**
 
 Usage
 -----
-
-For information about usage of Dockerfile for NodeJS 12,
-see [usage documentation](12/README.md).
 
 For information about usage of Dockerfile for NodeJS 14,
 see [usage documentation](14/README.md).
