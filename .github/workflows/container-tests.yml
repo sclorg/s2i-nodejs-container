@@ -69,7 +69,7 @@ jobs:
           git_ref: ${{ matrix.branch }}
           tmt_plan_regex: ${{ matrix.tmt_plan }}
           pull_request_status_name: ${{ matrix.context }}
-          variables: "REPO_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY;REPO_NAME=$GITHUB_REPOSITORY;PR_NUMBER=${{ steps.pr_nr.outputs.PR_NR }};OS=${{ matrix.os_test }};TEST_NAME=test"
+          variables: "REPO_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY;REPO_NAME=$GITHUB_REPOSITORY;PR_NUMBER=${{ github.event.issue.number }};OS=${{ matrix.os_test }};TEST_NAME=test"
           compose: ${{ matrix.compose }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
