@@ -26,7 +26,7 @@ ENV NODEJS_VERSION=16 \
     CNB_GROUP_ID=0
 
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
-    DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
+DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
 building and running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
