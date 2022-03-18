@@ -72,6 +72,7 @@ TEST_LIST_CLIENTS="\
 express
 pino
 prom-client
+opossum
 "
 
 CLIENT_LIST=($TEST_LIST_CLIENTS)
@@ -81,6 +82,8 @@ readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- n
 readonly PINO_REPO="https://github.com/pinojs/pino.git"
 readonly PROMCLIENT_REVISION=v"${PROMCLIENT_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show prom-client version)}"
 readonly PROMCLIENT_REPO="https://github.com/siimon/prom-client.git"
+readonly OPOSSUM_REVISION="v${OPOSSUM_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show opossum version)}"
+readonly OPOSSUM_REPO="https://github.com/nodeshift/opossum.git"
 
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
