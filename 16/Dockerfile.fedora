@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/f33/s2i-core:latest
+FROM quay.io/fedora/s2i-core:34
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -42,11 +42,11 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"\
       com.redhat.component="$NAME" \
-      name="$FGC/$NAME" \
+      name="fedora/$NAME-$NODEJS_VERSION" \
       version="$NODEJS_VERSION" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
+      usage="oc new-app quay.io/fedora/$NAME-$NODEJS_VERSION~<SOURCE-REPOSITORY>"
 
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
     MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
