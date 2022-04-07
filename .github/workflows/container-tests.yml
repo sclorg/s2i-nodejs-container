@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tmt_plan: "fedora"
+          - tmt_plan: "c8s"
             os_test: "fedora"
             context: "Fedora"
             compose: "CentOS-Stream-8"
