@@ -19,8 +19,7 @@ ENV APP_ROOT=/opt/app-root \
     PLATFORM="el8" \
     NODEJS_VERSION=16 \
     NPM_RUN=start \
-    NAME=nodejs \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
+    NAME=nodejs
 
 ENV SUMMARY="Minimal image for running Node.js $NODEJS_VERSION applications" \
     DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
@@ -29,7 +28,8 @@ Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
 that makes it lightweight and efficient, perfect for data-intensive real-time applications \
 that run across distributed devices." \
-    NPM_CONFIG_PREFIX=$HOME/.npm-global
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
