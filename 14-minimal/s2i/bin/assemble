@@ -95,6 +95,12 @@ else
 	echo "---> Pruning the development dependencies"
 	npm prune
 
+	NPM_TMP=$(npm config get tmp)
+	if ! mountpoint $NPM_TMP; then
+		echo "---> Cleaning the $NPM_TMP/npm-*"
+		rm -rf $NPM_TMP/npm-*
+	fi
+
 	# Clear the npm's cache and tmp directories only if they are not a docker volumes
 	NPM_CACHE=$(npm config get cache)
 	if ! mountpoint $NPM_CACHE; then
@@ -104,12 +110,6 @@ else
 		# We do not want to delete .npmrc file.
 		rm -rf "${NPM_CACHE:?}/"
 	fi
-	NPM_TMP=$(npm config get tmp)
-	if ! mountpoint $NPM_TMP; then
-		echo "---> Cleaning the $NPM_TMP/npm-*"
-		rm -rf $NPM_TMP/npm-*
-	fi
-
 fi
 
 # Fix source directory permissions
