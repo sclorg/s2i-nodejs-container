@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/f32/s2i-core:latest
+FROM quay.io/fedora/s2i-core:35
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
