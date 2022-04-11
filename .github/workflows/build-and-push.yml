@@ -13,15 +13,42 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dockerfile_path: [ "14", "16" ]
+        - dockerfile_path: "14"
+          dockerfile: "Dockerfile"
+          registry_namespace: "centos7"
+          tag: "centos7"
+          quayio_username: "QUAY_IMAGE_BUILDER_USERNAME"
+          quayio_token: "QUAY_IMAGE_BUILDER_TOKEN"
+          suffix: "centos7"
+        - dockerfile_path: "16"
+          dockerfile: "Dockerfile.c9s"
+          registry_namespace: "sclorg"
+          tag: "c9s"
+          suffix: "c9s"
+          quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+          quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+        - dockerfile_path: "14"
+          dockerfile: "Dockerfile.fedora"
+          registry_namespace: "fedora"
+          tag: "fedora"
+          quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+          quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+        - dockerfile_path: "16"
+          dockerfile: "Dockerfile.fedora"
+          registry_namespace: "fedora"
+          tag: "fedora"
+          quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+          quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
     steps:
       - name: Build and push to quay.io registry
-        uses: sclorg/build-and-push-action@v1
+        uses: sclorg/build-and-push-action@v2
         with:
           registry: "quay.io"
-          registry_namespace: "centos7"
-          registry_username: ${{ secrets.QUAY_IMAGE_BUILDER_USERNAME }}
-          registry_token: ${{ secrets.QUAY_IMAGE_BUILDER_TOKEN }}
+          registry_namespace: ${{ matrix.registry_namespace }}
+          registry_username: ${{ secrets[matrix.quayio_username] }}
+          registry_token: ${{ secrets[matrix.quayio_token] }}
+          dockerfile: ${{ matrix.dockerfile }}
           docker_context: ${{ matrix.dockerfile_path }}
           dockerfile_path: ${{ matrix.dockerfile_path }}
-          tag: "centos7"
+          tag: ${{ matrix.tag }}
+          suffix: ${{ matrix.suffix }}
