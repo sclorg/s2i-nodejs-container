@@ -16,7 +16,7 @@ jobs:
           - tmt_plan: "c8s"
             os_test: "fedora"
             context: "Fedora"
-            compose: "CentOS-Stream-8"
+            compose: "Fedora-latest"
             api_key: "TF_PUBLIC_API_KEY"
             branch: "main"
             tmt_repo: "https://github.com/sclorg/sclorg-testing-farm"
@@ -34,6 +34,7 @@ jobs:
             api_key: "TF_INTERNAL_API_KEY"
             branch: "master"
             tmt_repo: "https://gitlab.cee.redhat.com/platform-eng-core-services/sclorg-tmt-plans"
+            tf_scope: "private"
           - tmt_plan: "rhel8-docker"
             os_test: "rhel8"
             context: "RHEL8"
@@ -41,6 +42,7 @@ jobs:
             api_key: "TF_INTERNAL_API_KEY"
             branch: "master"
             tmt_repo: "https://gitlab.cee.redhat.com/platform-eng-core-services/sclorg-tmt-plans"
+            tf_scope: "private"
           - tmt_plan: "c9s"
             os_test: "c9s"
             context: "CentOS Stream 9"
@@ -67,9 +69,8 @@ jobs:
           api_key: ${{ secrets[matrix.api_key] }}
           git_url: ${{ matrix.tmt_repo }}
           git_ref: ${{ matrix.branch }}
+          tf_scope: ${{ matrix.tf_scope }}
           tmt_plan_regex: ${{ matrix.tmt_plan }}
           pull_request_status_name: ${{ matrix.context }}
           variables: "REPO_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY;REPO_NAME=$GITHUB_REPOSITORY;PR_NUMBER=${{ github.event.issue.number }};OS=${{ matrix.os_test }};TEST_NAME=test"
           compose: ${{ matrix.compose }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
