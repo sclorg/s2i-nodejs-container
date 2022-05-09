@@ -73,6 +73,7 @@ express
 pino
 prom-client
 opossum
+kube-service-bindings
 "
 
 CLIENT_LIST=($TEST_LIST_CLIENTS)
@@ -84,6 +85,8 @@ readonly PROMCLIENT_REVISION=v"${PROMCLIENT_REVISION:-$(docker run --rm "${IMAGE
 readonly PROMCLIENT_REPO="https://github.com/siimon/prom-client.git"
 readonly OPOSSUM_REVISION="v${OPOSSUM_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show opossum version)}"
 readonly OPOSSUM_REPO="https://github.com/nodeshift/opossum.git"
+readonly KUBE_SERVICE_BINDINGS_REVISION="v${KUBE_SERVICE_BINDINGS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show kube-service-bindings version)}"
+readonly KUBE_SERVICE_BINDINGS_REPO="https://github.com/nodeshift/opossum.git"
 
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
