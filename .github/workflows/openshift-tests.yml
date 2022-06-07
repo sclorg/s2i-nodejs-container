@@ -51,6 +51,15 @@ jobs:
             branch: "master"
             tmt_repo: "https://gitlab.cee.redhat.com/platform-eng-core-services/sclorg-tmt-plans"
             tf_scope: "private"
+          - tmt_plan: "rhel9-openshift-4"
+            os_test: "rhel9"
+            context: "RHEL9 - OpenShift 4"
+            compose: "RHEL-9.1.0-Nightly"
+            test_name: "test-openshift-4"
+            api_key: "TF_INTERNAL_API_KEY"
+            branch: "master"
+            tmt_repo: "https://gitlab.cee.redhat.com/platform-eng-core-services/sclorg-tmt-plans"
+            tf_scope: "private"
 
     if: |
       github.event.issue.pull_request
