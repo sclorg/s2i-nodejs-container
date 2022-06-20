@@ -21,7 +21,7 @@ ENV NODEJS_VERSION=16 \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
-    CNB_STACK_ID=com.redhat.stacks.ubi8-nodejs-16 \
+    CNB_STACK_ID=com.redhat.stacks.ubi9-nodejs-16 \
     CNB_USER_ID=1001 \
     CNB_GROUP_ID=0
 

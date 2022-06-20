@@ -1,7 +1,14 @@
 NodeJS container images
 ====================
 
-s2i-nodejs-container 14 Quay.io status: [![Docker Repository on Quay](https://quay.io/repository/centos7/nodejs-14-centos7/status "Docker Repository on Quay")](https://quay.io/repository/centos7/nodejs-14-centos7)
+[![Build and push images to Quay.io registry](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml)
+
+Images available on Quay are:
+* CentOS 7 [nodejs-12](https://quay.io/repository/centos7/nodejs-12-centos7)
+* CentOS 7 [nodejs-14](https://quay.io/repository/centos7/nodejs-14-centos7)
+* CentOS Stream 9 [nodejs-16](https://quay.io/repository/sclorg/nodejs-16-c9s)
+* Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
+* Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
 
 
 This repository contains the source for building various versions of
@@ -28,9 +35,11 @@ Node.JS versions currently provided are:
 RHEL versions currently supported are:
 * RHEL7
 * RHEL8
+* RHEL9
 
 CentOS versions currently supported are:
 * CentOS7
+* CentOS Stream 9
 
 
 Installation
