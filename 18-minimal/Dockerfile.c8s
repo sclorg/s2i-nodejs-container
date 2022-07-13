@@ -50,9 +50,9 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 # nodejs-full-i18n is included for error strings
-RUN KOJI_PACKAGES="https://kojihub.stream.centos.org/kojifiles/packages/nodejs/18.2.0/1.module_el8.7.0+1175+23de1610/x86_64/nodejs-18.2.0-1.module_el8.7.0+1175+23de1610.x86_64.rpm https://kojihub.stream.centos.org/kojifiles/packages/nodejs/18.2.0/1.module_el8.7.0+1175+23de1610/x86_64/npm-8.9.0-1.18.2.0.1.module_el8.7.0+1175+23de1610.x86_64.rpm https://kojihub.stream.centos.org/kojifiles/packages/nodejs-nodemon/2.0.15/1.module_el8.7.0+1175+23de1610/noarch/nodejs-nodemon-2.0.15-1.module_el8.7.0+1175+23de1610.noarch.rpm" && \
-    INSTALL_PKGS="$KOJI_PACKAGES findutils tar" && \
+RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar" && \
     microdnf module disable nodejs && \
+    microdnf module enable nodejs:$NODEJS_VERSION && \
     microdnf --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     microdnf clean all && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
