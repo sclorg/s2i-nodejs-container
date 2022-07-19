@@ -46,12 +46,12 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-container" \
-      name="sclorg/$NAME-$NODEJS_VERSION" \
+      name="sclorg/$NAME-$NODEJS_VERSION-c8s" \
       version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION:latest <APP-NAME>"
+      usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c8s:latest <APP-NAME>"
 
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
     MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
