@@ -6,10 +6,10 @@ NodeJS container images
 Images available on Quay are:
 * CentOS 7 [nodejs-12](https://quay.io/repository/centos7/nodejs-12-centos7)
 * CentOS 7 [nodejs-14](https://quay.io/repository/centos7/nodejs-14-centos7)
+* CentOS Stream 8 [nodejs-18](https://quay.io/repository/sclorg/nodejs-18-c8s)
 * CentOS Stream 9 [nodejs-16](https://quay.io/repository/sclorg/nodejs-16-c9s)
 * Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
 * Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
-
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
@@ -31,14 +31,16 @@ Versions
 Node.JS versions currently provided are:
 * [NodeJS 14](14)
 * [NodeJS 16](16)
+* [NodeJS 18](18)
 
 RHEL versions currently supported are:
 * RHEL7
 * RHEL8
 * RHEL9
 
-CentOS versions currently supported are:
+CentOS versions currently available are:
 * CentOS7
+* CentOS Stream 8
 * CentOS Stream 9
 
 
