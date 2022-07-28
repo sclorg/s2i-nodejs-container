@@ -1,0 +1,118 @@
+#!/bin/bash
+#
+# The 'run' performs a simple test that verifies that STI image.
+# The main focus here is to exercise the STI scripts.
+#
+# IMAGE_NAME specifies a name of the candidate image used for testing.
+# The image has to be available before this script is executed.
+#
+# EXPRESS_REVISION specifies which express.js branch or tag should be tested;
+# by default it uses the latest released version as reported by
+# `npm show express version`.
+
+THISDIR=$(dirname ${BASH_SOURCE[0]})
+
+TEST_LIST_APP="\
+test_run_app_application
+test_s2i_usage
+test_scl_usage
+test_connection
+test_docker_run_usage
+test_scl_variables_in_dockerfile
+test_check_build_using_dockerfile
+test_nodemon_removed
+test_npm_cache_cleared
+test_npm_tmp_cleared
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
+"
+
+TEST_LIST_NODE_ENV="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_development
+"
+
+TEST_LIST_DEV_MODE="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
+"
+
+TEST_LIST_HW="\
+test_safe_logging
+test_run_hw_application
+"
+source "${THISDIR}/test-lib.sh"
+source "${THISDIR}/test-lib-nodejs.sh"
+
+test -n $IMAGE_NAME \
+  -a -n $VERSION
+readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
+
+test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+image_dir="$(readlink -f ${test_dir}/..)"
+test_short_summary=''
+TESTSUITE_RESULT=0
+cid_file=$(mktemp -u --suffix=.cid)
+
+# Since we built the candidate image locally, we don't want S2I attempt to pull
+# it from Docker hub
+s2i_args="--pull-policy=never "
+
+# TODO: This should be part of the image metadata
+test_port=8080
+
+# Common git configuration
+readonly -A gitconfig=(
+  [user.name]="builder"
+  [user.email]="build@localhost"
+  [commit.gpgsign]="false"
+)
+
+
+if [ "$DEBUG" != "" ]; then
+  set -x
+fi
+
+# Build the application image twice to ensure the 'save-artifacts' and
+# 'restore-artifacts' scripts are working properly
+prepare app
+echo "Testing the production image build"
+FULL_IMAGE=${FULL_IMAGE:-ubi8/nodejs-${VERSION//-minimal/}:latest}
+prepare_minimal_build testapp
+
+TEST_SET=${TESTS:-$TEST_LIST_APP} run_all_tests "app"
+
+echo "Testing proxy safe logging..."
+prepare hw
+prepare_minimal_build testhw
+
+TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
+
+# Start of testing regular s2i build for minimal image
+
+echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
+run_s2i_build "-e NODE_ENV=development"
+check_result $?
+
+TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} run_all_tests "node_env_development"
+
+echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
+run_s2i_build "-e DEV_MODE=true"
+check_result $?
+
+TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
+
+
+echo "Success!"
+cleanup
