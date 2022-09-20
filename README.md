@@ -10,6 +10,7 @@ Images available on Quay are:
 * CentOS Stream 9 [nodejs-16](https://quay.io/repository/sclorg/nodejs-16-c9s)
 * Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
 * Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
+* Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
@@ -97,6 +98,9 @@ see [usage documentation](14/README.md).
 
 For information about usage of Dockerfile for NodeJS 16,
 see [usage documentation](16/README.md).
+
+For information about usage of Dockerfile for NodeJS 18,
+see [usage documentation](18/README.md).
 
 Test
 ----

@@ -31,6 +31,8 @@ ct_os_set_ocp4
 
 ct_os_check_compulsory_vars
 
+ct_os_tag_image_for_cvp "nodejs"
+
 ct_os_check_login || exit 1
 
 set -u
