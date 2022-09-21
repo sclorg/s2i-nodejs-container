@@ -63,6 +63,7 @@ RUN yum install -y centos-release-scl-rh && \
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper
 
 # Copy extra files to the image, including help file.
 COPY ./root/ /
