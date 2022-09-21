@@ -20,6 +20,9 @@ run_node() {
   if [ "$DEV_MODE" == true ]; then
     echo "Launching via nodemon..."
     exec nodemon --inspect="$DEBUG_PORT"
+  elif [ -v NODE_CMD ]; then
+    echo "launching via init wrapper..."
+    exec ${STI_SCRIPTS_PATH}/init-wrapper $NODE_CMD
   else
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
