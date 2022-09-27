@@ -69,14 +69,15 @@ test_build_express_webapp
 # each entry XXX in the list a corresponding value for
 # XXX_REVISION and XXX_REPO must be defined below
 TEST_LIST_CLIENTS="\
-express
-pino
-prom-client
-opossum
-kube-service-bindings
+test_client_express
+test_client_pino
+test_client_prom
+test_client_opossum
+test_client_kube
 "
 
-CLIENT_LIST=($TEST_LIST_CLIENTS)
+
+CLIENT_LIST="express pino prom opossum kube"
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"
@@ -91,14 +92,15 @@ readonly KUBESERVICEBINDINGS_REPO="https://github.com/nodeshift/kube-service-bin
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
 
+trap "cleanup; ct_cleanup" EXIT SIGINT
+
 test -n $IMAGE_NAME \
   -a -n $VERSION
 
 test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 image_dir="$(readlink -f ${test_dir}/..)"
-test_short_summary=''
-TESTSUITE_RESULT=0
-cid_file=$(mktemp -u --suffix=.cid)
+CID_FILE_DIR=$(mktemp -d)
+cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 
 # Since we built the candidate image locally, we don't want S2I attempt to pull
 # it from Docker hub
@@ -126,31 +128,28 @@ echo "Testing the production image build"
 run_s2i_build
 check_result $?
 
-TEST_SET=${TESTS:-$TEST_LIST_APP} run_all_tests "app"
+TEST_SUMMARY=""
+TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
 
 echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
 run_s2i_build "-e NODE_ENV=development"
 check_result $?
 
-TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} run_all_tests "node_env_development"
+TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} ct_run_tests_from_testset "node_env_development"
 
 echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
 run_s2i_build "-e DEV_MODE=true"
 check_result $?
 
-TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} run_all_tests "dev_mode"
+TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} ct_run_tests_from_testset "dev_mode"
 
 echo "Testing proxy safe logging..."
 prepare hw
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
 check_result $?
 
-TEST_SET=${TESTS:-$TEST_LIST_HW} run_all_tests "hw"
-check_result $?
+TEST_SET=${TESTS:-$TEST_LIST_HW} ct_run_tests_from_testset "hw"
 
-TEST_SET=${TESTS:-$TEST_LIST_CLIENTS} run_all_tests "clients"
+TEST_SET=${TESTS:-$TEST_LIST_CLIENTS} ct_run_tests_from_testset "clients"
 
-TEST_SET=${TESTS:-$TEST_LIST_BINARY} run_all_tests "binary"
-
-echo "Success!"
-cleanup
+TEST_SET=${TESTS:-$TEST_LIST_BINARY} ct_run_tests_from_testset "binary"

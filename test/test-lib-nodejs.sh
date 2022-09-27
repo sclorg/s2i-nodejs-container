@@ -127,7 +127,7 @@ prepare() {
       popd >/dev/null
       ;;
     *)
-      if [[ " ${CLIENT_LIST[*]} " =~ "${test_case} " ]];
+      if [[ " ${TEST_LIST_CLIENTS[*]} " =~ "${test_case} " ]];
       then
         PREFIX=$1
         PREFIX=${PREFIX//-/}
@@ -145,6 +145,7 @@ prepare() {
 run_test_application() {
   case "$1" in
     app|hw|express-webapp|binary)
+      cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
       docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-test$1
       ;;
     *)
@@ -155,6 +156,7 @@ run_test_application() {
 }
 
 run_client_test_suite() {
+  cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
   docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} ${IMAGE_NAME}-$1 npm test
 }
 
@@ -164,12 +166,6 @@ kill_test_application() {
 }
 
 cleanup() {
-  if [ -f $cid_file ]; then
-      if container_exists; then
-          docker stop $(cat $cid_file)
-      fi
-  fi
-
   for image in "${IMAGE_NAME}"-{test{app,hw,express-webapp,binary}}; do
     image_exists "$image" || continue
     docker rmi -f "$image"
@@ -188,15 +184,6 @@ cleanup() {
     rm -rf "${test_dir}/${client}"
   done
   rm -rf ${test_dir}/test-express-webapp/.git
-
-  echo "$test_short_summary"
-
-  if [ $TESTSUITE_RESULT -eq 0 ] ; then
-    echo "Tests for ${IMAGE_NAME} succeeded."
-  else
-    echo "Tests for ${IMAGE_NAME} failed."
-  fi
-  exit $TESTSUITE_RESULT
 }
 
 check_result() {
@@ -371,10 +358,6 @@ test_incremental_build() {
 
 function test_scl_variables_in_dockerfile() {
   if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
-    # autocleanup only enabled here as only the following tests so far use it
-    CID_FILE_DIR=$(mktemp -d)
-    ct_enable_cleanup
-
     echo "Testing npm availability in Dockerfile"
     ct_binary_found_from_df npm
     check_result $?
@@ -416,6 +399,31 @@ function test_running_client_js {
   check_result $?
   run_client_test_suite "$1"
   check_result $?
+}
+
+function test_client_express() {
+  echo "Running express client test"
+  test_running_client_js express
+}
+
+function test_client_pino() {
+  echo "Running pino client test"
+  test_running_client_js pino
+}
+
+function test_client_prom() {
+  echo "Running prom-client test"
+  test_running_client_js prom-client
+}
+
+function test_client_opossum() {
+  echo "Running opossum client test"
+  test_running_client_js opossum
+}
+
+function test_client_kube() {
+  echo "Running kube-service-bindings client test"
+  test_running_client_js kube-service-bindings
 }
 
 function test_check_build_using_dockerfile() {
@@ -519,31 +527,6 @@ function test_safe_logging() {
       grep Setting /tmp/build-log
       check_result 1
   fi
-}
-
-function run_all_tests() {
-  local APP_NAME="$1"
-  for test_case in $TEST_SET; do
-    info "Running test $test_case ...."
-    TESTCASE_RESULT=0
-    if [[ " ${CLIENT_LIST[*]} " =~ "${test_case} " ]];
-    then
-      rm -f $cid_file
-      test_running_client_js "${test_case}"
-    else
-      $test_case
-    fi
-    check_result $?
-    local test_msg
-    if [ $TESTCASE_RESULT -eq 0 ]; then
-      test_msg="[PASSED]"
-    else
-      test_msg="[FAILED]"
-      TESTSUITE_RESULT=1
-    fi
-    printf -v test_short_summary "%s %s for '%s' %s\n" "${test_short_summary}" "${test_msg}" "${APP_NAME}" "$test_case"
-    [ -n "${FAIL_QUICKLY:-}" ] && cleanup "${APP_NAME}" && return 1
-  done;
 }
 
 # Check the imagestream
