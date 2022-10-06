@@ -9,10 +9,6 @@
 
 set -e
 
-if [ -e "/opt/app-root/etc/generate_container_user" ]; then
-  source /opt/app-root/etc/generate_container_user
-fi
-
 # Runs the nodejs application server. If the container is run in development mode,
 # hot deploy and debugging are enabled.
 run_node() {
@@ -24,7 +20,7 @@ run_node() {
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
   fi
-} 
+}
 
 #Set the debug port to 5858 by default.
 if [ -z "$DEBUG_PORT" ]; then
