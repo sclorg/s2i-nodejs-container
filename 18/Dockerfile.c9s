@@ -54,7 +54,8 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c9s:latest <APP-NAME>"
 
 # Package libatomic_ops was removed
-RUN MODULE_DEPS="make gcc gcc-c++ git openssl-devel" && \
+RUN yum -y module enable nodejs:$NODEJS_VERSION && \
+    MODULE_DEPS="make gcc gcc-c++ git openssl-devel" && \
     INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
