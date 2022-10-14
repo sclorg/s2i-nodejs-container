@@ -549,18 +549,31 @@ function run_all_tests() {
 # Check the imagestream
 function test_nodejs_imagestream() {
   case ${OS} in
-    rhel7|centos7) ;;
+    rhel7|centos7|rhel8|rhel9) ;;
     *) echo "Imagestream testing not supported for $OS environment." ; return 0 ;;
   esac
 
+  local tag="-ubi7"
+  if [ "${OS}" == "rhel8" ]; then
+    tag="-ubi8"
+  elif [ "${OS}" == "rhel9" ]; then
+    tag="-ubi9"
+  fi
+  if [ "${VERSION}" == "14-minimal" ]; then
+    VERSION=14
+  elif [ "${VERSION}" == "16-minimal" ]; then
+    VERSION=16
+  elif [ "${VERSION}" == "18-minimal" ]; then
+    VERSION=18
+  fi
   ct_os_test_image_stream_quickstart \
-    "${THISDIR}/../imagestreams/nodejs-${OS%[0-9]*}.json" \
+    "${THISDIR}/imagestreams/nodejs-${OS%[0-9]*}.json" \
     "https://raw.githubusercontent.com/sclorg/nodejs-ex/master/openshift/templates/nodejs.json" \
     "${IMAGE_NAME}" \
     'nodejs' \
     "Welcome to your Node.js application on OpenShift" \
     8080 http 200 \
-    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing"
+    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION}${tag} -p NAME=nodejs-testing"
 }
 
 function test_nodejs_s2i_container() {
