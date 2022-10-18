@@ -142,6 +142,9 @@ Application developers can use the following environment variables to configure 
 **`NPM_RUN`**  
        Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
 
+**`NODE_CMD`**  
+       When specified (e.g.Specify `NODE_CMD="node server.js"`) the `NODE_CMD` is executed by the `init-wrapper` script, which handles reaping zombie processes and signal forwarding (SIGINT, SIGTERM) to Node.js application.
+
 **`HTTP_PROXY`**  
        Use an npm proxy during assembly
 
