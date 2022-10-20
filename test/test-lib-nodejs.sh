@@ -592,6 +592,13 @@ function test_nodejs_s2i_app_ex() {
 
 function test_nodejs_s2i_templates() {
   local ret_val=0
+  if [ "${VERSION}" == "14-minimal" ]; then
+    VERSION=14
+  elif [ "${VERSION}" == "16-minimal" ]; then
+    VERSION=16
+  elif [ "${VERSION}" == "18-minimal" ]; then
+    VERSION=18
+  fi
   for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ; do
     ct_os_test_template_app ${IMAGE_NAME} \
       https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/${template} \
