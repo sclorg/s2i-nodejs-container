@@ -84,12 +84,15 @@ jobs:
         with:
           ref: "refs/pull/${{ github.event.issue.number }}/head"
 
+      # multiple shell variables in the PR comment can be defined
+      # when running the tests. They have to be separated by a semicolon
+      # example: [ENV:DEBUG=1;EXIT_ON_ERR=0;VAR=foo]
       - name: Obtain envvars from PR's comment
         id: user_defined
         shell: bash
         run : |
           _comment=${{ github.event.comment.body }}
-          _vars=$(echo $_comment | grep -Eo '\[ENV:.*\]' | cut -d':' -f2 | tr -d ']')
+          _vars=$(echo "$_comment" | grep -Eo '\[ENV:.*\]' | cut -d':' -f2 | tr -d ']')
           echo "::set-output name=VARS::${_vars}"
 
       - name: Prepare needed variables
