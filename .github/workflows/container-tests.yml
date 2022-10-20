@@ -84,6 +84,14 @@ jobs:
         with:
           ref: "refs/pull/${{ github.event.issue.number }}/head"
 
+      - name: Obtain envvars from PR's comment
+        id: user_defined
+        shell: bash
+        run : |
+          _comment=${{ github.event.comment.body }}
+          _vars=$(echo $_comment | grep -Eo '\[ENV:.*\]' | cut -d':' -f2 | tr -d ']')
+          echo "::set-output name=VARS::${_vars}"
+
       - name: Prepare needed variables
         shell: bash
         id: vars
@@ -118,5 +126,5 @@ jobs:
           tf_scope: ${{ matrix.tf_scope }}
           tmt_plan_regex: ${{ matrix.tmt_plan }}
           pull_request_status_name: "${{ matrix.context }} - ${{ matrix.version }}"
-          variables: "REPO_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY;REPO_NAME=$GITHUB_REPOSITORY;PR_NUMBER=${{ github.event.issue.number }};SINGLE_VERSION=${{ matrix.version }};OS=${{ matrix.os_test }};TEST_NAME=test"
+          variables: "REPO_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY;REPO_NAME=$GITHUB_REPOSITORY;PR_NUMBER=${{ github.event.issue.number }};SINGLE_VERSION=${{ matrix.version }};OS=${{ matrix.os_test }};TEST_NAME=test;${{ steps.user_defined.outputs.VARS }}"
           compose: ${{ matrix.compose }}
