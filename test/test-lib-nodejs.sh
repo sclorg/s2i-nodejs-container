@@ -559,12 +559,8 @@ function test_nodejs_imagestream() {
   elif [ "${OS}" == "rhel9" ]; then
     tag="-ubi9"
   fi
-  if [ "${VERSION}" == "14-minimal" ]; then
-    VERSION=14
-  elif [ "${VERSION}" == "16-minimal" ]; then
-    VERSION=16
-  elif [ "${VERSION}" == "18-minimal" ]; then
-    VERSION=18
+  if [[ "${VERSION}" == *"minimal"* ]]; then
+    VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
   ct_os_test_image_stream_quickstart \
     "${THISDIR}/imagestreams/nodejs-${OS%[0-9]*}.json" \
@@ -592,12 +588,8 @@ function test_nodejs_s2i_app_ex() {
 
 function test_nodejs_s2i_templates() {
   local ret_val=0
-  if [ "${VERSION}" == "14-minimal" ]; then
-    VERSION=14
-  elif [ "${VERSION}" == "16-minimal" ]; then
-    VERSION=16
-  elif [ "${VERSION}" == "18-minimal" ]; then
-    VERSION=18
+  if [[ "${VERSION}" == *"minimal"* ]]; then
+    VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
   for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ; do
     ct_os_test_template_app ${IMAGE_NAME} \
