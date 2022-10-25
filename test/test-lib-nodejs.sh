@@ -549,18 +549,27 @@ function run_all_tests() {
 # Check the imagestream
 function test_nodejs_imagestream() {
   case ${OS} in
-    rhel7|centos7) ;;
+    rhel7|centos7|rhel8|rhel9) ;;
     *) echo "Imagestream testing not supported for $OS environment." ; return 0 ;;
   esac
 
+  local tag="-ubi7"
+  if [ "${OS}" == "rhel8" ]; then
+    tag="-ubi8"
+  elif [ "${OS}" == "rhel9" ]; then
+    tag="-ubi9"
+  fi
+  if [[ "${VERSION}" == *"minimal"* ]]; then
+    VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
+  fi
   ct_os_test_image_stream_quickstart \
-    "${THISDIR}/../imagestreams/nodejs-${OS%[0-9]*}.json" \
+    "${THISDIR}/imagestreams/nodejs-${OS%[0-9]*}.json" \
     "https://raw.githubusercontent.com/sclorg/nodejs-ex/master/openshift/templates/nodejs.json" \
     "${IMAGE_NAME}" \
     'nodejs' \
     "Welcome to your Node.js application on OpenShift" \
     8080 http 200 \
-    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing"
+    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION}${tag} -p NAME=nodejs-testing"
 }
 
 function test_nodejs_s2i_container() {
@@ -579,6 +588,9 @@ function test_nodejs_s2i_app_ex() {
 
 function test_nodejs_s2i_templates() {
   local ret_val=0
+  if [[ "${VERSION}" == *"minimal"* ]]; then
+    VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
+  fi
   for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ; do
     ct_os_test_template_app ${IMAGE_NAME} \
       https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/${template} \
