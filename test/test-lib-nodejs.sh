@@ -548,11 +548,6 @@ function run_all_tests() {
 
 # Check the imagestream
 function test_nodejs_imagestream() {
-  case ${OS} in
-    rhel7|centos7|rhel8|rhel9) ;;
-    *) echo "Imagestream testing not supported for $OS environment." ; return 0 ;;
-  esac
-
   local tag="-ubi7"
   if [ "${OS}" == "rhel8" ]; then
     tag="-ubi8"
@@ -591,14 +586,16 @@ function test_nodejs_s2i_templates() {
   if [[ "${VERSION}" == *"minimal"* ]]; then
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
-  for template in nodejs.json nodejs-mongodb.json nodejs-mongodb-persistent.json ; do
-    ct_os_test_template_app ${IMAGE_NAME} \
-      https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/${template} \
-      nodejs \
-      "Welcome to your Node.js application on OpenShift" \
-      8080 http 200 \
-      "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing" || ret_val=1
-  done
+  # TODO
+  # MongoDB is not supported at all.
+  # Let's disable it or replace it with mariadb
+  ct_os_test_template_app "${IMAGE_NAME}" \
+    "https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/nodejs.json" \
+    nodejs \
+    "Welcome to your Node.js application on OpenShift" \
+    8080 http 200 \
+    "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing" || ret_val=1
+
   return $ret_val
 }
 
