@@ -548,12 +548,6 @@ function run_all_tests() {
 
 # Check the imagestream
 function test_nodejs_imagestream() {
-  local tag="-ubi7"
-  if [ "${OS}" == "rhel8" ]; then
-    tag="-ubi8"
-  elif [ "${OS}" == "rhel9" ]; then
-    tag="-ubi9"
-  fi
   if [[ "${VERSION}" == *"minimal"* ]]; then
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
@@ -564,7 +558,7 @@ function test_nodejs_imagestream() {
     'nodejs' \
     "Welcome to your Node.js application on OpenShift" \
     8080 http 200 \
-    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION}${tag} -p NAME=nodejs-testing"
+    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing"
 }
 
 function test_nodejs_s2i_container() {
