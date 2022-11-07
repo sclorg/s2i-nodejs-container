@@ -1,3 +1,0 @@
-# This is for the purpose of building this container on the
-# CentOS Container Pipeline.
-job-id: nodejs-010-centos7
