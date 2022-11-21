@@ -1,4 +1,4 @@
-FROM ubi8/s2i-core:1
+FROM registry.access.redhat.com/ubi8/s2i-core:1
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
