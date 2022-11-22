@@ -16,11 +16,34 @@ run_node() {
   if [ "$DEV_MODE" == true ]; then
     echo "Launching via nodemon..."
     exec nodemon --inspect="$DEBUG_PORT"
+  elif [ -v NODE_CMD ]; then
+    if [ "$INIT_WRAPPER" == true ]; then
+      echo "launching via init wrapper..."
+      exec ${STI_SCRIPTS_PATH}/init-wrapper $NODE_CMD
+    else
+      echo "Launching via ${NODE_CMD}"
+      echo "exec $NODE_CMD"
+    fi
+  elif [ "$INIT_WRAPPER" == true ]; then
+
+    if [ -f "server.js" ]; then
+      start_file="server.js"
+    elif [ -f "index.js" ]; then
+      start_file="main.js"
+    elif [ -f "main.js" ]; then
+      start_file="main.js"
+    else
+      echo "Failed to find file for staring the Node.js application"
+      exit 1
+    fi
+
+    echo "launching via init wrapper..."
+    exec ${STI_SCRIPTS_PATH}/init-wrapper node $start_file
   else
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
   fi
-} 
+}
 
 #Set the debug port to 5858 by default.
 if [ -z "$DEBUG_PORT" ]; then
