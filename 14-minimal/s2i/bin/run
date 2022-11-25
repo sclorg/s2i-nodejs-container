@@ -25,11 +25,10 @@ run_node() {
       echo "exec $NODE_CMD"
     fi
   elif [ "$INIT_WRAPPER" == true ]; then
-
     if [ -f "server.js" ]; then
       start_file="server.js"
     elif [ -f "index.js" ]; then
-      start_file="main.js"
+      start_file="index.js"
     elif [ -f "main.js" ]; then
       start_file="main.js"
     else
