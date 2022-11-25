@@ -246,13 +246,14 @@ Below is an example _package.json_ file with the _main_ attribute and _start_ sc
 
 ## init-wrapper
 
-init-wrapper script is located on `/usr/libexec/s2i/init-wrapper` and is used for preventing below circumstances:
+init-wrapper script is located on `/usr/libexec/s2i/init-wrapper` and is used to handle:
 
 - Proper signal handling and propagation, as Node.js was not designed to run as PID 1.
 - Reaping zombie child processes
-- Avoiding use of npm, more information on [reference architecture](https://github.com/nodeshift/nodejs-reference-architecture/blob/e4c4dc1fd20c2cac392e862859aaad27f85d504f/docs/development/building-good-containers.md#avoiding-using-npm-to-start-application)
+Avoiding use of npm, there is more information on why you want to avoid that in the [Node.js reference architecture](https://github.com/nodeshift/nodejs-reference-architecture/blob/e4c4dc1fd20c2cac392e862859aaad27f85d504f/docs/development/building-good-containers.md#avoiding-using-npm-to-start-application). When the INIT_WRAPPER is set to true the application is started via the init script instead of using npm start.
 
-A detailed explanation on how the init-wrapper script works is avalable on [this url](http://veithen.io/2014/11/16/sigterm-propagation.html).
+A detailed explanation on how the init-wrapper script works is avalable in
+[this url](http://veithen.io/2014/11/16/sigterm-propagation.html).
 
 Example of using init-wrapper:
 
