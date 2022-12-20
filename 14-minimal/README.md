@@ -216,7 +216,7 @@ Application developers can use the following environment variables to configure 
        When specified (e.g.Specify `NODE_CMD="node server.js"`) the value of `NODE_CMD` is used to start the application instead of `npm start`.
 
 **`INIT_WRAPPER`**  
-       When set to "true", the application is started via the `init-wrapper` script instead of using `npm start`, by looking for the presence of the files `server.js`, `index.js` or `main.js` in the order in which they are listed. In case of `NODE_CMD` environemnt variale is specified, then `init-wrapper` script will use the value of `NODE_CMD` to start your application.
+       When set to "true", the application is started via the `init-wrapper` script instead of using `npm start`, by looking for the presence of the files `server.js`, `index.js` or `main.js` in the order in which they are listed. In case of `NODE_CMD` environemnt variable is specified, then `init-wrapper` script will use the value of `NODE_CMD` to start your application.
 
 #### Additional variables used in the full-sized image
 
