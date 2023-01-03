@@ -25,19 +25,23 @@ run_node() {
       echo "exec $NODE_CMD"
     fi
   elif [ "$INIT_WRAPPER" == true ]; then
-    if [ -f "server.js" ]; then
-      start_file="server.js"
-    elif [ -f "index.js" ]; then
-      start_file="index.js"
-    elif [ -f "main.js" ]; then
-      start_file="main.js"
-    else
-      echo "Failed to find file for staring the Node.js application"
-      exit 1
-    fi
 
-    echo "launching via init wrapper..."
-    exec ${STI_SCRIPTS_PATH}/init-wrapper node $start_file
+      package_json_start=$(cat package.json | grep "start" | sed -r 's/(.*)"start"([^:]*[^"]*")(.*)",/\3/')
+      package_json_main=$(cat package.json | grep "main" | sed -r 's/(.*)"main"([^:]*[^"]*")(.*)",/\3/')
+
+      if [ -n "$package_json_start" ]; then
+          start_command=$package_json_start
+      elif [ -n $package_json_main ]; then
+          start_command="node ."
+      elif [ -f "server.js" ]; then
+          start_command="node server.js"
+      else
+          echo "Failed to find file for starting the Node.js application"
+          exit 1
+      fi
+
+      echo "launching via init wrapper..."
+      exec ${STI_SCRIPTS_PATH}/init-wrapper $start_command
   else
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
