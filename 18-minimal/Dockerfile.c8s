@@ -59,6 +59,10 @@ RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which
 
 COPY ./s2i/bin/ /usr/libexec/s2i
 
+# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
+COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper
+
 # Copy extra files to the image.
 COPY ./root/ /
 
