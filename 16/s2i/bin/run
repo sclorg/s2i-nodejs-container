@@ -29,7 +29,6 @@ run_node() {
       echo "exec $NODE_CMD"
     fi
   elif [ "$INIT_WRAPPER" == true ]; then
-
       package_json_start=$(cat package.json | grep "start" | sed -r 's/(.*)"start"([^:]*[^"]*")(.*)",/\3/')
       package_json_main=$(cat package.json | grep "main" | sed -r 's/(.*)"main"([^:]*[^"]*")(.*)",/\3/')
 
@@ -43,7 +42,6 @@ run_node() {
           echo "Failed to find file for starting the Node.js application"
           exit 1
       fi
-
       echo "launching via init wrapper..."
       exec ${STI_SCRIPTS_PATH}/init-wrapper $start_command
   else
