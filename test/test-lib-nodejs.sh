@@ -165,27 +165,6 @@ kill_test_application() {
 	rm $cid_file
 }
 
-cleanup() {
-  for image in "${IMAGE_NAME}"-{test{app,hw,express-webapp,binary}}; do
-    image_exists "$image" || continue
-    docker rmi -f "$image"
-  done
-
-  for client in "${CLIENT_LIST[@]}"; do
-    image="${IMAGE_NAME}-${client}"
-    image_exists "$image" || continue
-    docker rmi -f "$image"
-  done
-
-  rm -rf ${test_dir}/test-app/.git
-  rm -rf ${test_dir}/test-hw/.git
-  rm -rf ${test_dir}/test-binary/.git
-  for client in "${CLIENT_LIST[@]}"; do
-    rm -rf "${test_dir}/${client}"
-  done
-  rm -rf ${test_dir}/test-express-webapp/.git
-}
-
 check_result() {
   local result="$1"
   if [[ "$result" != "0" ]]; then
