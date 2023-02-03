@@ -136,7 +136,7 @@ prepare() {
         prepare_client_repo "${test_dir}/$1" "${!REPO}" "${!REVISION}"
       else
         echo "Please specify a valid test application"
-        exit 1
+        return 1
       fi
       ;;
   esac
@@ -374,6 +374,7 @@ function test_build_express_webapp() {
 function test_running_client_js {
   echo "Running $1 test suite"
   prepare "$1"
+  check_result $?
   run_s2i_build_client "$1"
   check_result $?
   run_client_test_suite "$1"
