@@ -127,7 +127,7 @@ prepare() {
       popd >/dev/null
       ;;
     *)
-      if [[ " ${TEST_LIST_CLIENTS[*]} " =~ "${test_case} " ]];
+      if [[ "$TEST_LIST_CLIENTS" == *"${test_case}"* ]];
       then
         PREFIX=$1
         PREFIX=${PREFIX//-/}
