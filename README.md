@@ -6,8 +6,6 @@ NodeJS container images
 Images available on Quay are:
 * CentOS 7 [nodejs-12](https://quay.io/repository/centos7/nodejs-12-centos7)
 * CentOS 7 [nodejs-14](https://quay.io/repository/centos7/nodejs-14-centos7)
-* CentOS Stream 8 [nodejs-18](https://quay.io/repository/sclorg/nodejs-18-c8s)
-* CentOS Stream 9 [nodejs-16](https://quay.io/repository/sclorg/nodejs-16-c9s)
 * Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
 * Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
 * Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
