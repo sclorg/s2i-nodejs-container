@@ -157,7 +157,10 @@ run_test_application() {
 
 run_client_test_suite() {
   cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
-  docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} ${IMAGE_NAME}-$1 npm test
+  local cmd="npm test"
+  # Skip style check tests
+  [ "$1" == "prom-client" ] && cmd="sed -i.bak 's/&& npm run check-prettier //g' package.json && $cmd"
+  docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} ${IMAGE_NAME}-$1 bash -c "$cmd"
 }
 
 kill_test_application() {
