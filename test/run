@@ -74,6 +74,7 @@ test_client_prom
 test_client_opossum
 test_client_kube
 test_client_faas
+test_client_fastify
 "
 
 # If an app or a test is in UNSTABLE_TESTS and IGNORE_UNSTABLE_TESTS
@@ -99,6 +100,8 @@ readonly KUBESERVICEBINDINGS_REVISION="v${KUBESERVICEBINDINGS_REVISION:-$(docker
 readonly KUBESERVICEBINDINGS_REPO="https://github.com/nodeshift/kube-service-bindings.git"
 readonly FAASJSRUNTIME_REVISION="v${FAASJSRUNTIME_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show faas-js-runtime version)}"
 readonly FAASJSRUNTIME_REPO="https://github.com/nodeshift/faas-js-runtime.git"
+readonly FASTIFY_REVISION="v${FASTIFY_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show fastify version)}"
+readonly FASTIFY_REPO="https://github.com/fastify/fastify.git"
 
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
