@@ -77,6 +77,17 @@ test_client_kube
 test_client_faas
 "
 
+# If an app or a test is in UNSTABLE_TESTS and IGNORE_UNSTABLE_TESTS
+# env variable is defined, a result of the test has no impact on
+# the overall result of the test suite.
+#
+# Reasons for specific tests to be marked as unstable:
+#   test_client_pino:
+#     - the upstream testcase nondeterministically fails.
+#       Bug on upstream is already issued. We were not able to find a reproducer
+#       for this yet. See https://github.com/pinojs/pino/issues/1252.
+declare -a UNSTABLE_TESTS=(test_client_pino)
+
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"
