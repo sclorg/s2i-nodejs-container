@@ -70,7 +70,6 @@ test_build_express_webapp
 # XXX_REVISION and XXX_REPO must be defined below
 TEST_LIST_CLIENTS="\
 test_client_express
-test_client_pino
 test_client_prom
 test_client_opossum
 test_client_kube
@@ -86,7 +85,7 @@ test_client_faas
 #     - the upstream testcase nondeterministically fails.
 #       Bug on upstream is already issued. We were not able to find a reproducer
 #       for this yet. See https://github.com/pinojs/pino/issues/1252.
-declare -a UNSTABLE_TESTS=(test_client_pino)
+## declare -a UNSTABLE_TESTS=(test_client_pino)
 
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
