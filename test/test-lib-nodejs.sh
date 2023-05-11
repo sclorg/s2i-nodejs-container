@@ -414,6 +414,11 @@ function test_client_faas() {
   test_running_client_js faas-js-runtime
 }
 
+function test_client_cloudevents() {
+  echo "Running CloudEvents client test"
+  test_running_client_js cloudevents
+}
+
 function test_check_build_using_dockerfile() {
   info "Check building using a Dockerfile"
   ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
