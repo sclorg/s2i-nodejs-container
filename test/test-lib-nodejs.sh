@@ -418,6 +418,10 @@ function test_client_cloudevents() {
   echo "Running CloudEvents client test"
   test_running_client_js cloudevents
 }
+function test_client_fastify() {
+  echo "Running fastify client test"
+  test_running_client_js fastify
+}
 
 function test_check_build_using_dockerfile() {
   info "Check building using a Dockerfile"
