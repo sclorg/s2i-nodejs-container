@@ -417,7 +417,7 @@ function test_client_faas() {
 function test_client_cloudevents() {
   echo "Running CloudEvents client test"
   test_running_client_js cloudevents
-
+}
 function test_client_fastify() {
   echo "Running fastify client test"
   test_running_client_js fastify
