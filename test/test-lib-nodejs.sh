@@ -106,7 +106,7 @@ EOF
       ;;
     *)
       echo "Please specify a valid test application"
-      exit 1
+      return 1
       ;;
   esac
 
@@ -115,7 +115,7 @@ EOF
 prepare() {
   if ! image_exists ${IMAGE_NAME}; then
     echo "ERROR: The image ${IMAGE_NAME} must exist before this script is executed."
-    exit 1
+    return 1
   fi
 
   case "$1" in
@@ -150,7 +150,7 @@ run_test_application() {
       ;;
     *)
       echo "No such test application"
-      exit 1
+      return 1
       ;;
     esac
 }
