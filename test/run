@@ -142,26 +142,26 @@ cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 prepare app
 echo "Testing the production image build"
 run_s2i_build
-check_result $?
+ct_check_testcase_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
 
 echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
 run_s2i_build "-e NODE_ENV=development"
-check_result $?
+ct_check_testcase_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} ct_run_tests_from_testset "node_env_development"
 
 echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
 run_s2i_build "-e DEV_MODE=true"
-check_result $?
+ct_check_testcase_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} ct_run_tests_from_testset "dev_mode"
 
 echo "Testing proxy safe logging..."
 prepare hw
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
-check_result $?
+ct_check_testcase_result $?
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} ct_run_tests_from_testset "hw"
 
