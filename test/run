@@ -129,7 +129,6 @@ readonly -A gitconfig=(
   [commit.gpgsign]="false"
 )
 
-
 if [ "$DEBUG" != "" ]; then
   set -x
 fi
@@ -140,6 +139,7 @@ cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
+check_prep_result $? app || exit
 echo "Testing the production image build"
 run_s2i_build
 ct_check_testcase_result $?
@@ -160,6 +160,7 @@ TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} ct_run_tests_from_testset "dev_mode"
 
 echo "Testing proxy safe logging..."
 prepare hw
+check_prep_result $? hw || exit
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
 ct_check_testcase_result $?
 

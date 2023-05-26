@@ -88,6 +88,7 @@ cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 # Build the application image twice to ensure the 'save-artifacts' and
 # 'restore-artifacts' scripts are working properly
 prepare app
+check_prep_result $? app || exit
 echo "Testing the production image build"
 FULL_IMAGE=${FULL_IMAGE:-ubi8/nodejs-${VERSION//-minimal/}:latest}
 prepare_minimal_build testapp
@@ -96,6 +97,7 @@ TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
 
 echo "Testing proxy safe logging..."
 prepare hw
+check_prep_result $? hw || exit
 prepare_minimal_build testhw
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} ct_run_tests_from_testset "hw"
