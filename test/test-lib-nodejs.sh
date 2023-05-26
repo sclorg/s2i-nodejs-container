@@ -15,6 +15,14 @@ info() {
   echo -e "\n\e[1m[INFO] $@...\e[0m\n"
 }
 
+check_prep_result() {
+  if [ $1 -ne 0 ]; then
+    ct_update_test_result "[FAILED]" "$2" "preparation"
+    TESTSUITE_RESULT=1
+    return $1
+  fi
+}
+
 image_exists() {
   docker inspect $1 &>/dev/null
 }
@@ -350,6 +358,7 @@ function test_scl_variables_in_dockerfile() {
 run_s2i_build_express_webapp() {
   local result
   prepare express-webapp
+  check_prep_result $? express-webapp || return
   ct_s2i_build_as_df file://${test_dir}/test-express-webapp ${IMAGE_NAME} ${IMAGE_NAME}-testexpress-webapp ${s2i_args} $(ct_build_s2i_npm_variables)
   run_test_application express-webapp
   wait_for_cid
@@ -368,6 +377,7 @@ function test_build_express_webapp() {
 function test_running_client_js {
   echo "Running $1 test suite"
   prepare "$1"
+  check_prep_result $? $1 || return
   ct_check_testcase_result $?
   run_s2i_build_client "$1"
   ct_check_testcase_result $?
@@ -496,6 +506,7 @@ function test_run_binary_application() {
   # On RHEL7 and CentOS7 is gcc-4.8
   if [ "$OS" != "rhel7" ] && [ "$OS" != "centos7" ]; then
     prepare binary
+    check_prep_result $? binary || return
     run_s2i_build_binary
     ct_check_testcase_result $?
     # Verify that the HTTP connection can be established to test application container
