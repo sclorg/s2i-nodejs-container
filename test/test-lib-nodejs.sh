@@ -168,15 +168,6 @@ kill_test_application() {
 	rm $cid_file
 }
 
-check_result() {
-  local result="$1"
-  if [[ "$result" != "0" ]]; then
-    echo "S2I image '${IMAGE_NAME}' test FAILED (exit code: ${result})"
-    TESTCASE_RESULT=1
-  fi
-  return $result
-}
-
 wait_for_cid() {
   local max_attempts=20
   local sleep_time=1
@@ -193,13 +184,13 @@ wait_for_cid() {
 test_s2i_usage() {
   echo "Testing 's2i usage'..."
   ct_s2i_usage ${IMAGE_NAME} ${s2i_args} &>/dev/null
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 test_docker_run_usage() {
   echo "Testing 'docker run' usage..."
   docker run --rm ${IMAGE_NAME} &>/dev/null
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 test_connection() {
@@ -248,7 +239,7 @@ scl_usage() {
 }
 function test_scl_usage() {
   scl_usage "node --version" "v${VERSION//-minimal/}."
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 validate_default_value() {
@@ -302,15 +293,15 @@ test_dev_mode() {
   wait_for_cid
 
   test_connection
-  check_result $?
+  ct_check_testcase_result $?
 
   logs=$(container_logs)
   echo ${logs} | grep -q DEV_MODE=$dev_mode
-  check_result $?
+  ct_check_testcase_result $?
   echo ${logs} | grep -q DEBUG_PORT=5858
-  check_result $?
+  ct_check_testcase_result $?
   echo ${logs} | grep -q NODE_ENV=$node_env
-  check_result $?
+  ct_check_testcase_result $?
 
   kill_test_application
 }
@@ -318,21 +309,21 @@ test_dev_mode() {
 test_incremental_build() {
   npm_variables=$(ct_build_s2i_npm_variables)
   build_log1=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} ${npm_variables})
-  check_result $?
+  ct_check_testcase_result $?
   build_log2=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} ${npm_variables} --incremental)
-  check_result $?
+  ct_check_testcase_result $?
   if [ "$VERSION" == "6" ]; then
       # Different npm output for version 6
       if echo "$build_log2" | grep -e "\-\- yarn@[0-9\.]*"; then
           echo "ERROR Incremental build failed: yarn package is getting installed in incremental build"
-          check_result 1
+          ct_check_testcase_result 1
       fi
   else
       first=$(echo "$build_log1" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
       second=$(echo "$build_log2" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
       if [ "$first" == "$second" ]; then
           echo "ERROR Incremental build failed: both builds installed $first packages"
-          check_result 1
+          ct_check_testcase_result 1
       fi
   fi
 
@@ -342,15 +333,15 @@ function test_scl_variables_in_dockerfile() {
   if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
     echo "Testing npm availability in Dockerfile"
     ct_binary_found_from_df npm
-    check_result $?
+    ct_check_testcase_result $?
 
     info "Testing variable presence during \`docker exec\`"
     ct_check_exec_env_vars
-    check_result $?
+    ct_check_testcase_result $?
 
     info "Checking if all scl variables are defined in Dockerfile"
     ct_check_scl_enable_vars
-    check_result $?
+    ct_check_testcase_result $?
  fi
 }
 
@@ -371,17 +362,17 @@ run_s2i_build_express_webapp() {
 function test_build_express_webapp() {
   echo "Running express webapp test"
   run_s2i_build_express_webapp
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 function test_running_client_js {
   echo "Running $1 test suite"
   prepare "$1"
-  check_result $?
+  ct_check_testcase_result $?
   run_s2i_build_client "$1"
-  check_result $?
+  ct_check_testcase_result $?
   run_client_test_suite "$1"
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 function test_client_express() {
@@ -426,26 +417,26 @@ function test_client_fastify() {
 function test_check_build_using_dockerfile() {
   info "Check building using a Dockerfile"
   ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
-  check_result $?
+  ct_check_testcase_result $?
   ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Welcome to your Node.js application on OpenShift' app-src
-  check_result $?
+  ct_check_testcase_result $?
 }
 function test_npm_functionality() {
   echo "Testing npm availability"
   ct_npm_works
-  check_result $?
+  ct_check_testcase_result $?
 }
 
 function test_nodemon_removed() {
   # Test that the development dependencies (nodemon) have been removed (npm prune)
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d ./node_modules/nodemon")
-  check_result "$?"
+  ct_check_testcase_result "$?"
 }
 
 function test_nodemon_present() {
   # Test that the development dependencies (nodemon) have been removed (npm prune)
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ./node_modules/nodemon")
-  check_result "$?"
+  ct_check_testcase_result "$?"
 }
 
 
@@ -453,19 +444,19 @@ function test_npm_cache_cleared() {
   # Test that the npm cache has been cleared
   cache_loc=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "npm config get cache")
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! test -d $cache_loc")
-  check_result "$?"
+  ct_check_testcase_result "$?"
 }
 
 function test_npm_cache_exists() {
   # Test that the npm cache has been cleared
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d \$(npm config get cache)")
-  check_result "$?"
+  ct_check_testcase_result "$?"
 }
 
 function test_npm_tmp_cleared() {
   # Test that the npm tmp has been cleared
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")
-  check_result "$?"
+  ct_check_testcase_result "$?"
 }
 
 function test_dev_mode_false_production() {
@@ -495,7 +486,7 @@ function test_run_hw_application() {
   run_test_application hw
   # Wait for the container to write it's CID file
   wait_for_cid
-  check_result $?
+  ct_check_testcase_result $?
   kill_test_application
 }
 
@@ -506,7 +497,7 @@ function test_run_binary_application() {
   if [ "$OS" != "rhel7" ] && [ "$OS" != "centos7" ]; then
     prepare binary
     run_s2i_build_binary
-    check_result $?
+    ct_check_testcase_result $?
     # Verify that the HTTP connection can be established to test application container
     run_test_application binary
     # Wait for the container to write it's CID file
@@ -518,11 +509,11 @@ function test_run_binary_application() {
 function test_safe_logging() {
   if [[ $(grep redacted /tmp/build-log | wc -l) -eq 4 ]]; then
       grep redacted /tmp/build-log
-      check_result 0
+      ct_check_testcase_result 0
   else
       echo "Some proxy log-in credentials were left in log file"
       grep Setting /tmp/build-log
-      check_result 1
+      ct_check_testcase_result 1
   fi
 }
 
