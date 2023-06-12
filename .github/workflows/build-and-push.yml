@@ -14,48 +14,50 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile_path: "14"
-            dockerfile: "Dockerfile"
+          - dockerfile: "14/Dockerfile"
+            docker_context: 14
             registry_namespace: "centos7"
             tag: "centos7"
             quayio_username: "QUAY_IMAGE_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_BUILDER_TOKEN"
-            suffix: "centos7"
-          - dockerfile_path: "16"
-            dockerfile: "Dockerfile.c9s"
+            image_name: "nodejs-14-centos7"
+          - dockerfile: "16/Dockerfile.c9s"
+            docker_context: 16
             registry_namespace: "sclorg"
             tag: "c9s"
-            suffix: "c9s"
+            image_name: "nodejs-16-c9s"
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
-          - dockerfile_path: "14"
-            dockerfile: "Dockerfile.fedora"
+          - dockerfile: "14/Dockerfile.fedora"
+            docker_context: 14
             registry_namespace: "fedora"
             tag: "fedora"
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
-          - dockerfile_path: "16"
-            dockerfile: "Dockerfile.fedora"
+            image_name: "nodejs-14"
+          - dockerfile: "16/Dockerfile.fedora"
+            docker_context: 16
             registry_namespace: "fedora"
             tag: "fedora"
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
-          - dockerfile_path: "18"
-            dockerfile: "Dockerfile.fedora"
+            image_name: "nodejs-16"
+          - dockerfile: "18/Dockerfile.fedora"
+            docker_context: 18
             registry_namespace: "fedora"
             tag: "fedora"
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-18"
     steps:
       - name: Build and push to quay.io registry
-        uses: sclorg/build-and-push-action@v2
+        uses: sclorg/build-and-push-action@v4
         with:
           registry: "quay.io"
           registry_namespace: ${{ matrix.registry_namespace }}
           registry_username: ${{ secrets[matrix.quayio_username] }}
           registry_token: ${{ secrets[matrix.quayio_token] }}
           dockerfile: ${{ matrix.dockerfile }}
-          docker_context: ${{ matrix.dockerfile_path }}
-          dockerfile_path: ${{ matrix.dockerfile_path }}
+          docker_context: ${{ matrix.docker_context }}
           tag: ${{ matrix.tag }}
-          suffix: ${{ matrix.suffix }}
+          image_name: ${{ matrix.image_name }}
