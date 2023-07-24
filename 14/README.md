@@ -157,10 +157,6 @@ Application developers can use the following environment variables to configure 
 **`NPM_MIRROR`**  
        Use a custom NPM registry mirror to download packages during the build process
 
-**`INIT_WRAPPER`**  
-       When set to "true", it will look for the files `server.js`, `index.js` or `main.js` in the aforementioned order and in case any of these files are available, it will wrap the command `node $file_found`, by using the `init-wrapper` script.
-       It can also be used in conjuction with `NODE_CMD` option where in that case, `init-wrapper` will wrap the value of `NODE_CMD`.
-
 One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
 Example: DATABASE_USER=sampleUser
