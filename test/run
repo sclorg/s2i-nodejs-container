@@ -32,10 +32,16 @@ test_npm_tmp_cleared
 kill_test_application
 test_dev_mode_true_development
 test_dev_mode_false_production
+test_node_cmd_development_init_wrapper_true
+test_node_cmd_production_init_wrapper_true
+test_node_cmd_development_init_wrapper_false
+test_init_wrapper_true_development
+test_init_wrapper_false_development
 "
 
 TEST_LIST_BINARY="\
 test_run_binary_application
+test_node_cmd_development_init_wrapper_true
 "
 
 TEST_LIST_NODE_ENV="\
@@ -46,6 +52,9 @@ test_npm_cache_exists
 kill_test_application
 test_dev_mode_true_development
 test_dev_mode_false_development
+test_node_cmd_development_init_wrapper_true
+test_node_cmd_production_init_wrapper_true
+test_node_cmd_production_init_wrapper_false
 "
 
 TEST_LIST_DEV_MODE="\
@@ -63,6 +72,8 @@ test_safe_logging
 test_run_hw_application
 test_incremental_build
 test_build_express_webapp
+test_node_cmd_development_init_wrapper_true
+test_init_wrapper_false_development
 "
 
 # define the client npm packages to be tested. For
