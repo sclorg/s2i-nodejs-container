@@ -164,6 +164,19 @@ run_test_application() {
     esac
 }
 
+run_test_application_with_quoted_args() {
+  case "$1" in
+  app | hw | express-webapp | binary)
+    cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
+    docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} "$2" ${IMAGE_NAME}-test$1
+    ;;
+  *)
+    echo "No such test application"
+    return 1
+    ;;
+  esac
+}
+
 run_client_test_suite() {
   cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
   local cmd="npm test"
@@ -447,7 +460,6 @@ function test_nodemon_present() {
   ct_check_testcase_result "$?"
 }
 
-
 function test_npm_cache_cleared() {
   # Test that the npm cache has been cleared
   cache_loc=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "npm config get cache")
@@ -475,6 +487,36 @@ function test_dev_mode_false_production() {
 function test_dev_mode_true_development() {
   # DEV_MODE=true NODE_ENV=development
   test_dev_mode app true development
+}
+
+function test_node_cmd_production_init_wrapper_false() {
+  # NODE_ENV=production INIT_WRAPPER=false NODE_CMD="node server.js"
+  test_node_cmd app production false "node server.js"
+}
+
+function test_node_cmd_development_init_wrapper_true() {
+  # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app development true "node server.js"
+}
+
+function test_node_cmd_production_init_wrapper_true() {
+  # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app production true "node server.js"
+}
+
+function test_node_cmd_development_init_wrapper_false() {
+  # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
+  test_node_cmd app development false "node server.js"
+}
+
+function test_init_wrapper_true_development() {
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development true
+}
+
+function test_init_wrapper_false_development() {
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development false
 }
 
 function test_dev_mode_false_development() {
@@ -610,4 +652,3 @@ function test_latest_imagestreams() {
 }
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
-
