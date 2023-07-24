@@ -16,30 +16,29 @@ run_node() {
   if [ "$DEV_MODE" == true ]; then
     echo "Launching via nodemon..."
     exec nodemon --inspect="$DEBUG_PORT"
-  elif [ -v NODE_CMD ]; then
-    if [ "$INIT_WRAPPER" == true ]; then
-      echo "launching via init wrapper..."
-      exec ${STI_SCRIPTS_PATH}/init-wrapper $NODE_CMD
-    else
-      echo "Launching via ${NODE_CMD}"
-      echo "exec $NODE_CMD"
-    fi
-  elif [ "$INIT_WRAPPER" == true ]; then
-      package_json_start=$(cat package.json | grep "start" | sed -r 's/(.*)"start"([^:]*[^"]*")(.*)",/\3/')
-      package_json_main=$(cat package.json | grep "main" | sed -r 's/(.*)"main"([^:]*[^"]*")(.*)",/\3/')
+  elif [ -n "$NODE_CMD" ] && [ "$INIT_WRAPPER" == true ]; then
+    echo "launching via init wrapper..."
+    exec ${STI_SCRIPTS_PATH}/init-wrapper $NODE_CMD
+  elif [ -n "$NODE_CMD" ] && [ "$INIT_WRAPPER" == false ]; then
+    echo "Launching via ${NODE_CMD}"
+    exec $NODE_CMD
+  elif [ ! -n "$NODE_CMD" ] && [ "$INIT_WRAPPER" == true ]; then
 
-      if [ -n "$package_json_start" ]; then
-          start_command=$package_json_start
-      elif [ -n $package_json_main ]; then
-          start_command="node ."
-      elif [ -f "server.js" ]; then
-          start_command="node server.js"
-      else
-          echo "Failed to find file for starting the Node.js application"
-          exit 1
-      fi
-      echo "launching via init wrapper..."
-      exec ${STI_SCRIPTS_PATH}/init-wrapper $start_command
+    package_json_start=$(sed -n 's/\s*"start"\s*:\s*"\(.*\)".*/\1/p' package.json)
+    package_json_main=$(sed -n 's/\s*"main"\s*:\s*"\(.*\)".*/\1/p' package.json)
+
+    if [ -n "$package_json_start" ]; then
+      start_command=$package_json_start
+    elif [ -n $package_json_main ]; then
+      start_command="node ."
+    elif [ -f "server.js" ]; then
+      start_command="node server.js"
+    else
+      echo "Failed to find file for starting the Node.js application"
+      exit 1
+    fi
+    echo "launching via init wrapper..."
+    exec ${STI_SCRIPTS_PATH}/init-wrapper $start_command
   else
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
