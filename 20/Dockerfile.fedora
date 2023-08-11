@@ -1,4 +1,4 @@
-FROM quay.io/fedora/s2i-core:36
+FROM quay.io/fedora/s2i-core:38
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -16,7 +16,7 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=18 \
+ENV NODEJS_VERSION=20 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -48,11 +48,16 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
 
-RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs nodejs-nodemon npm nss_wrapper-libs which" && \
+ADD https://copr.fedorainfracloud.org/coprs/hhorak/nodemon-for-all/repo/fedora-38/hhorak-nodemon-for-all-fedora-38.repo /etc/yum.repos.d/hhorak-nodemon-for-all-fedora-38.repo
+
+RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
+    ln -s /usr/bin/node-20 /usr/bin/node && \
+    ln -s /usr/bin/npm-20 /usr/bin/npm && \
+    ln -s /usr/bin/npx-20 /usr/bin/npx && \
+    ln -s /usr/lib/node_modules_18/nodemon /usr/lib/node_modules_20/nodemon && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     yum -y clean all --enablerepo='*'
 
