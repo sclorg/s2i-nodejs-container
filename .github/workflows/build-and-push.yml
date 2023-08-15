@@ -14,13 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: "14/Dockerfile"
-            docker_context: 14
-            registry_namespace: "centos7"
-            tag: "centos7"
-            quayio_username: "QUAY_IMAGE_BUILDER_USERNAME"
-            quayio_token: "QUAY_IMAGE_BUILDER_TOKEN"
-            image_name: "nodejs-14-centos7"
           - dockerfile: "16/Dockerfile.c9s"
             docker_context: 16
             registry_namespace: "sclorg"
