@@ -1,5 +1,8 @@
 FROM quay.io/sclorg/s2i-core-c9s:c9s
 
+# FIXME:
+ADD https://gitlab.cee.redhat.com/platform-eng-core-services/internal-repos/-/raw/master/centos/c9s/c9s-compose.repo /etc/yum.repos.d/c9s-compose.repo
+
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 

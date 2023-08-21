@@ -1,5 +1,8 @@
 FROM ubi9/ubi-minimal
 
+# FIXME:
+ADD https://gitlab.cee.redhat.com/platform-eng-core-services/internal-repos/-/raw/master/centos/c9s/c9s-compose.repo /etc/yum.repos.d/c9s-compose.repo
+
 EXPOSE 8080
 
 # Add $HOME/node_modules/.bin to the $PATH, allowing user to make npm scripts
