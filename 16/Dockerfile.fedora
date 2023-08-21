@@ -50,7 +50,7 @@ LABEL summary="$SUMMARY" \
 
 RUN yum -y module enable nodejs:$NODEJS_VERSION && \
     MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs nodejs-nodemon npm nss_wrapper which which" && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs nodejs-nodemon npm nss_wrapper which" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
