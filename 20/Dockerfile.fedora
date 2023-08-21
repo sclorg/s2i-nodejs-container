@@ -51,7 +51,7 @@ LABEL summary="$SUMMARY" \
 ADD https://copr.fedorainfracloud.org/coprs/hhorak/nodemon-for-all/repo/fedora-38/hhorak-nodemon-for-all-fedora-38.repo /etc/yum.repos.d/hhorak-nodemon-for-all-fedora-38.repo
 
 RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which which" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     ln -s /usr/bin/node-20 /usr/bin/node && \

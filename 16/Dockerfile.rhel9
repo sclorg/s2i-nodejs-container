@@ -54,7 +54,7 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> ubi9/$NAME-$NODEJS_VERSION:latest <APP-NAME>"
 
 RUN MODULE_DEPS="make gcc gcc-c++ git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper" && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper which" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
