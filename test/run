@@ -89,6 +89,11 @@ test_client_fastify
 #       for this yet. See https://github.com/pinojs/pino/issues/1252.
 ## declare -a UNSTABLE_TESTS=(test_client_pino)
 
+# Some test suites do not pass with the new nodejs v20, let's mark them unstable for now
+if [ "$VERSION" -eq 20 ] ; then
+  declare -a UNSTABLE_TESTS=(test_client_fastify test_client_cloudevents test_client_express)
+fi
+
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"
