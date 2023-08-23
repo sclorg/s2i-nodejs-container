@@ -90,7 +90,7 @@ cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 prepare app
 check_prep_result $? app || exit
 echo "Testing the production image build"
-FULL_IMAGE=${FULL_IMAGE:-ubi8/nodejs-${VERSION//-minimal/}:latest}
+FULL_IMAGE=${FULL_IMAGE:-registry.access.redhat.com/ubi8/nodejs-${VERSION//-minimal/}:latest}
 prepare_minimal_build testapp
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
