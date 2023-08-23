@@ -54,10 +54,10 @@ RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
     INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    ln -s /usr/bin/node-20 /usr/bin/node && \
-    ln -s /usr/bin/npm-20 /usr/bin/npm && \
-    ln -s /usr/bin/npx-20 /usr/bin/npx && \
-    ln -s /usr/lib/node_modules_18/nodemon /usr/lib/node_modules_20/nodemon && \
+    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
+    ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
+    ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
+    ln -s /usr/lib/node_modules_18/nodemon /usr/lib/node_modules_$NODEJS_VERSION/nodemon && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     yum -y clean all --enablerepo='*'
 
