@@ -18,7 +18,7 @@ ENV APP_ROOT=/opt/app-root \
     HOME=/opt/app-root/src \
     NPM_RUN=start \
     PLATFORM="fedora" \
-    NODEJS_VERSION=18 \
+    NODEJS_VERSION=20 \
     NPM_RUN=start \
     NAME=nodejs
 
@@ -50,6 +50,7 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 # nodejs-full-i18n is included for error strings
+ADD https://copr.fedorainfracloud.org/coprs/hhorak/nodemon-for-all/repo/fedora-38/hhorak-nodemon-for-all-fedora-38.repo /etc/yum.repos.d/hhorak-nodemon-for-all-fedora-38.repo
 RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar nss_wrapper-libs" && \
     microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     microdnf clean all && \
@@ -60,6 +61,7 @@ RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-ful
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
+#
 COPY ./s2i/bin/ /usr/libexec/s2i
 
 # Copy extra files to the image.
