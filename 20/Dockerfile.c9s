@@ -1,8 +1,5 @@
 FROM quay.io/sclorg/s2i-core-c9s:c9s
 
-# FIXME:
-ADD https://gitlab.cee.redhat.com/platform-eng-core-services/internal-repos/-/raw/master/centos/c9s/c9s-compose.repo /etc/yum.repos.d/c9s-compose.repo
-
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
@@ -29,7 +26,7 @@ ENV NODEJS_VERSION=20 \
     CNB_GROUP_ID=0
 
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
-DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
+    DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
 building and running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
@@ -49,7 +46,7 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-container" \
-      name="sclorg/$NAME-$NODEJS_VERSION" \
+      name="sclorg/$NAME-$NODEJS_VERSION-c9s" \
       version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \

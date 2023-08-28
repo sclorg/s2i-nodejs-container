@@ -1,7 +1,4 @@
-FROM ubi9/ubi-minimal
-
-# FIXME:
-ADD https://gitlab.cee.redhat.com/platform-eng-core-services/internal-repos/-/raw/master/centos/c9s/c9s-compose.repo /etc/yum.repos.d/c9s-compose.repo
+FROM quay.io/sclorg/s2i-core-c9s
 
 EXPOSE 8080
 
@@ -46,19 +43,18 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
-      name="ubi9/$NAME-$NODEJS_VERSION-minimal" \
+      name="sclorg/$NAME-$NODEJS_VERSION-minimal-c9s" \
       version="1" \
-      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 # nodejs-full-i18n is included for error strings
 RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
-    microdnf -y module disable nodejs && \
-    microdnf -y module enable nodejs:$NODEJS_VERSION && \
-    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    yum -y module disable nodejs && \
+    yum -y module enable nodejs:$NODEJS_VERSION && \
+    yum -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
-    microdnf clean all && \
+    yum clean all && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
 COPY ./s2i/bin/ /usr/libexec/s2i

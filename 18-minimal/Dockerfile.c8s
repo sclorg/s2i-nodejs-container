@@ -1,4 +1,4 @@
-FROM ubi8/ubi-minimal:latest
+FROM quay.io/sclorg/s2i-core-c8s
 
 EXPOSE 8080
 
@@ -45,7 +45,6 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
       name="sclorg/$NAME-$NODEJS_VERSION-minimal-c8s" \
       version="1" \
-      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 

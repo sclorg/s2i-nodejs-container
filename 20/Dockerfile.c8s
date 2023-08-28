@@ -1,8 +1,5 @@
 FROM quay.io/sclorg/s2i-core-c8s
 
-# FIXME:
-ADD https://gitlab.cee.redhat.com/platform-eng-core-services/internal-repos/-/raw/master/centos/c8s/c8s-compose.repo /etc/yum.repos.d/c8s-compose.repo
-
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
@@ -24,7 +21,7 @@ ENV NODEJS_VERSION=20 \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
-    CNB_STACK_ID=com.redhat.stacks.ubi8-nodejs-20 \
+    CNB_STACK_ID=com.redhat.stacks.c8s-nodejs-20 \
     CNB_USER_ID=1001 \
     CNB_GROUP_ID=0
 
@@ -44,7 +41,7 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
-      io.buildpacks.stack.id="com.redhat.stacks.ubi8-nodejs-20" \
+      io.buildpacks.stack.id="com.redhat.stacks.c8s-nodejs-20" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
