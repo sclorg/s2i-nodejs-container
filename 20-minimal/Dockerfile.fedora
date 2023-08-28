@@ -1,5 +1,4 @@
-# using registry.fedoraproject.org because there is no f36 version of fedora-minimal on quay.io/fedora
-FROM registry.fedoraproject.org/fedora-minimal:38
+FROM quay.io/fedora/fedora-minimal:38
 
 EXPOSE 8080
 
