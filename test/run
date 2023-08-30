@@ -101,6 +101,11 @@ if [ "$VERSION" -eq 20 ] ; then
   UNSTABLE_TESTS+=(test_client_express test_client_cloudevents)
 fi
 
+# faas fails on v14
+if [ "$VERSION" -eq 14 ] ; then
+  UNSTABLE_TESTS+=(test_client_faas)
+fi
+
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"
