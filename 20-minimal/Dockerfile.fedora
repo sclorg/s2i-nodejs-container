@@ -50,7 +50,7 @@ LABEL summary="$SUMMARY" \
 
 # nodejs-full-i18n is included for error strings
 ADD https://copr.fedorainfracloud.org/coprs/hhorak/nodemon-for-all/repo/fedora-38/hhorak-nodemon-for-all-fedora-38.repo /etc/yum.repos.d/hhorak-nodemon-for-all-fedora-38.repo
-RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar nss_wrapper-libs" && \
+RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which nss_wrapper-libs" && \
     microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     microdnf clean all && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
