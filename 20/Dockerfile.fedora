@@ -48,8 +48,6 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
 
-ADD https://copr.fedorainfracloud.org/coprs/hhorak/nodemon-for-all/repo/fedora-38/hhorak-nodemon-for-all-fedora-38.repo /etc/yum.repos.d/hhorak-nodemon-for-all-fedora-38.repo
-
 RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
     INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
