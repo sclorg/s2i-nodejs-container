@@ -89,6 +89,23 @@ test_client_fastify
 #       for this yet. See https://github.com/pinojs/pino/issues/1252.
 ## declare -a UNSTABLE_TESTS=(test_client_pino)
 
+# For the unstable tests below, we do not want to see whole test suite failure
+IGNORE_UNSTABLE_TESTS=1
+
+# fastify fails constantly: https://github.com/sclorg/s2i-nodejs-container/issues/391
+declare -a UNSTABLE_TESTS=(test_client_fastify)
+
+# express and cloudevents fail on v20 only (cloudevents only sometimes):
+# https://github.com/sclorg/s2i-nodejs-container/issues/404
+if [ "$VERSION" -eq 20 ] ; then
+  UNSTABLE_TESTS+=(test_client_express test_client_cloudevents)
+fi
+
+# faas fails on v14
+if [ "$VERSION" -eq 14 ] ; then
+  UNSTABLE_TESTS+=(test_client_faas)
+fi
+
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"

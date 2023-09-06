@@ -86,7 +86,6 @@ prepare_client_repo() {
 prepare_minimal_build() {
   suffix=$1
   # Build the app using the full assemble-capable image
-  [ -z "$(docker images -q "$FULL_IMAGE")" ] && docker pull "$FULL_IMAGE"
   case "$suffix" in
     testapp)
       run_s2i_multistage_build #>/tmp/build-log 2>&1

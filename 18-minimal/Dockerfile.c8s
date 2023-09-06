@@ -1,4 +1,4 @@
-FROM ubi8/ubi-minimal:latest
+FROM quay.io/sclorg/s2i-core-c8s
 
 EXPOSE 8080
 
@@ -45,12 +45,11 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
       name="sclorg/$NAME-$NODEJS_VERSION-minimal-c8s" \
       version="1" \
-      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 # nodejs-full-i18n is included for error strings
-RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar" && \
+RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
     microdnf -y module disable nodejs && \
     microdnf -y module enable nodejs:$NODEJS_VERSION && \
     microdnf --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \

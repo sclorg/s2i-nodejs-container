@@ -9,6 +9,7 @@ Images available on Quay are:
 * Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
 * Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
 * Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
+* Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
@@ -31,6 +32,7 @@ Node.JS versions currently provided are:
 * [NodeJS 14](14)
 * [NodeJS 16](16)
 * [NodeJS 18](18)
+* [NodeJS 20](20)
 
 RHEL versions currently supported are:
 * RHEL7
@@ -99,6 +101,9 @@ see [usage documentation](16/README.md).
 
 For information about usage of Dockerfile for NodeJS 18,
 see [usage documentation](18/README.md).
+
+For information about usage of Dockerfile for NodeJS 20,
+see [usage documentation](20/README.md).
 
 Test
 ----
