@@ -142,6 +142,12 @@ Application developers can use the following environment variables to configure 
 **`NPM_RUN`**  
        Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
 
+**`NODE_CMD`**
+       When specified (e.g.Specify `NODE_CMD="node server.js"`) the value of `NODE_CMD` is used to start the application instead of `npm start`.
+
+**`INIT_WRAPPER`**
+       When set to "true", the application is started via the `init-wrapper` script instead of using `npm start`, by looking for the presence of the files `server.js`, `index.js` or `main.js` in the order in which they are listed. In case of `NODE_CMD` environemnt variale is specified, then `init-wrapper` script will use the value of `NODE_CMD` to start your application.
+
 **`HTTP_PROXY`**  
        Use an npm proxy during assembly
 
@@ -241,6 +247,47 @@ Below is an example _package.json_ file with the _main_ attribute and _start_ sc
 #### Note:
 `oc rsync` is only available in versions 3.1+ of OpenShift.
 
+## init-wrapper
+
+init-wrapper script is located on `/usr/libexec/s2i/init-wrapper` and is used to handle:
+
+- Proper signal handling and propagation, as Node.js was not designed to run as PID 1.
+- Reaping zombie child processes
+Avoiding use of npm, there is more information on why you want to avoid that in the [Node.js reference architecture](https://github.com/nodeshift/nodejs-reference-architecture/blob/e4c4dc1fd20c2cac392e862859aaad27f85d504f/docs/development/building-good-containers.md#avoiding-using-npm-to-start-application). When the INIT_WRAPPER is set to true the application is started via the init script instead of using npm start.
+
+A detailed explanation on how the init-wrapper script works is avalable in
+[this url](http://veithen.io/2014/11/16/sigterm-propagation.html).
+
+Example of using init-wrapper:
+
+**During image build**
+```
+s2i -e INIT_WRAPPER=true build . buildImage  node-app
+docker run node-app
+```
+**During container start**
+```
+s2i build . buildImage  node-app
+docker run -e INIT_WRAPPER=true  node-app
+```
+
+`init-wrapper` script can be disabled by setting the `INIT_WRAPPER` env variable to `false`.
+
+```
+docker run -e INIT_WRAPPER=false node-app
+```
+`NODE_CMD` can be used during the build process or container start, in order to have more control on the command that `init-wrapper` script will wrap.
+
+For example:
+
+**during container build**
+```
+s2i -e INIT_WRAPPER=true -e NODE_CMD="node index.js" build . buildImage  node-app
+```
+**during container start**
+```
+docker run -e INIT_WRAPPER=false -e NODE_CMD="node index.js" node-app
+```
 
 See also
 --------

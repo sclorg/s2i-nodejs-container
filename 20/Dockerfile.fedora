@@ -61,6 +61,7 @@ RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper
 
 # Copy extra files to the image, including help file.
 COPY ./root/ /
