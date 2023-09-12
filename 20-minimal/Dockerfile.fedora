@@ -61,6 +61,7 @@ RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-ful
 
 #
 COPY ./s2i/bin/ /usr/libexec/s2i
+RUN chmod +x /usr/libexec/s2i/init-wrapper
 
 # Copy extra files to the image.
 COPY ./root/ /
