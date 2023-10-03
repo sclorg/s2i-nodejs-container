@@ -18,6 +18,7 @@ test_nodejs_s2i_container
 test_nodejs_s2i_app_ex
 test_nodejs_s2i_templates
 test_nodejs_imagestream
+test_latest_imagestreams
 "
 
 

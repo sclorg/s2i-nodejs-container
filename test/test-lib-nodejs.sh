@@ -574,5 +574,15 @@ function test_nodejs_s2i_templates() {
   return $ret_val
 }
 
+function test_latest_imagestreams() {
+  local result=1
+  # Switch to root directory of a container
+  pushd "${test_dir}/.." >/dev/null || return 1
+  ct_check_latest_imagestreams
+  result=$?
+  popd >/dev/null || return 1
+  return $result
+}
+
 # vim: set tabstop=2:shiftwidth=2:expandtab:
 
