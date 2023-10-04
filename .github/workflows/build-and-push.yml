@@ -14,11 +14,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: "16/Dockerfile.c9s"
-            docker_context: 16
+          - dockerfile: "20/Dockerfile.c8s"
+            docker_context: 20
             registry_namespace: "sclorg"
             tag: "c9s"
-            image_name: "nodejs-16-c9s"
+            image_name: "nodejs-20-c9s"
+            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+          - dockerfile: "20/Dockerfile.c9s"
+            docker_context: 20
+            registry_namespace: "sclorg"
+            tag: "c9s"
+            image_name: "nodejs-20-c9s"
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
           - dockerfile: "14/Dockerfile.fedora"
