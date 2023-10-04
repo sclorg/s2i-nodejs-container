@@ -11,6 +11,8 @@ THISDIR=$(dirname ${BASH_SOURCE[0]})
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-openshift.sh"
 
+test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+
 info() {
   echo -e "\n\e[1m[INFO] $@...\e[0m\n"
 }
