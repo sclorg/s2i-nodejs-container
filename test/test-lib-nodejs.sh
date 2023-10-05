@@ -11,6 +11,8 @@ THISDIR=$(dirname ${BASH_SOURCE[0]})
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-openshift.sh"
 
+test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+
 info() {
   echo -e "\n\e[1m[INFO] $@...\e[0m\n"
 }
@@ -572,6 +574,16 @@ function test_nodejs_s2i_templates() {
     "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing" || ret_val=1
 
   return $ret_val
+}
+
+function test_latest_imagestreams() {
+  local result=1
+  # Switch to root directory of a container
+  pushd "${test_dir}/.." >/dev/null || return 1
+  ct_check_latest_imagestreams
+  result=$?
+  popd >/dev/null || return 1
+  return $result
 }
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
