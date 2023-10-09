@@ -63,6 +63,13 @@ jobs:
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-18"
+          - dockerfile: "18-minimal/Dockerfile.fedora"
+            docker_context: 18-minimal
+            registry_namespace: "fedora"
+            tag: "fedora"
+            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-18-minimal"
           - dockerfile: "20/Dockerfile.fedora"
             docker_context: 20
             registry_namespace: "fedora"
