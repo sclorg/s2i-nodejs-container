@@ -1,5 +1,5 @@
 NodeJS container images
-====================
+=======================
 
 [![Build and push images to Quay.io registry](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml)
 
