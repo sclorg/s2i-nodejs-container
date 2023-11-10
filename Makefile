@@ -8,3 +8,7 @@ OPENSHIFT_NAMESPACES =
 .PHONY: $(shell test -f common/common.mk || echo >&2 'Please do "git submodule update --init" first.')
 
 include common/common.mk
+
+.PHONY: test-upstream-unittests
+test-upstream-unittests: tag
+	VERSIONS="$(VERSIONS)" TEST_UPSTREAM=yes common/test.sh
