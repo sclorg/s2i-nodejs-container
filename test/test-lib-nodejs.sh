@@ -379,7 +379,6 @@ function test_running_client_js {
   echo "Running $1 test suite"
   prepare "$1"
   check_prep_result $? $1 || return
-  ct_check_testcase_result $?
   run_s2i_build_client "$1"
   ct_check_testcase_result $?
   run_client_test_suite "$1"
