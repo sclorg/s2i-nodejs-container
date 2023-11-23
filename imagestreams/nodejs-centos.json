@@ -219,44 +219,6 @@
         }
       },
       {
-        "name": "14-ubi8",
-        "annotations": {
-          "openshift.io/display-name": "Node.js 14 (UBI 8)",
-          "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 14 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/14/README.md.",
-          "iconClass": "icon-nodejs",
-          "tags": "builder,nodejs",
-          "version": "14",
-          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
-        },
-        "from": {
-          "kind": "DockerImage",
-          "name": "registry.access.redhat.com/ubi8/nodejs-14:latest"
-        },
-        "referencePolicy": {
-          "type": "Local"
-        }
-      },
-      {
-        "name": "14-ubi8-minimal",
-        "annotations": {
-          "openshift.io/display-name": "Node.js 14 (UBI 8 Minimal)",
-          "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 14 applications on UBI 8 Minimal. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/14-minimal/README.md.",
-          "iconClass": "icon-nodejs",
-          "tags": "builder,nodejs",
-          "version": "14",
-          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
-        },
-        "from": {
-          "kind": "DockerImage",
-          "name": "registry.access.redhat.com/ubi8/nodejs-14-minimal:latest"
-        },
-        "referencePolicy": {
-          "type": "Local"
-        }
-      },
-      {
         "name": "14-ubi7",
         "annotations": {
           "openshift.io/display-name": "Node.js 14 (UBI 7)",
