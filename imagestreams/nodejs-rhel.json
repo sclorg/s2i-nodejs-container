@@ -143,38 +143,38 @@
         }
       },
       {
-        "name": "16-ubi8",
+        "name": "20-ubi8",
         "annotations": {
-          "openshift.io/display-name": "Node.js 16 (UBI 8)",
+          "openshift.io/display-name": "Node.js 20 (UBI 8)",
           "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 16 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/16/README.md.",
+          "description": "Build and run Node.js 20 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/20/README.md.",
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
-          "version": "16",
+          "version": "20",
           "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.redhat.io/ubi8/nodejs-16:latest"
+          "name": "registry.redhat.io/ubi8/nodejs-20:latest"
         },
         "referencePolicy": {
           "type": "Local"
         }
       },
       {
-        "name": "16-ubi8-minimal",
+        "name": "20-ubi8-minimal",
         "annotations": {
-          "openshift.io/display-name": "Node.js 16 (UBI 8 Minimal)",
+          "openshift.io/display-name": "Node.js 20 (UBI 8 Minimal)",
           "openshift.io/provider-display-name": "Red Hat, Inc.",
-          "description": "Build and run Node.js 16 applications on UBI 8 Minimal. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/16-minimal/README.md.",
+          "description": "Build and run Node.js 20 applications on UBI 8 Minimal. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/20-minimal/README.md.",
           "iconClass": "icon-nodejs",
           "tags": "builder,nodejs",
-          "version": "16",
+          "version": "20",
           "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
         },
         "from": {
           "kind": "DockerImage",
-          "name": "registry.redhat.io/ubi8/nodejs-16-minimal:latest"
+          "name": "registry.redhat.io/ubi8/nodejs-20-minimal:latest"
         },
         "referencePolicy": {
           "type": "Local"
@@ -213,6 +213,44 @@
         "from": {
           "kind": "DockerImage",
           "name": "registry.redhat.io/ubi8/nodejs-18-minimal:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "16-ubi8",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 16 (UBI 8)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 16 applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/16/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "16",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi8/nodejs-16:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "16-ubi8-minimal",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 16 (UBI 8 Minimal)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 16 applications on UBI 8 Minimal. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/16-minimal/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "16",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi8/nodejs-16-minimal:latest"
         },
         "referencePolicy": {
           "type": "Local"
