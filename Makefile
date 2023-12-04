@@ -9,6 +9,6 @@ OPENSHIFT_NAMESPACES =
 
 include common/common.mk
 
-.PHONY: test-upstream-unittests
-test-upstream-unittests: tag
+.PHONY: test-upstream
+test-upstream: tag
 	VERSIONS="$(VERSIONS)" TEST_UPSTREAM=yes common/test.sh
