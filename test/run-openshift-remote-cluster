@@ -13,20 +13,17 @@ source "${THISDIR}/test-lib-openshift.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
 source "${THISDIR}/test-lib-remote-openshift.sh"
 
-#test_nodejs_s2i_templates_with_db
-#test_nodejs_imagestream_with_db
-
 TEST_LIST="\
 test_nodejs_s2i_container
 test_nodejs_s2i_app_ex
-test_nodejs_s2i_templates_with_no_db
-test_nodejs_imagestream_with_no_db
+test_nodejs_s2i_templates
+test_nodejs_imagestream
 test_latest_imagestreams
 "
 
 # change the branch to a different value if a new change in the example
 # app needs to be tested
-BRANCH_TO_TEST=migrate_mongodb_to_postgresql
+BRANCH_TO_TEST=master
 
 trap ct_os_cleanup EXIT SIGINT
 
