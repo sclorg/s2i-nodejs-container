@@ -21,7 +21,6 @@ test_nodejs_imagestream
 test_latest_imagestreams
 "
 
-
 # change the branch to a different value if a new change in the example
 # app needs to be tested
 BRANCH_TO_TEST=master
@@ -32,9 +31,11 @@ ct_os_set_ocp4 || exit $OC_ERR
 
 ct_os_check_compulsory_vars || exit $OC_ERR
 
+ct_os_check_login || exit $OC_ERR
+
 ct_os_tag_image_for_cvp "nodejs"
 
-ct_os_check_login || exit $OC_ERR
+ct_pull_or_import_postgresql || exit $OC_ERR
 
 set -u
 

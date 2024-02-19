@@ -528,19 +528,43 @@ function test_safe_logging() {
   fi
 }
 
+
+function ct_pull_or_import_postgresql() {
+  postgresql_image="quay.io/sclorg/postgresql-15-c9s"
+  image_short="postgresql"
+  image_tag="postgresql:15-c9s"
+  # Variable CVP is set by CVP pipeline
+  if [ "${CVP:-0}" -eq "0" ]; then
+    # In case of container or OpenShift 4 tests
+    # Pull image before going through tests
+    # Exit in case of failure, because postgresql container is mandatory
+    ct_pull_image "${postgresql_image}" "true"
+  else
+    # Import postgresql-10-centos7 image before running tests on CVP
+    oc import-image "${image_short}:latest" --from="${postgresql_image}:latest" --insecure=true --confirm
+    # Tag postgresql image to "postgresql:10" which is expected by test suite
+    oc tag "${image_short}:latest" "${image_tag}"
+  fi
+}
+
 # Check the imagestream
 function test_nodejs_imagestream() {
+  local ret_val=0
   if [[ "${VERSION}" == *"minimal"* ]]; then
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
   ct_os_test_image_stream_quickstart \
     "${THISDIR}/imagestreams/nodejs-${OS%[0-9]*}.json" \
-    "https://raw.githubusercontent.com/sclorg/nodejs-ex/master/openshift/templates/nodejs.json" \
+    "https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/nodejs-postgresql-persistent.json" \
     "${IMAGE_NAME}" \
     'nodejs' \
-    "Welcome to your Node.js application on OpenShift" \
+    "Node.js Crud Application" \
     8080 http 200 \
-    "-p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing"
+    "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing
+     -p DATABASE_USER=testu \
+     -p DATABASE_PASSWORD=testpwd \
+     -p DATABASE_ADMIN_PASSWORD=testadminpwd" \
+     "quay.io/sclorg/postgresql-15-c9s|postgresql:15-c9s"|| ret_val=1
 }
 
 function test_nodejs_s2i_container() {
@@ -554,7 +578,7 @@ function test_nodejs_s2i_app_ex() {
   ct_os_test_s2i_app "${IMAGE_NAME}" \
     "https://github.com/sclorg/nodejs-ex.git" \
     "." \
-    "Welcome to your Node.js application on OpenShift"
+    "Node.js Crud Application"
 }
 
 function test_nodejs_s2i_templates() {
@@ -566,11 +590,15 @@ function test_nodejs_s2i_templates() {
   # MongoDB is not supported at all.
   # Let's disable it or replace it with mariadb
   ct_os_test_template_app "${IMAGE_NAME}" \
-    "https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/nodejs.json" \
+    "https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/nodejs-postgresql-persistent.json" \
     nodejs \
-    "Welcome to your Node.js application on OpenShift" \
+    "Node.js Crud Application" \
     8080 http 200 \
-    "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing" || ret_val=1
+    "-p SOURCE_REPOSITORY_REF=${BRANCH_TO_TEST} -p SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git -p NODEJS_VERSION=${VERSION} -p NAME=nodejs-testing
+     -p DATABASE_USER=testu \
+     -p DATABASE_PASSWORD=testpwd \
+     -p DATABASE_ADMIN_PASSWORD=testadminpwd" \
+    "quay.io/sclorg/postgresql-15-c9s|postgresql:15-c9s" || ret_val=1
 
   return $ret_val
 }
