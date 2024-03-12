@@ -426,9 +426,9 @@ function test_client_fastify() {
 
 function test_check_build_using_dockerfile() {
   info "Check building using a Dockerfile"
-  ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Node.js Crud Application' app-src
+  ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile 'https://github.com/sclorg/nodejs-ex.git' 'Node.js Crud Application' app-src "--ulimit nofile=4096:4096"
   ct_check_testcase_result $?
-  ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Node.js Crud Application' app-src
+  ct_test_app_dockerfile ${THISDIR}/examples/from-dockerfile/Dockerfile.s2i 'https://github.com/sclorg/nodejs-ex.git' 'Node.js Crud Application' app-src "--ulimit nofile=4096:4096"
   ct_check_testcase_result $?
 }
 function test_npm_functionality() {
