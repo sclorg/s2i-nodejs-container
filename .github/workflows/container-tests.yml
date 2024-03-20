@@ -5,8 +5,11 @@ on:
 jobs:
   container-tests:
     # This job only runs for '[test]' pull request comments by owner, member
-    runs-on: ubuntu-20.04
     name: "Container tests: ${{ matrix.version }} - ${{ matrix.os_test }}"
+    runs-on: ubuntu-20.04
+    concurrency:
+      group: container-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
