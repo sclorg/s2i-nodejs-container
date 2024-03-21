@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-14
+FROM registry.access.redhat.com/ubi8/nodejs-16
 
 # This image supports the Source-to-Image
 # (see more at https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html).
