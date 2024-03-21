@@ -92,7 +92,7 @@ spec:
 
 Source-to-Image framework and scripts
 -------------------------------------
-This image supports the [Source-to-Image](https://docs.openshift.com/container-platform/3.11/creating_images/s2i.html)
+This image supports the [Source-to-Image](https://docs.openshift.com/container-platform/4.14/openshift_images/create-images.html#images-create-s2i_create-images)
 (S2I) strategy in OpenShift. The Source-to-Image is an OpenShift framework
 which makes it easy to write images that take application source code as
 an input, use a builder image like this Node.js container image, and produce
