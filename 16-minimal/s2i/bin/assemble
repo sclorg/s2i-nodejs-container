@@ -90,7 +90,7 @@ else
 
 	#do not fail when there is no build script
 	echo "---> Building in production mode"
-	npm run build --if-present
+	npm run ${NPM_BUILD:-build} --if-present
 
 	echo "---> Pruning the development dependencies"
 	npm prune

@@ -209,6 +209,9 @@ Application developers can use the following environment variables to configure 
 **`DEV_MODE`**  
        When set to "true", `nodemon` will be used to automatically reload the server while you work (default: "false"). Setting `DEV_MODE` to "true" will change the `NODE_ENV` default to "development" (if not explicitly set).
 
+**`NPM_BUILD`**  
+       Select an alternate / custom build command, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "build"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
+
 **`NPM_RUN`**  
        Select an alternate / custom runtime mode, defined in your `package.json` file's [`scripts`](https://docs.npmjs.com/misc/scripts) section (default: npm run "start"). These user-defined run-scripts are unavailable while `DEV_MODE` is in use.
 
