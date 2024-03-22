@@ -164,6 +164,19 @@ run_test_application() {
     esac
 }
 
+run_test_application_with_quoted_args() {
+  case "$1" in
+  app | hw | express-webapp | binary)
+    cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
+    docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} "$2" ${IMAGE_NAME}-test$1
+    ;;
+  *)
+    echo "No such test application"
+    return 1
+    ;;
+  esac
+}
+
 run_client_test_suite() {
   cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
   local cmd="npm test"
@@ -338,6 +351,32 @@ test_incremental_build() {
 
 }
 
+test_node_cmd() {
+  local app=$1
+  local node_env=$2
+  local init_wrapper=$3
+  local node_cmd=$4
+
+  run_test_application_with_quoted_args $app "-e NODE_ENV=$node_env -e INIT_WRAPPER=$init_wrapper -e NODE_CMD=$node_cmd"
+  logs=$(container_logs)
+  wait_for_cid
+
+  test_connection
+  ct_check_testcase_result $?
+
+  logs=$(container_logs)
+  echo ${logs} | grep -q DEBUG_PORT=5858
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q NODE_ENV=$node_env
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q INIT_WRAPPER=$init_wrapper
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q NODE_CMD="$node_cmd"
+  ct_check_testcase_result $?
+
+  kill_test_application
+}
+
 function test_scl_variables_in_dockerfile() {
   if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
     echo "Testing npm availability in Dockerfile"
@@ -353,7 +392,6 @@ function test_scl_variables_in_dockerfile() {
     ct_check_testcase_result $?
  fi
 }
-
 
 # test express webapp
 run_s2i_build_express_webapp() {
@@ -449,7 +487,6 @@ function test_nodemon_present() {
   ct_check_testcase_result "$?"
 }
 
-
 function test_npm_cache_cleared() {
   # Test that the npm cache has been cleared
   cache_loc=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "npm config get cache")
@@ -477,6 +514,36 @@ function test_dev_mode_false_production() {
 function test_dev_mode_true_development() {
   # DEV_MODE=true NODE_ENV=development
   test_dev_mode app true development
+}
+
+function test_node_cmd_production_init_wrapper_false() {
+  # NODE_ENV=production INIT_WRAPPER=false NODE_CMD="node server.js"
+  test_node_cmd app production false "node server.js"
+}
+
+function test_node_cmd_development_init_wrapper_true() {
+  # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app development true "node server.js"
+}
+
+function test_node_cmd_production_init_wrapper_true() {
+  # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app production true "node server.js"
+}
+
+function test_node_cmd_development_init_wrapper_false() {
+  # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
+  test_node_cmd app development false "node server.js"
+}
+
+function test_init_wrapper_true_development() {
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development true
+}
+
+function test_init_wrapper_false_development() {
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development false
 }
 
 function test_dev_mode_false_development() {
@@ -614,4 +681,3 @@ function test_latest_imagestreams() {
 }
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
-
