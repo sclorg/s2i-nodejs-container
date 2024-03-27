@@ -53,7 +53,7 @@ run_s2i_build_client() {
   ct_s2i_build_as_df \
     "file://${test_dir}/$1" "${IMAGE_NAME}" "${IMAGE_NAME}-$1" \
     ${s2i_args} \
-    $(ct_build_s2i_npm_variables) -e NODE_ENV=development
+    $(ct_build_s2i_npm_variables) -e NODE_ENV=development --ulimit nofile=4096:4096
 }
 
 run_s2i_build_binary() {
