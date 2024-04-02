@@ -50,10 +50,10 @@ run_s2i_build_proxy() {
 }
 
 run_s2i_build_client() {
-  ct_s2i_build_as_df \
-    "file://${test_dir}/$1" "${IMAGE_NAME}" "${IMAGE_NAME}-$1" \
+  ct_s2i_build_as_df_build_args \
+    "file://${test_dir}/$1" "${IMAGE_NAME}" "${IMAGE_NAME}-$1" "--ulimit nofile=4096:4096" \
     ${s2i_args} \
-    $(ct_build_s2i_npm_variables) -e NODE_ENV=development --ulimit nofile=4096:4096
+    $(ct_build_s2i_npm_variables) -e NODE_ENV=development
 }
 
 run_s2i_build_binary() {
