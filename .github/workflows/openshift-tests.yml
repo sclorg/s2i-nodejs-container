@@ -3,10 +3,24 @@ on:
     types:
       - created
 jobs:
+  check-imagestreams:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+    if: |
+      github.event.issue.pull_request
+      && (contains(github.event.comment.body, '[test-openshift]') || contains(github.event.comment.body, '[test-all]'))
+      && contains(fromJson('["OWNER", "MEMBER"]'), github.event.comment.author_association)
+    steps:
+      - uses: sclorg/ci-scripts/ocp-stream-generator@master
+        with:
+          ref: "refs/pull/${{ github.event.issue.number }}/head"
+
   openshift-tests:
-    # This job only runs for '[test-all]' or '[test-openshift] pull request comments by owner, member
     name: "${{ matrix.test_case }}tests: ${{ matrix.version }} - ${{ matrix.os_test }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    needs: check-imagestreams
     concurrency:
       group: ocp-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
       cancel-in-progress: true
@@ -17,10 +31,6 @@ jobs:
         os_test: [ "rhel7", "rhel8", "rhel9"]
         test_case: [ "openshift-4" ]
 
-    if: |
-      github.event.issue.pull_request
-      && (contains(github.event.comment.body, '[test-openshift]') || contains(github.event.comment.body, '[test-all]'))
-      && contains(fromJson('["OWNER", "MEMBER"]'), github.event.comment.author_association)
     steps:
       - uses: sclorg/tfaga-wrapper@main
         with:
