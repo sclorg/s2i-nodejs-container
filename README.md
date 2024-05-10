@@ -7,7 +7,6 @@ Images available on Quay are:
 * CentOS 7 [nodejs-12](https://quay.io/repository/centos7/nodejs-12-centos7)
 * CentOS 7 [nodejs-14](https://quay.io/repository/centos7/nodejs-14-centos7)
 * Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
-* Fedora [nodejs-16](https://quay.io/repository/fedora/nodejs-16)
 * Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
 * Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
 
@@ -30,7 +29,6 @@ Versions
 ---------------
 Node.JS versions currently provided are:
 * [NodeJS 14](14)
-* [NodeJS 16](16)
 * [NodeJS 18](18)
 * [NodeJS 20](20)
 

@@ -42,20 +42,6 @@ jobs:
             image_name: "nodejs-20-minimal-c9s"
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
-          - dockerfile: "14/Dockerfile.fedora"
-            docker_context: 14
-            registry_namespace: "fedora"
-            tag: "fedora"
-            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
-            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
-            image_name: "nodejs-14"
-          - dockerfile: "16/Dockerfile.fedora"
-            docker_context: 16
-            registry_namespace: "fedora"
-            tag: "fedora"
-            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
-            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
-            image_name: "nodejs-16"
           - dockerfile: "18/Dockerfile.fedora"
             docker_context: 18
             registry_namespace: "fedora"
