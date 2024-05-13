@@ -4,9 +4,6 @@ NodeJS container images
 [![Build and push images to Quay.io registry](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml)
 
 Images available on Quay are:
-* CentOS 7 [nodejs-12](https://quay.io/repository/centos7/nodejs-12-centos7)
-* CentOS 7 [nodejs-14](https://quay.io/repository/centos7/nodejs-14-centos7)
-* Fedora [nodejs-14](https://quay.io/repository/fedora/nodejs-14)
 * Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
 * Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
 
