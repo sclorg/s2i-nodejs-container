@@ -14,20 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: "20/Dockerfile.c8s"
-            docker_context: 20
-            registry_namespace: "sclorg"
-            tag: "c8s"
-            image_name: "nodejs-20-c8s"
-            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
-            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
-          - dockerfile: "20-minimal/Dockerfile.c8s"
-            docker_context: 20-minimal
-            registry_namespace: "sclorg"
-            tag: "c8s"
-            image_name: "nodejs-20-minimal-c8s"
-            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
-            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
           - dockerfile: "20/Dockerfile.c9s"
             docker_context: 20
             registry_namespace: "sclorg"
@@ -35,6 +21,7 @@ jobs:
             image_name: "nodejs-20-c9s"
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
           - dockerfile: "20-minimal/Dockerfile.c9s"
             docker_context: 20-minimal
             registry_namespace: "sclorg"
@@ -42,6 +29,7 @@ jobs:
             image_name: "nodejs-20-minimal-c9s"
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
           - dockerfile: "18/Dockerfile.fedora"
             docker_context: 18
             registry_namespace: "fedora"
@@ -49,6 +37,7 @@ jobs:
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-18"
+
           - dockerfile: "18-minimal/Dockerfile.fedora"
             docker_context: 18-minimal
             registry_namespace: "fedora"
@@ -56,6 +45,7 @@ jobs:
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-18-minimal"
+
           - dockerfile: "20/Dockerfile.fedora"
             docker_context: 20
             registry_namespace: "fedora"
@@ -63,6 +53,7 @@ jobs:
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-20"
+
           - dockerfile: "20-minimal/Dockerfile.fedora"
             docker_context: 20-minimal
             registry_namespace: "fedora"

@@ -36,7 +36,6 @@ RHEL versions currently supported are:
 
 CentOS versions currently available are:
 * CentOS7
-* CentOS Stream 8
 * CentOS Stream 9
 
 
