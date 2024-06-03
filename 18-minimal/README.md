@@ -6,7 +6,7 @@ with the full-sized s2i-enabled Node.JS 18 image to build the application. The i
 but compared to the full-sized Node.JS 18 image it will be missing many build-time dependencies.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
-the CentOS images are available on [Quay.io](https://quay.io/organization/centos7),
+the CentOS Stream images are available in the [Quay.io](https://quay.io/organization/sclorg),
 and the Fedora images are available in [Quay.io](https://quay.io/organization/fedora).
 The resulting image can be run using [podman](https://github.com/containers/libpod).
 
@@ -321,5 +321,5 @@ See also
 --------
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
 In that repository you also can find another versions of Node.js environment Dockerfiles.
-Dockerfile for CentOS is called `Dockerfile`, Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
+Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
 for RHEL8 it's `Dockerfile.rhel8` and the Fedora Dockerfile is called Dockerfile.fedora.
