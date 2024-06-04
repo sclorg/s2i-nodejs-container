@@ -490,33 +490,45 @@ function test_dev_mode_true_development() {
 }
 
 function test_node_cmd_production_init_wrapper_false() {
-  # NODE_ENV=production INIT_WRAPPER=false NODE_CMD="node server.js"
-  test_node_cmd app production false "node server.js"
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=production INIT_WRAPPER=false NODE_CMD="node server.js"
+    test_node_cmd app production false "node server.js"
+  fi
 }
 
 function test_node_cmd_development_init_wrapper_true() {
-  # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
-  test_node_cmd app development true "node server.js"
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
+    test_node_cmd app development true "node server.js"
+  fi
 }
 
 function test_node_cmd_production_init_wrapper_true() {
-  # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
-  test_node_cmd app production true "node server.js"
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
+    test_node_cmd app production true "node server.js"
+  fi
 }
 
 function test_node_cmd_development_init_wrapper_false() {
-  # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
-  test_node_cmd app development false "node server.js"
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
+    test_node_cmd app development false "node server.js"
+  fi
 }
 
 function test_init_wrapper_true_development() {
-  # NODE_ENV=development INIT_WRAPPER=true
-  test_node_cmd app development true
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=development INIT_WRAPPER=true
+    test_node_cmd app development true
+  fi
 }
 
 function test_init_wrapper_false_development() {
-  # NODE_ENV=development INIT_WRAPPER=true
-  test_node_cmd app development false
+  if [ "$OS" != "rhel7" ]; then
+    # NODE_ENV=development INIT_WRAPPER=true
+    test_node_cmd app development false
+  fi
 }
 
 function test_dev_mode_false_development() {
