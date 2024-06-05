@@ -4,7 +4,7 @@ NodeJS 18 container image
 This container image includes Node.JS 18 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 18 applications.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
-the CentOS images are available on [Quay.io](https://quay.io/organization/centos7),
+the CentOS Stream images are available in the [Quay.io](https://quay.io/organization/sclorg),
 and the Fedora images are available in [Quay.io](https://quay.io/organization/fedora).
 The resulting image can be run using [podman](https://github.com/containers/libpod).
 
@@ -249,5 +249,6 @@ See also
 --------
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
 In that repository you also can find another versions of Node.js environment Dockerfiles.
-Dockerfile for CentOS is called `Dockerfile`, Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
+Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
+Dockerfile for CentOS Stream 9 is called `Dockerfile.c9s`,
 for RHEL8 it's `Dockerfile.rhel8`, for RHEL9 it's `Dockerfile.rhel9` and the Fedora Dockerfile is called Dockerfile.fedora.
