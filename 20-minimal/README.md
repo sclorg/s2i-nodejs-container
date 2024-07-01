@@ -321,6 +321,5 @@ See also
 --------
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
 In that repository you also can find another versions of Node.js environment Dockerfiles.
-Dockerfile for RHEL7 is called `Dockerfile.rhel7`,
 Dockerfile for CentOS Stream 9 is called `Dockerfile.c9s`,
 for RHEL8 it's `Dockerfile.rhel8` and the Fedora Dockerfile is called Dockerfile.fedora.
