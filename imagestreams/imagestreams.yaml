@@ -11,9 +11,6 @@
   - filename: nodejs-centos.json
     latest: "20-ubi9"
     distros:
-      - name: UBI 7
-        app_versions: ["14"]
-
       - name: UBI 8
         app_versions: ["18", "18-minimal", "20", "20-minimal"]
 
@@ -36,9 +33,6 @@
   - filename: nodejs-rhel.json
     latest: "20-ubi9"
     distros:
-      - name: UBI 7
-        app_versions: ["14"]
-
       - name: UBI 8
         app_versions: ["18", "18-minimal", "20", "20-minimal"]
 

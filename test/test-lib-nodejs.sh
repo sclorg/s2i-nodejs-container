@@ -338,22 +338,6 @@ test_incremental_build() {
 
 }
 
-function test_scl_variables_in_dockerfile() {
-  if [ "$OS" == "rhel7" ] || [ "$OS" == "centos7" ]; then
-    echo "Testing npm availability in Dockerfile"
-    ct_binary_found_from_df npm
-    ct_check_testcase_result $?
-
-    info "Testing variable presence during \`docker exec\`"
-    ct_check_exec_env_vars
-    ct_check_testcase_result $?
-
-    info "Checking if all scl variables are defined in Dockerfile"
-    ct_check_scl_enable_vars
-    ct_check_testcase_result $?
- fi
-}
-
 
 # test express webapp
 run_s2i_build_express_webapp() {
@@ -513,17 +497,15 @@ function test_run_binary_application() {
   # Test is suppressed because of https://github.com/Blizzard/node-rdkafka/issues/910
   # The newest version of node-rdkafka works only with gcc-8 and higher
   # On RHEL7 and CentOS7 is gcc-4.8
-  if [ "$OS" != "rhel7" ] && [ "$OS" != "centos7" ]; then
-    prepare binary
-    check_prep_result $? binary || return
-    run_s2i_build_binary
-    ct_check_testcase_result $?
-    # Verify that the HTTP connection can be established to test application container
-    run_test_application binary
-    # Wait for the container to write it's CID file
-    wait_for_cid
-    kill_test_application
-  fi
+  prepare binary
+  check_prep_result $? binary || return
+  run_s2i_build_binary
+  ct_check_testcase_result $?
+  # Verify that the HTTP connection can be established to test application container
+  run_test_application binary
+  # Wait for the container to write it's CID file
+  wait_for_cid
+  kill_test_application
 }
 
 function test_safe_logging() {
@@ -549,7 +531,7 @@ function ct_pull_or_import_postgresql() {
     # Exit in case of failure, because postgresql container is mandatory
     ct_pull_image "${postgresql_image}" "true"
   else
-    # Import postgresql-10-centos7 image before running tests on CVP
+    # Import postgresql-15-c9s image before running tests on CVP
     oc import-image "${image_short}:latest" --from="${postgresql_image}:latest" --insecure=true --confirm
     # Tag postgresql image to "postgresql:10" which is expected by test suite
     oc tag "${image_short}:latest" "${image_tag}"
