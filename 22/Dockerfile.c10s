@@ -1,4 +1,4 @@
-FROM quay.io/sclorg/s2i-core-c9s:c9s
+FROM quay.io/sclorg/s2i-core-c10s:c10s
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -16,12 +16,12 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=20 \
+ENV NODEJS_VERSION=22 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
-    CNB_STACK_ID=com.redhat.stacks.c9s-nodejs-20 \
+    CNB_STACK_ID=com.redhat.stacks.c10s-nodejs-22 \
     CNB_USER_ID=1001 \
     CNB_GROUP_ID=0
 
@@ -41,27 +41,24 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
-      io.buildpacks.stack.id="com.redhat.stacks.c9s-nodejs-20" \
+      io.buildpacks.stack.id="com.redhat.stacks.c10s-nodejs-22" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-container" \
-      name="sclorg/$NAME-$NODEJS_VERSION-c9s" \
+      name="sclorg/$NAME-$NODEJS_VERSION-c10s" \
       version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c9s:latest <APP-NAME>"
+      usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c10s:latest <APP-NAME>"
 
 # Package libatomic_ops was removed
-RUN yum -y module enable nodejs:$NODEJS_VERSION && \
-    MODULE_DEPS="make gcc gcc-c++ git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper-libs which" && \
-    ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+RUN INSTALL_PKGS="make gcc gcc-c++ git openssl-devel nodejs npm nodejs-nodemon nss_wrapper-libs which" && \
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
-    yum -y clean all --enablerepo='*'
+    dnf -y clean all --enablerepo='*'
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH

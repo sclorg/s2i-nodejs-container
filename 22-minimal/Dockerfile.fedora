@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-minimal:38
+FROM quay.io/fedora/fedora-minimal:40
 
 EXPOSE 8080
 
@@ -17,7 +17,7 @@ ENV APP_ROOT=/opt/app-root \
     HOME=/opt/app-root/src \
     NPM_RUN=start \
     PLATFORM="fedora" \
-    NODEJS_VERSION=20 \
+    NODEJS_VERSION=22 \
     NPM_RUN=start \
     NAME=nodejs
 
