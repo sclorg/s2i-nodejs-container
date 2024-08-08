@@ -1,0 +1,14 @@
+{
+    "name": "hello-world",
+    "version": "0.0.1",
+    "main": "hw.js",
+    "engine": {
+        "node": "*",
+        "npm": "*"
+    },
+    "scripts": {
+        "start": "node hw.js",
+        "dev": "node hw.js"
+    },
+    "license": ""
+}

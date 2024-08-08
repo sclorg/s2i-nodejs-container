@@ -1,0 +1,17 @@
+{
+    "name": "hello-world",
+    "version": "0.0.1",
+    "main": "hw.js",
+    "engine": {
+        "node": "*",
+        "npm": "*"
+    },
+    "dependencies": {
+        "node-rdkafka": "*"
+    },
+    "scripts": {
+        "start": "node hw.js",
+        "dev": "node hw.js"
+    },
+    "license": ""
+}
