@@ -247,7 +247,12 @@ scl_usage() {
   fi
 }
 function test_scl_usage() {
-  scl_usage "node --version" "v${VERSION//-minimal/}."
+  VERSION=${VERSION//-minimal/}
+  if [ "$VERSION" == "22" ]; then
+    scl_usage "node-$VERSION --version" "v$VERSION."
+  else
+    scl_usage "node --version" "v$VERSION."
+  fi
   ct_check_testcase_result $?
 }
 
