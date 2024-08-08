@@ -1,7 +1,7 @@
-NodeJS 20 container image
+NodeJS 22 container image
 =========================
 
-This container image includes Node.JS 20 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 20 applications.
+This container image includes Node.JS 22 as a [S2I](https://github.com/openshift/source-to-image) base image for your Node.JS 22 applications.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
 and the Fedora images are available in [Quay.io](https://quay.io/organization/fedora).
@@ -13,8 +13,8 @@ Note: while the examples in this README are calling `podman`, you can replace an
 Description
 -----------
 
-Node.js 20 available as container is a base platform for 
-building and running various Node.js 20 applications and frameworks. 
+Node.js 22 available as container is a base platform for 
+building and running various Node.js 22 applications and frameworks. 
 Node.js is a platform built on Chrome's JavaScript runtime for easily building 
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model 
 that makes it lightweight and efficient, perfect for data-intensive real-time applications 
@@ -22,12 +22,12 @@ that run across distributed devices.
 
 Usage in OpenShift
 ------------------
-In this example, we will assume that you are using the `ubi8/nodejs-20` image, available via `nodejs:20` imagestream tag in Openshift.
+In this example, we will assume that you are using the `ubi8/nodejs-22` image, available via `nodejs:22` imagestream tag in Openshift.
 
 To build a simple [nodejs-sample-app](https://github.com/sclorg/nodejs-ex.git) application in Openshift:
 
 ```
-oc new-app nodejs:20~https://github.com/sclorg/nodejs-ex.git
+oc new-app nodejs:22~https://github.com/sclorg/nodejs-ex.git
 ```
 
 To access the application:
@@ -61,10 +61,10 @@ To use the Node.js image in a Dockerfile, follow these steps:
 #### 1. Pull a base builder image to build on
 
 ```
-podman pull ubi8/nodejs-20
+podman pull ubi8/nodejs-22
 ```
 
-An UBI image `ubi8/nodejs-20` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+An UBI image `ubi8/nodejs-22` is used in this example. This image is usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 
@@ -86,7 +86,7 @@ For all these three parts, users can either setup all manually and use commands 
 
 ##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
-FROM ubi8/nodejs-20
+FROM ubi8/nodejs-22
 
 # Add application sources
 ADD app-src .
@@ -100,7 +100,7 @@ CMD npm run -d start
 
 ##### 3.2. To use the Source-to-Image scripts and build an image using a Dockerfile, create a Dockerfile with this content:
 ```
-FROM ubi8/nodejs-20
+FROM ubi8/nodejs-22
 
 # Add application sources to a directory that the assemble script expects them
 # and set permissions so that the container runs without root access
@@ -250,4 +250,5 @@ See also
 Dockerfile and other sources are available on https://github.com/sclorg/s2i-nodejs-container.
 In that repository you also can find another versions of Node.js environment Dockerfiles.
 Dockerfile for CentOS Stream 9 is called `Dockerfile.c9s`,
+Dockerfile for CentOS Stream 10 is called `Dockerfile.c10s`,
 for RHEL8 it's `Dockerfile.rhel8`, for RHEL9 it's `Dockerfile.rhel9` and the Fedora Dockerfile is called Dockerfile.fedora.
