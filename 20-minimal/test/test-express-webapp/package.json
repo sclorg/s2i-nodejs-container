@@ -1,0 +1,16 @@
+{
+  "name": "test-express-webapp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "*",
+    "debug": "*",
+    "express": "*",
+    "http-errors": "*",
+    "jade": "*",
+    "morgan": "*"
+  }
+}
