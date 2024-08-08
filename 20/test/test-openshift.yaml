@@ -1,0 +1,77 @@
+---
+  ###
+  #
+  # This playbook is used for testing SCLORG images in OpenShift 4
+  # by Container Verification Pipeline (CVP).
+  #
+  #
+  # The Ansible log created when this playbook is run is archived by CVP as an artifact.
+  #
+  ###
+- hosts: all # At runtime this playbook will be executed on a Jenkins slave against 'localhost'
+  gather_facts: false
+  tags:
+    - openshift
+
+  # Here's an example of setting environment vars that will be picked up by
+  # the runtest.sh shell script below.
+  environment:
+    VERSION: VERSION_NUMBER
+    OS: OS_NUMBER
+    SHORT_NAME: CONTAINER_NAME
+    IMAGE_FULL_NAME: "{{ image_full_name }}"
+    IMAGE_REGISTRY_URL: "{{ image_registry_url }}"
+    IMAGE_NAMESPACE: "{{ image_namespace }}"
+    IMAGE_NAME: "{{ image_name }}"
+    IMAGE_TAG: "{{ image_tag }}"
+    IMAGE_DIGEST: "{{ image_digest }}"
+    OPENSHIFT_CLUSTER_URL: "{{ openshift_cluster_url }}"
+    OPENSHIFT_AUTH_TOKEN: "{{ openshift_auth_token }}"
+    OPENSHIFT_USERNAME: "{{ openshift_username }}"
+    OPENSHIFT_PROJECT_NAME: "{{ openshift_project_name }}"
+    CVP_ARTIFACTS_DIR: "{{ cvp_artifacts_dir }}"
+
+  tasks:
+    # CVP should have created the artifacts directory already, but it's always good to check.
+    - name: "Make sure the artifacts directory exists"
+      file:
+        path: "{{ cvp_artifacts_dir }}"
+        state: directory
+
+    # This block is an example of a solely Ansible approach to test a container image in OpenShift.
+    # It demonstrates how to interact with the unique 'sandbox' project created by CVP in OpenShift
+    # to import, run, and interact with your container image.
+    - name: "Run sclorg image name tests in OpenShift 4 environment."
+      block:
+        # Log into the cluster where CVP is running
+        - name: Log into the OpenShift cluster
+          shell: oc login {{ openshift_cluster_url }} --token="{{ openshift_auth_token }}" --insecure-skip-tls-verify
+
+        # Connect to the newly-created temporary 'sandbox' project in OpenShift to run your tests
+        - name: Select the project {{ openshift_project_name }}
+          shell: oc project {{ openshift_project_name }}
+
+        - name: Import the image into OpenShift
+          shell: oc import-image {{ image_name }}:{{ environment[0]['VERSION'] }} --from={{ image_full_name }} --insecure=true --confirm
+          retries: 3
+          delay: 10
+
+        - name: Tag image into OpenShift
+          shell: oc tag {{ image_name }}:{{ environment[0]['VERSION'] }} {{ environment[0]['SHORT_NAME'] }}:{{ environment[0]['VERSION'] }}
+          retries: 3
+          delay: 10
+
+        # Derive fully qualified image name of your newly imported image for the next step
+        - name: Get imported image registry URL
+          shell: oc get is {{ image_name }} --output=jsonpath='{ .status.dockerImageRepository }'
+          register: imported_image_url
+
+        # Ensure that we can access the /apis/config.openshift.io/v1/clusterversions/version endpoint on OCP4.x
+        - name: Test the version command on v4.x
+          shell: oc get clusterversions
+          register: oc_version_cmd
+          when: openshift_cluster_version == "v4.x"
+
+        # Run tests on OpenShift 4
+        - name: Run a sclorg test suite in OpenShift 4
+          shell: VERSION={{ environment[0]['VERSION'] }} IMAGE_NAME={{ image_name }} OS={{ environment[0]['OS'] }} CVP=1 bash {{ playbook_dir }}/run-openshift-remote-cluster  | tee {{ cvp_artifacts_dir }}/{{ image_name }}.log
