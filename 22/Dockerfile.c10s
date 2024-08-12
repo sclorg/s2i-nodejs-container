@@ -54,10 +54,13 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c10s:latest <APP-NAME>"
 
 # Package libatomic_ops was removed
-RUN INSTALL_PKGS="make gcc gcc-c++ libatomic_ops git openssl-devel nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
+RUN INSTALL_PKGS="make gcc gcc-c++ git openssl-devel nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
     dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    node-22 -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    rm /usr/bin/node && ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
+    rm /usr/bin/npm && ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
+    rm /usr/bin/npx && ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     dnf -y clean all --enablerepo='*'
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
