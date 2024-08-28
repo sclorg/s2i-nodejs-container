@@ -91,6 +91,41 @@ readonly -A gitconfig=(
 
 [[ -n "$DEBUG" ]] && set -x
 
+# Positive test & non-zero exit status = ERROR.
+# Negative test & zero exit status = ERROR.
+# Tests with '-should-fail-' in their name should fail during a build,
+# expecting non-zero exit status.
+evaluate_build_result() {
+  local _result="$1"
+  local _app="$2"
+  local _type="positive"
+  local _test_msg="[PASSED]"
+  local _ret_code=0
+
+  if [[ "$_app" == *"-should-fail-"* ]]; then
+    _type="negative"
+  fi
+
+  if [[ "$_type" == "positive" && "$_result" != "0" ]]; then
+    info "TEST FAILED (${_type}), EXPECTED:0 GOT:${_result}"
+    _ret_code=$_result
+  elif [[ "$_type" == "negative" && "$_result" == "0" ]]; then
+    info "TEST FAILED (${_type}), EXPECTED: non-zero GOT:${_result}"
+    _ret_code=1
+  fi
+  if [ $_ret_code != 0 ]; then
+    cleanup
+    TESTSUITE_RESULT=1
+    _test_msg="[FAILED]"
+  fi
+  ct_update_test_result "$_test_msg" "$_app" run_s2i_build
+
+  if [[ "$_type" == "negative" && "$_result" != "0" ]]; then
+    _ret_code=127 # even though this is success, the app is still not built
+  fi
+  return $_ret_code
+}
+
 ct_init
 cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 
@@ -100,27 +135,32 @@ prepare app
 check_prep_result $? app || exit
 echo "Testing the production image build"
 run_s2i_build
-ct_check_testcase_result $?
+evaluate_build_result $? "default"
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
 
-echo "Testing the development image build: s2i build -e \"NODE_ENV=development\")"
+cleanup
+
 run_s2i_build "-e NODE_ENV=development"
-ct_check_testcase_result $?
+evaluate_build_result $? "-e NODE_ENV=development"
 
 TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} ct_run_tests_from_testset "node_env_development"
 
+cleanup
+
 echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
 run_s2i_build "-e DEV_MODE=true"
-ct_check_testcase_result $?
+evaluate_build_result $? "-e DEV_MODE=true"
 
 TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} ct_run_tests_from_testset "dev_mode"
+
+cleanup
 
 echo "Testing proxy safe logging..."
 prepare hw
 check_prep_result $? hw || exit
 run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
-ct_check_testcase_result $?
+evaluate_build_result $? "proxy"
 
 TEST_SET=${TESTS:-$TEST_LIST_HW} ct_run_tests_from_testset "hw"
 
@@ -134,4 +174,6 @@ if [[ "$VERSION" != "18" ]]; then
   #npm ERR! gyp ERR! node-gyp -v v10.0.1
   #npm ERR! gyp ERR! not ok
   TEST_SET=${TESTS:-$TEST_LIST_BINARY} ct_run_tests_from_testset "binary"
+  
+  cleanup
 fi
