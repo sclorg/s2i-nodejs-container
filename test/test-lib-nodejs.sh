@@ -186,7 +186,7 @@ run_client_test_suite() {
 }
 
 kill_test_application() {
-	docker kill $(cat $cid_file)
+	docker stop $(cat $cid_file)
 	rm $cid_file
 }
 
@@ -686,6 +686,13 @@ function test_latest_imagestreams() {
   result=$?
   popd >/dev/null || return 1
   return $result
+}
+
+function cleanup() {
+  info "Cleaning up the test application image ${IMAGE_NAME}-testapp"
+  if image_exists ${IMAGE_NAME}-testapp; then
+    docker rmi -f ${IMAGE_NAME}-testapp
+  fi
 }
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
