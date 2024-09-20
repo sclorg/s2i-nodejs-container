@@ -56,6 +56,7 @@ RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-ful
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
 COPY ./s2i/bin/ /usr/libexec/s2i
+RUN chmod +x /usr/libexec/s2i/init-wrapper
 
 # Copy extra files to the image.
 COPY ./root/ /
