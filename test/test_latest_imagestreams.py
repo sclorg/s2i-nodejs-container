@@ -22,6 +22,10 @@ class TestLatestImagestreams:
         print(TEST_DIR.parent.parent)
 
     def test_latest_imagestream(self):
+        # TODO VERSION 22 is not supported at all
+        if VERSION.startswith("22"):
+            pass
+
         self.latest_version = self.isc.get_latest_version()
         assert self.latest_version != ""
         self.isc.check_imagestreams(self.latest_version)

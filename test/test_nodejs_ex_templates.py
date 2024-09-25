@@ -42,6 +42,10 @@ class TestDeployNodeJSExTemplate:
         ]
     )
     def test_nodejs_ex_template_inside_cluster(self, template):
+        # TODO VERSION 22 is not supported at all
+        if VERSION.startswith("22"):
+            pass
+
         service_name = "nodejs-testing"
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"

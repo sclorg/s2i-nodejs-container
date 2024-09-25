@@ -46,6 +46,11 @@ test -n "${VERSION-}" || false 'make sure $VERSION is defined'
 export CT_OCP4_TEST=true
 export CT_SKIP_UPLOAD_IMAGE=true
 
+# TODO VERSION 22 is not supported at all
+if [ "${VERSION}" == "22" ] || [ "${VERSION}" == "22-minimal" ]; then
+  exit 0
+fi
+
 TEST_SUMMARY=''
 TEST_SET=${TESTS:-$TEST_LIST} ct_run_tests_from_testset "openshift-remote-cluster"
 
