@@ -356,6 +356,31 @@ test_incremental_build() {
 
 }
 
+test_node_cmd() {
+  local app=$1
+  local node_env=$2
+  local init_wrapper=$3
+  local node_cmd=$4
+
+  run_test_application_with_quoted_args $app "-e NODE_ENV=$node_env -e INIT_WRAPPER=$init_wrapper -e NODE_CMD=$node_cmd"
+  logs=$(container_logs)
+  wait_for_cid
+
+  test_connection
+  ct_check_testcase_result $?
+
+  logs=$(container_logs)
+  echo ${logs} | grep -q DEBUG_PORT=5858
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q NODE_ENV=$node_env
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q INIT_WRAPPER=$init_wrapper
+  ct_check_testcase_result $?
+  echo ${logs} | grep -q NODE_CMD="$node_cmd"
+  ct_check_testcase_result $?
+
+  kill_test_application
+}
 
 # test express webapp
 run_s2i_build_express_webapp() {
