@@ -30,6 +30,22 @@ jobs:
             quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
 
+          - dockerfile: "22/Dockerfile.c10s"
+            docker_context: 22
+            registry_namespace: "sclorg"
+            tag: "c10s"
+            image_name: "nodejs-22-c10s"
+            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
+          - dockerfile: "22-minimal/Dockerfile.c10s"
+            docker_context: 22-minimal
+            registry_namespace: "sclorg"
+            tag: "c10s"
+            image_name: "nodejs-22-minimal-c10s"
+            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
           - dockerfile: "18/Dockerfile.fedora"
             docker_context: 18
             registry_namespace: "fedora"
@@ -61,6 +77,23 @@ jobs:
             quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-20-minimal"
+
+          - dockerfile: "22/Dockerfile.fedora"
+            docker_context: 22
+            registry_namespace: "fedora"
+            tag: "fedora"
+            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-22"
+
+          - dockerfile: "22-minimal/Dockerfile.fedora"
+            docker_context: 22-minimal
+            registry_namespace: "fedora"
+            tag: "fedora"
+            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-22-minimal"
+
     steps:
       - name: Build and push to quay.io registry
         uses: sclorg/build-and-push-action@v4
