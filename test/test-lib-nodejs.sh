@@ -578,9 +578,14 @@ function test_run_hw_application() {
 }
 
 function test_run_binary_application() {
-  # Test is suppressed because of https://github.com/Blizzard/node-rdkafka/issues/910
-  # The newest version of node-rdkafka works only with gcc-8 and higher
-  # On RHEL7 and CentOS7 is gcc-4.8
+  if [[ "${VERSION}" == "22" ]] && [[ "${OS}" == "c10s" ]]; then
+    # This tests is suppressed for version 22
+    # openssl/engine.h is going to be deprecated and therefore till node-rdkafka is not solve we can skip it.
+    # https://src.fedoraproject.org/rpms/openssl/c/e67e9d9c40cd2cb9547e539c658e2b63f2736762
+    # https://pkgs.devel.redhat.com/cgit/rpms/openssl/tree/openssl.spec?h=rhel-10-main#n508
+    echo "openssl-devel-engine is deprecated. Test is skipped."
+    return 0
+  fi
   prepare binary
   check_prep_result $? binary || return
   run_s2i_build_binary
