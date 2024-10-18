@@ -96,6 +96,12 @@ else
 	npm prune
 
 	# Clear the npm's cache and tmp directories only if they are not a docker volumes
+	NPM_TMP=$(npm config get tmp)
+	if ! mountpoint $NPM_TMP; then
+		echo "---> Cleaning the $NPM_TMP/npm-*"
+		rm -rf $NPM_TMP/npm-*
+	fi
+
 	NPM_CACHE=$(npm config get cache)
 	if ! mountpoint $NPM_CACHE; then
 		echo "---> Cleaning the npm cache $NPM_CACHE"
@@ -103,11 +109,6 @@ else
 		# instead of $NPM_CACHE* use $NPM_CACHE/*.
 		# We do not want to delete .npmrc file.
 		rm -rf "${NPM_CACHE:?}/"
-	fi
-	NPM_TMP=$(npm config get tmp)
-	if ! mountpoint $NPM_TMP; then
-		echo "---> Cleaning the $NPM_TMP/npm-*"
-		rm -rf $NPM_TMP/npm-*
 	fi
 
 fi
