@@ -27,9 +27,9 @@ TAG = TAGS.get(OS, None)
 class TestHelmNodeJSApplication:
 
     def setup_method(self):
-        package_name = "nodejs-application"
+        package_name = "redhat-nodejs-application"
         path = test_dir
-        self.hc_api = HelmChartsAPI(path=path, package_name=package_name, tarball_dir=test_dir, remote=True)
+        self.hc_api = HelmChartsAPI(path=path, package_name=package_name, tarball_dir=test_dir)
         self.hc_api.clone_helm_chart_repo(
             repo_url="https://github.com/sclorg/helm-charts", repo_name="helm-charts",
             subdir="charts/redhat"
@@ -39,9 +39,6 @@ class TestHelmNodeJSApplication:
         self.hc_api.delete_project()
 
     def test_curl_connection(self):
-        # TODO VERSION 22 is not supported at all
-        if VERSION.startswith("22"):
-            pass
         if self.hc_api.oc_api.shared_cluster:
             pytest.skip("Do NOT test on shared cluster")
         self.hc_api.package_name = "nodejs-imagestreams"
@@ -62,9 +59,6 @@ class TestHelmNodeJSApplication:
         )
 
     def test_by_helm_test(self):
-        # TODO VERSION 22 is not supported at all
-        if VERSION.startswith("22"):
-            pass
         self.hc_api.package_name = "nodejs-imagestreams"
         self.hc_api.helm_package()
         assert self.hc_api.helm_installation()
