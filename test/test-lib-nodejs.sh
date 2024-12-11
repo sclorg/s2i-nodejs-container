@@ -448,6 +448,12 @@ function test_client_cloudevents() {
   echo "Running CloudEvents client test"
   test_running_client_js cloudevents
 }
+
+function test_client_langchainjs() {
+  echo "Running langchainjs client test"
+  test_running_client_js langchainjs
+}
+
 function test_client_fastify() {
   if [[ "${VERSION}" == *"minimal"* ]]; then
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
