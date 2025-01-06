@@ -52,7 +52,7 @@ LABEL summary="$SUMMARY" \
 RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which nss_wrapper-libs" && \
     microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     microdnf clean all && \
-    rm /usr/bin/node && ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
+    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
     ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
     ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
