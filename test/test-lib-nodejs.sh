@@ -186,8 +186,8 @@ run_client_test_suite() {
 }
 
 kill_test_application() {
-  docker stop $(cat $cid_file)
   if [[ -f "$cid_file" ]]; then
+    docker stop $(cat $cid_file)
     rm "$cid_file"
   fi
 }
