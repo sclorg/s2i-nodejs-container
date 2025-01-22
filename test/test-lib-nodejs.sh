@@ -458,8 +458,8 @@ function test_client_fastify() {
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
   if [[ "$VERSION" == "18" ]]; then
-    if [ "$OS" == "rhel8" ] || [ "$OS" == "rhel9" ]; then
-      echo "Fastify is not supported in $VERSION and rhel8 and rhel9"
+    if [ "$OS" == "rhel8" ] || [ "$OS" == "rhel9" ] || [ "$OS" == "rhel10" ]; then
+      echo "Fastify is not supported in $VERSION and rhel8, rhel9, and rhel10"
       return
     fi
   fi
