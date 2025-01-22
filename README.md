@@ -36,6 +36,7 @@ Node.JS versions currently provided are:
 RHEL versions currently supported are:
 * RHEL8
 * RHEL9
+* RHEL10
 
 CentOS Stream versions currently available are:
 * CentOS Stream 9
