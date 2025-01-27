@@ -90,16 +90,22 @@ prepare app
 check_prep_result $? app || exit
 echo "Testing the production image build"
 
-FULL_IMAGE=${FULL_IMAGE:-${IMAGE_NAME//-minimal:1/}}
+FULL_IMAGE=${FULL_IMAGE:-${IMAGE_NAME//-minimal:latest/}}
 # if FULL_IMAGE is not found, try to pull it, if that does not work, try to pull ubi9 one
 if [ -z "$(docker images -q "$FULL_IMAGE")" ] ; then
   echo "Image $FULL_IMAGE not found, trying to pull $FULL_IMAGE from registry"
   docker pull "$FULL_IMAGE"
 fi
 if [ -z "$(docker images -q "$FULL_IMAGE")" ] ; then
-  echo "Image $FULL_IMAGE still not found, trying to use ubi9/nodejs-${VERSION//-minimal/}:latest and pull it"
-  FULL_IMAGE="ubi9/nodejs-${VERSION//-minimal/}:latest"
-  docker pull "$FULL_IMAGE"
+  if [[ "$OS" == "rhel9" ]]; then
+    echo "Image $FULL_IMAGE still not found, trying to use ubi9/nodejs-${VERSION//-minimal/}:latest and pull it"
+    FULL_IMAGE="ubi9/nodejs-${VERSION//-minimal/}:latest"
+    docker pull "$FULL_IMAGE"
+  elif [[ "$OS" == "rhel10" ]]; then
+    echo "Image $FULL_IMAGE still not found, trying to use ubi10/nodejs-${VERSION//-minimal/}:latest and pull it"
+    FULL_IMAGE="ubi10/nodejs-${VERSION//-minimal/}:latest"
+    docker pull "$FULL_IMAGE"
+  fi
 fi
 if [ -z "$(docker images -q "$FULL_IMAGE")" ] ; then
   echo "Image $FULL_IMAGE could not be found nor pulled, giving up."
