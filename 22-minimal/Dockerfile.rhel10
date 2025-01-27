@@ -1,4 +1,4 @@
-FROM ubi10/ubi-minimal
+FROM ubi10-minimal:latest
 
 EXPOSE 8080
 
