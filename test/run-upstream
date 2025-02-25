@@ -27,6 +27,7 @@ test_client_cloudevents
 test_client_fastify
 test_client_pino
 test_client_langchainjs
+test_run_binary_application
 "
 
 readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
