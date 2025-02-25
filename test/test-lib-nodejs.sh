@@ -522,45 +522,32 @@ function test_dev_mode_true_development() {
 }
 
 function test_node_cmd_production_init_wrapper_false() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=production INIT_WRAPPER=false NODE_CMD="node server.js"
-    test_node_cmd app production false "node server.js"
-  fi
+  test_node_cmd app production false "node server.js"
 }
 
 function test_node_cmd_development_init_wrapper_true() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
-    test_node_cmd app development true "node server.js"
-  fi
+  # NODE_ENV=development INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app development true "node server.js"
 }
 
 function test_node_cmd_production_init_wrapper_true() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
-    test_node_cmd app production true "node server.js"
-  fi
+  # NODE_ENV=production INIT_WRAPPER=true NODE_CMD="node server.js"
+  test_node_cmd app production true "node server.js"
 }
 
 function test_node_cmd_development_init_wrapper_false() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
-    test_node_cmd app development false "node server.js"
-  fi
+  # NODE_ENV=development INIT_WRAPPER=false NODE_CMD="node server.js"
+  test_node_cmd app development false "node server.js"
 }
 
 function test_init_wrapper_true_development() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=development INIT_WRAPPER=true
-    test_node_cmd app development true
-  fi
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development true
 }
 
 function test_init_wrapper_false_development() {
-  if [ "$OS" != "rhel7" ]; then
-    # NODE_ENV=development INIT_WRAPPER=true
-    test_node_cmd app development false
-  fi
+  # NODE_ENV=development INIT_WRAPPER=true
+  test_node_cmd app development false
 }
 
 function test_dev_mode_false_development() {
