@@ -694,6 +694,7 @@ function cleanup() {
   if image_exists ${IMAGE_NAME}-testapp; then
     docker rmi -f ${IMAGE_NAME}-testapp
   fi
+	return 0
 }
 
 # vim: set tabstop=2:shiftwidth=2:expandtab:
