@@ -26,7 +26,7 @@ check_prep_result() {
 }
 
 image_exists() {
-  docker inspect $1
+  docker inspect $1 1>/dev/null
 }
 
 container_exists() {
