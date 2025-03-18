@@ -73,8 +73,6 @@ cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 
 TEST_SET=${TESTS:-$TEST_LIST_CLIENTS} ct_run_tests_from_testset "clients"
 
-cleanup
-
 if [[ "$VERSION" != "18" ]]; then
   # This test is not available for NodeJS-18
   # There is a traceback in NodeJS. It reached EOL support.
@@ -85,7 +83,5 @@ if [[ "$VERSION" != "18" ]]; then
   #npm ERR! gyp ERR! node-gyp -v v10.0.1
   #npm ERR! gyp ERR! not ok
   TEST_SET=${TESTS:-$TEST_LIST_BINARY} ct_run_tests_from_testset "binary"
-
-  cleanup
 
 fi

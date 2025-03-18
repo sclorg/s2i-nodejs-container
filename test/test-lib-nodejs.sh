@@ -408,9 +408,9 @@ function test_running_client_js {
   prepare "$1"
   check_prep_result $? $1 || return
   run_s2i_build_client "$1"
-  ct_check_testcase_result $?
+  ct_check_testcase_result $? || return
   run_client_test_suite "$1"
-  ct_check_testcase_result $?
+  ct_check_testcase_result $? || return
 }
 
 function test_client_express() {
