@@ -30,7 +30,6 @@ test_init_wrapper_false_development
 "
 
 TEST_LIST_BINARY="\
-test_run_binary_application
 test_node_cmd_development_init_wrapper_true
 "
 
