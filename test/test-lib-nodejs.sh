@@ -692,7 +692,10 @@ function test_latest_imagestreams() {
 function cleanup() {
   info "Cleaning up the test application image ${IMAGE_NAME}-testapp"
   if image_exists ${IMAGE_NAME}-testapp; then
+    info "Image ${IMAGE_NAME}-testapp exist...removing it"
     docker rmi -f ${IMAGE_NAME}-testapp
+    echo $?
+    info "Removed by docker rmi ${IMAGE_NAME}-testapp"
   fi
 }
 
