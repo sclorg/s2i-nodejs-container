@@ -1,7 +1,7 @@
 {
     "name": "hello-world",
     "version": "0.0.1",
-    "main": "hw.js",
+    "main": "binary.js",
     "engine": {
         "node": "*",
         "npm": "*"
@@ -10,8 +10,8 @@
         "node-rdkafka": "*"
     },
     "scripts": {
-        "start": "node hw.js",
-        "dev": "node hw.js"
+        "start": "node binary.js",
+        "dev": "node binary.js"
     },
     "license": ""
 }
