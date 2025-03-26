@@ -54,7 +54,7 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> ubi8/$NAME-$NODEJS_VERSION:latest <APP-NAME>"
 
 RUN dnf -y module enable nodejs:$NODEJS_VERSION && \
-    MODULE_DEPS="make gcc-toolset-14-gcc gcc-toolset-14-gcc-c++ gcc-toolset-14-runtime \
+    MODULE_DEPS="make gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-runtime \
         libatomic_ops git openssl-devel python3.12" && \
     INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper-libs which" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
@@ -77,9 +77,9 @@ RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
 USER 1001
 
 # Enable the SCL for all bash scripts.
-ENV BASH_ENV=/opt/rh/gcc-toolset-14/enable \
-    ENV=/opt/rh/gcc-toolset-14/enable \
-    PROMPT_COMMAND=". /opt/rh/gcc-toolset-14/enable"
+ENV BASH_ENV=/opt/rh/gcc-toolset-13/enable \
+    ENV=/opt/rh/gcc-toolset-13/enable \
+    PROMPT_COMMAND=". /opt/rh/gcc-toolset-13/enable"
 
 # Set the default CMD to print the usage of the language image
 CMD $STI_SCRIPTS_PATH/usage
