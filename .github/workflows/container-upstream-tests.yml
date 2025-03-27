@@ -5,21 +5,21 @@ on:
 jobs:
   container-tests:
     # This job only runs for '[test]' pull request comments by owner, member
-    name: "Container tests: ${{ matrix.version }} - ${{ matrix.os_test }}"
+    name: "Container Upstream Tests ${{ matrix.version }} - ${{ matrix.os_test }}"
     runs-on: ubuntu-20.04
     concurrency:
-      group: container-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
+      group: container-upstream-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
       cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
         version: [ "18", "18-minimal", "20", "20-minimal", "22", "22-minimal" ]
         os_test: [ "fedora", "rhel8", "rhel9", "rhel10", "c9s", "c10s" ]
-        test_case: [ "container" ]
+        test_case: [ "container-upstream" ]
 
     if: |
       github.event.issue.pull_request
-      && (contains(github.event.comment.body, '[test]') || contains(github.event.comment.body, '[test-all]'))
+      && (contains(github.event.comment.body, '[test-upstream]') || contains(github.event.comment.body, '[test-all]'))
       && contains(fromJson('["OWNER", "MEMBER"]'), github.event.comment.author_association)
     steps:
       - uses: sclorg/tfaga-wrapper@main
