@@ -33,7 +33,7 @@ TEST_LIST_BINARY="\
 test_run_binary_application
 "
 
-readonly EXPRESS_REVISION="${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
+readonly EXPRESS_REVISION="v${EXPRESS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show express version)}"
 readonly EXPRESS_REPO="https://github.com/expressjs/express.git"
 readonly PINO_REVISION=v"${PINO_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show pino version)}"
 readonly PINO_REPO="https://github.com/pinojs/pino.git"
