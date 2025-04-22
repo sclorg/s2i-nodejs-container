@@ -4,9 +4,9 @@ on:
       - created
 jobs:
   container-tests:
-    # This job only runs for '[test]' pull request comments by owner, member
+    # This job only runs for '[test-upstream]' pull request comments by owner, member
     name: "Container Upstream Tests ${{ matrix.version }} - ${{ matrix.os_test }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     concurrency:
       group: container-upstream-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
       cancel-in-progress: true

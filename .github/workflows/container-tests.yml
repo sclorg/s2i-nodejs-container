@@ -6,7 +6,7 @@ jobs:
   container-tests:
     # This job only runs for '[test]' pull request comments by owner, member
     name: "Container tests: ${{ matrix.version }} - ${{ matrix.os_test }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     concurrency:
       group: container-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
       cancel-in-progress: true
