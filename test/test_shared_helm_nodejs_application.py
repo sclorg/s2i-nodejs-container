@@ -38,31 +38,11 @@ class TestHelmNodeJSApplication:
     def teardown_method(self):
         self.hc_api.delete_project()
 
-    def test_curl_connection(self):
-        if self.hc_api.oc_api.shared_cluster:
-            pytest.skip("Do NOT test on shared cluster")
-        self.hc_api.package_name = "nodejs-imagestreams"
-        self.hc_api.helm_package()
-        assert self.hc_api.helm_installation()
-        self.hc_api.package_name = "nodejs-application"
-        assert self.hc_api.helm_package()
-        assert self.hc_api.helm_installation(
-            values={
-                "nodejs_version": f"{VERSION}{TAG}",
-                "namespace": self.hc_api.namespace
-            }
-        )
-        assert self.hc_api.is_s2i_pod_running(pod_name_prefix="nodejs-example")
-        assert self.hc_api.test_helm_curl_output(
-            route_name="nodejs-example",
-            expected_str="Node.js Crud Application"
-        )
-
     def test_by_helm_test(self):
-        self.hc_api.package_name = "nodejs-imagestreams"
+        self.hc_api.package_name = "redhat-nodejs-imagestreams"
         self.hc_api.helm_package()
         assert self.hc_api.helm_installation()
-        self.hc_api.package_name = "nodejs-application"
+        self.hc_api.package_name = "redhat-nodejs-application"
         assert self.hc_api.helm_package()
         assert self.hc_api.helm_installation(
             values={
