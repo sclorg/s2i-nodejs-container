@@ -43,6 +43,8 @@ class TestDeployNodeJSExTemplate:
     )
     def test_nodejs_ex_template_inside_cluster(self, template):
         service_name = "nodejs-testing"
+        if os == "rhel10":
+            pytest.skip("Do NOT test on RHEL10 yet.")
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
@@ -73,7 +75,7 @@ class TestDeployNodeJSExTemplate:
             openshift_args=openshift_args
 
         )
-        assert self.oc_api.template_deployed(name_in_template=service_name)
+        assert self.oc_api.is_template_deployed(name_in_template=service_name)
         assert self.oc_api.check_response_inside_cluster(
             name_in_template=service_name, expected_output="Node.js Crud Application"
         )

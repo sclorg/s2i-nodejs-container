@@ -31,7 +31,7 @@ IMAGE_TAG = f"15-c9s"
 class TestImagestreamsQuickstart:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-example", version=VERSION)
+        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-example", version=VERSION, shared_cluster=True)
         assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
 
     def teardown_method(self):
@@ -49,13 +49,15 @@ class TestImagestreamsQuickstart:
         if "minimal" in VERSION:
             new_version = VERSION.replace("-minimal", "")
         service_name = "nodejs-example"
+        if os == "rhel10":
+            pytest.skip("Do NOT test on RHEL10 yet.")
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
         openshift_args = [
             f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
             f"SOURCE_REPOSITORY_REF=master",
-            f"NODEJS_VERSION={new_version}",
+            f"NODEJS_VERSION={VERSION}",
             f"NAME={service_name}"
         ]
         if template != "nodejs.json":
@@ -63,7 +65,7 @@ class TestImagestreamsQuickstart:
                 f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
                 f"SOURCE_REPOSITORY_REF=master",
                 f"POSTGRESQL_VERSION={IMAGE_TAG}",
-                f"NODEJS_VERSION={new_version}",
+                f"NODEJS_VERSION={VERSION}",
                 f"NAME={service_name}",
                 f"DATABASE_USER=testu",
                 f"DATABASE_PASSWORD=testpwd",
@@ -76,7 +78,7 @@ class TestImagestreamsQuickstart:
             name_in_template="nodejs",
             openshift_args=openshift_args
         )
-        assert self.oc_api.template_deployed(name_in_template=service_name)
+        assert self.oc_api.is_template_deployed(name_in_template=service_name)
         assert self.oc_api.check_response_inside_cluster(
             name_in_template=service_name, expected_output="Node.js Crud Application"
         )
