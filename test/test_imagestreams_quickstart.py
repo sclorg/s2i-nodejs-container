@@ -6,6 +6,7 @@ import pytest
 from container_ci_suite.openshift import OpenShiftAPI
 from container_ci_suite.utils import check_variables
 
+from constants import TAGS
 
 if not check_variables():
     print("At least one variable from IMAGE_NAME, OS, VERSION is missing.")
@@ -18,11 +19,8 @@ OS = os.getenv("OS")
 
 DEPLOYED_PGSQL_IMAGE = "quay.io/sclorg/postgresql-15-c9s"
 
-NODEJS_TAGS = {
-    "rhel8": "-ubi8",
-    "rhel9": "-ubi9"
-}
-NODEJS_TAG = NODEJS_TAGS.get(OS, None)
+
+TAG = TAGS.get(OS)
 PGSQL_IMAGE_TAG = f"postgresql:15-c9s"
 IMAGE_TAG = f"15-c9s"
 
@@ -32,7 +30,6 @@ class TestImagestreamsQuickstart:
 
     def setup_method(self):
         self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-example", version=VERSION, shared_cluster=True)
-        assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
 
     def teardown_method(self):
         self.oc_api.delete_project()
@@ -45,19 +42,18 @@ class TestImagestreamsQuickstart:
         ]
     )
     def test_nodejs_template_inside_cluster(self, template):
+        assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
         new_version = VERSION
         if "minimal" in VERSION:
             new_version = VERSION.replace("-minimal", "")
-        service_name = "nodejs-example"
-        if os == "rhel10":
-            pytest.skip("Do NOT test on RHEL10 yet.")
+        service_name = f"nodejs-{new_version}-example"
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
         openshift_args = [
             f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
             f"SOURCE_REPOSITORY_REF=master",
-            f"NODEJS_VERSION={VERSION}",
+            f"NODEJS_VERSION={new_version}",
             f"NAME={service_name}"
         ]
         if template != "nodejs.json":
@@ -65,7 +61,7 @@ class TestImagestreamsQuickstart:
                 f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
                 f"SOURCE_REPOSITORY_REF=master",
                 f"POSTGRESQL_VERSION={IMAGE_TAG}",
-                f"NODEJS_VERSION={VERSION}",
+                f"NODEJS_VERSION={new_version}",
                 f"NAME={service_name}",
                 f"DATABASE_USER=testu",
                 f"DATABASE_PASSWORD=testpwd",

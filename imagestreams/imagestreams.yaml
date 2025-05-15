@@ -16,6 +16,10 @@
 
       - name: UBI 9
         app_versions: ["20", "20-minimal", "22", "22-minimal"]
+
+      - name: UBI 10
+        app_versions: ["22", "22-minimal"]
+
     custom_tags:
       - name: "20-ubi8-minimal"
         distro: UBI 8
@@ -26,6 +30,9 @@
       - name: "22-ubi9-minimal"
         distro: UBI 9
         app_version: "22-minimal"
+      - name: "22-ubi10-minimal"
+        distro: UBI 10
+        app_version: "22-minimal"
 
   - filename: nodejs-rhel.json
     latest: "22-ubi9"
@@ -35,6 +42,10 @@
 
       - name: UBI 9
         app_versions: ["20", "20-minimal", "22", "22-minimal"]
+
+      - name: UBI 10
+        app_versions: ["22", "22-minimal"]
+
     # these are non standard tags, maintained for backwards compatibility
     custom_tags:
       - name: "20-ubi8-minimal"
@@ -46,6 +57,9 @@
       - name: "22-ubi9-minimal"
         distro: UBI 9
         app_version: "22-minimal"
+      - name: "22-ubi10-minimal"
+        distro: UBI 10
+        app_version: "22-minimal"
 
   - filename: nodejs-rhel-aarch64.json
     latest: "22-ubi9"
@@ -55,6 +69,10 @@
 
       - name: UBI 9
         app_versions: ["20", "20-minimal", "22", "22-minimal"]
+
+      - name: UBI 10
+        app_versions: ["22", "22-minimal"]
+
     custom_tags:
       - name: "20-ubi8-minimal"
         distro: UBI 8
@@ -64,5 +82,8 @@
         app_version: "20-minimal"
       - name: "22-ubi9-minimal"
         distro: UBI 9
+        app_version: "22-minimal"
+      - name: "22-ubi10-minimal"
+        distro: UBI 10
         app_version: "22-minimal"
 ...
