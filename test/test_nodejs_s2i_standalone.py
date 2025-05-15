@@ -25,7 +25,10 @@ class TestNodeJSExTemplate:
         self.oc_api.delete_project()
 
     def test_nodejs_ex_template_inside_cluster(self):
-        service_name = "nodejs-testing"
+        new_version = VERSION
+        if "minimal" in VERSION:
+            new_version = VERSION.replace("-minimal", "")
+        service_name = f"nodejs-{new_version}-testing"
         assert self.oc_api.deploy_s2i_app(
             image_name=IMAGE_NAME, app=f"https://github.com/sclorg/s2i-nodejs-container.git",
             context="test/test-app",
