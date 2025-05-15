@@ -340,19 +340,11 @@ test_incremental_build() {
   ct_check_testcase_result $?
   build_log2=$(ct_s2i_build_as_df file://${test_dir}/test-incremental ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} ${npm_variables} --incremental)
   ct_check_testcase_result $?
-  if [ "$VERSION" == "6" ]; then
-      # Different npm output for version 6
-      if echo "$build_log2" | grep -e "\-\- yarn@[0-9\.]*"; then
-          echo "ERROR Incremental build failed: yarn package is getting installed in incremental build"
-          ct_check_testcase_result 1
-      fi
-  else
-      first=$(echo "$build_log1" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
-      second=$(echo "$build_log2" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
-      if [ "$first" == "$second" ]; then
-          echo "ERROR Incremental build failed: both builds installed $first packages"
-          ct_check_testcase_result 1
-      fi
+  first=$(echo "$build_log1" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
+  second=$(echo "$build_log2" | grep -o -e "added [0-9]* packages" | awk '{ print $2 }')
+  if [ "$first" == "$second" ]; then
+      echo "ERROR Incremental build failed: both builds installed $first packages"
+      ct_check_testcase_result 1
   fi
 
 }
