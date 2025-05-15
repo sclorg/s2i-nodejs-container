@@ -124,6 +124,86 @@
         }
       },
       {
+<<<<<<< HEAD
+||||||| parent of 15cc391 (Add support for the latest imagestreams in RHEL10.)
+        "name": "18-ubi8-minimal",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 18-minimal (UBI 8)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 18-minimal applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/18-minimal/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "18-minimal",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi8/nodejs-18-minimal:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+=======
+        "name": "22-ubi10",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 22 (UBI 10)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 22 applications on UBI 10. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/22/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "22",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi10/nodejs-22:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "22-minimal-ubi10",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 22-minimal (UBI 10)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 22-minimal applications on UBI 10. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/22-minimal/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "22-minimal",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi10/nodejs-22-minimal:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "18-ubi8-minimal",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 18-minimal (UBI 8)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 18-minimal applications on UBI 8. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/18-minimal/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "18-minimal",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi8/nodejs-18-minimal:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+>>>>>>> 15cc391 (Add support for the latest imagestreams in RHEL10.)
         "name": "20-ubi8-minimal",
         "annotations": {
           "openshift.io/display-name": "Node.js 20-minimal (UBI 8)",
@@ -175,6 +255,25 @@
         "from": {
           "kind": "DockerImage",
           "name": "registry.redhat.io/ubi9/nodejs-22-minimal:latest"
+        },
+        "referencePolicy": {
+          "type": "Local"
+        }
+      },
+      {
+        "name": "22-ubi10-minimal",
+        "annotations": {
+          "openshift.io/display-name": "Node.js 22-minimal (UBI 10)",
+          "openshift.io/provider-display-name": "Red Hat, Inc.",
+          "description": "Build and run Node.js 22-minimal applications on UBI 10. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-nodejs-container/blob/master/22-minimal/README.md.",
+          "iconClass": "icon-nodejs",
+          "tags": "builder,nodejs",
+          "version": "22-minimal",
+          "sampleRepo": "https://github.com/sclorg/nodejs-ex.git"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "registry.redhat.io/ubi10/nodejs-22-minimal:latest"
         },
         "referencePolicy": {
           "type": "Local"

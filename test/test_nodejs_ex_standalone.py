@@ -19,13 +19,16 @@ OS = os.getenv("TARGET")
 class TestNodeJSExTemplate:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-testing", version=VERSION)
+        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-testing", version=VERSION, shared_cluster=True)
 
     def teardown_method(self):
         self.oc_api.delete_project()
 
     def test_nodejs_ex_template_inside_cluster(self):
-        service_name = "nodejs-testing"
+        new_version = VERSION
+        if "minimal" in VERSION:
+            new_version = VERSION.replace("-minimal", "")
+        service_name = f"nodejs-{new_version}-testing"
         assert self.oc_api.deploy_s2i_app(
             image_name=IMAGE_NAME, app=f"https://github.com/sclorg/nodejs-ex.git",
             context=".",
