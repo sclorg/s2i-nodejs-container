@@ -4,7 +4,6 @@ NodeJS container images
 [![Build and push images to Quay.io registry](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml)
 
 Images available on Quay are:
-* Fedora [nodejs-18](https://quay.io/repository/fedora/nodejs-18)
 * Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
 * Fedora [nodejs-22](https://quay.io/repository/fedora/nodejs-22)
 
@@ -26,8 +25,6 @@ For more information about concepts used in these container images, see the
 Versions
 ---------------
 Node.JS versions currently provided are:
-* [NodeJS 18](18)
-* [NodeJS 18-minimal](18-minimal)
 * [NodeJS 20](20)
 * [NodeJS 20-minimal](20-minimal)
 * [NodeJS 22](22)
@@ -52,7 +49,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     To download it run:
 
     ```
-    $ podman pull registry.access.redhat.com/rhel8/nodejs-18
+    $ podman pull registry.access.redhat.com/rhel8/nodejs-20
     ```
 
     To build a RHEL based Node.JS image, you need to run the build on a properly
@@ -62,7 +59,7 @@ To build a Node.JS image, choose either the CentOS or RHEL based image:
     $ git clone --recursive https://github.com/sclorg/s2i-nodejs-container.git
     $ cd s2i-nodejs-container
     $ git submodule update --init
-    $ make build TARGET=rhel8 VERSIONS=18
+    $ make build TARGET=rhel8 VERSIONS=20
     ```
 
 *  **CentOS Stream based image**
@@ -90,12 +87,6 @@ on all provided versions of Node.JS.**
 
 Usage
 -----
-
-For information about usage of Dockerfile for NodeJS 18,
-see [usage documentation](18/README.md).
-
-For information about usage of Dockerfile for NodeJS 18 minimal,
-see [usage documentation](18-minimal/README.md).
 
 For information about usage of Dockerfile for NodeJS 20,
 see [usage documentation](20/README.md).
