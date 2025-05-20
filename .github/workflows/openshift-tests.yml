@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ "18", "18-minimal", "20", "20-minimal", "22", "22-minimal" ]
+        version: [ "20", "20-minimal", "22", "22-minimal" ]
         os_test: [ "rhel8", "rhel9", "rhel10" ]
         test_case: [ "openshift-4" ]
 

@@ -12,20 +12,14 @@
     latest: "22-ubi9"
     distros:
       - name: UBI 8
-        app_versions: ["18", "18-minimal", "20", "20-minimal"]
+        app_versions: ["20", "20-minimal"]
 
       - name: UBI 9
-        app_versions: ["18", "18-minimal", "20", "20-minimal", "22", "22-minimal"]
+        app_versions: ["20", "20-minimal", "22", "22-minimal"]
     custom_tags:
-      - name: "18-ubi8-minimal"
-        distro: UBI 8
-        app_version: "18-minimal"
       - name: "20-ubi8-minimal"
         distro: UBI 8
         app_version: "20-minimal"
-      - name: "18-ubi9-minimal"
-        distro: UBI 9
-        app_version: "18-minimal"
       - name: "20-ubi9-minimal"
         distro: UBI 9
         app_version: "20-minimal"
@@ -37,21 +31,15 @@
     latest: "22-ubi9"
     distros:
       - name: UBI 8
-        app_versions: ["18", "18-minimal", "20", "20-minimal"]
+        app_versions: ["20", "20-minimal"]
 
       - name: UBI 9
-        app_versions: ["18", "18-minimal", "20", "20-minimal", "22", "22-minimal"]
+        app_versions: ["20", "20-minimal", "22", "22-minimal"]
     # these are non standard tags, maintained for backwards compatibility
     custom_tags:
-      - name: "18-ubi8-minimal"
-        distro: UBI 8
-        app_version: "18-minimal"
       - name: "20-ubi8-minimal"
         distro: UBI 8
         app_version: "20-minimal"
-      - name: "18-ubi9-minimal"
-        distro: UBI 9
-        app_version: "18-minimal"
       - name: "20-ubi9-minimal"
         distro: UBI 9
         app_version: "20-minimal"
@@ -63,20 +51,14 @@
     latest: "22-ubi9"
     distros:
       - name: UBI 8
-        app_versions: ["18", "18-minimal", "20", "20-minimal"]
+        app_versions: ["20", "20-minimal"]
 
       - name: UBI 9
-        app_versions: ["18", "18-minimal", "20", "20-minimal", "22", "22-minimal"]
+        app_versions: ["20", "20-minimal", "22", "22-minimal"]
     custom_tags:
-      - name: "18-ubi8-minimal"
-        distro: UBI 8
-        app_version: "18-minimal"
       - name: "20-ubi8-minimal"
         distro: UBI 8
         app_version: "20-minimal"
-      - name: "18-ubi9-minimal"
-        distro: UBI 9
-        app_version: "18-minimal"
       - name: "20-ubi9-minimal"
         distro: UBI 9
         app_version: "20-minimal"
