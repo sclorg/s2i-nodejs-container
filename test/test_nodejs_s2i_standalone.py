@@ -11,24 +11,20 @@ if not check_variables():
     sys.exit(1)
 
 
-VERSION = os.getenv("VERSION")
+VERSION = os.getenv("VERSION").replace("-minimal", "")
 IMAGE_NAME = os.getenv("IMAGE_NAME")
 OS = os.getenv("TARGET")
-
 
 class TestNodeJSExTemplate:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-testing", version=VERSION)
+        self.oc_api = OpenShiftAPI(pod_name_prefix=f"nodejs-{VERSION}-testing", version=VERSION)
 
     def teardown_method(self):
         self.oc_api.delete_project()
 
     def test_nodejs_ex_template_inside_cluster(self):
-        new_version = VERSION
-        if "minimal" in VERSION:
-            new_version = VERSION.replace("-minimal", "")
-        service_name = f"nodejs-{new_version}-testing"
+        service_name = f"nodejs-{VERSION}-testing"
         assert self.oc_api.deploy_s2i_app(
             image_name=IMAGE_NAME, app=f"https://github.com/sclorg/s2i-nodejs-container.git",
             context="test/test-app",

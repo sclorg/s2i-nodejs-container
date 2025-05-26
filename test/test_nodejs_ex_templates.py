@@ -12,7 +12,7 @@ if not check_variables():
     sys.exit(1)
 
 
-VERSION = os.getenv("VERSION")
+VERSION = os.getenv("VERSION").replace("-minimal", "")
 IMAGE_NAME = os.getenv("IMAGE_NAME")
 OS = os.getenv("TARGET")
 
@@ -27,7 +27,7 @@ IMAGE_TAG = f"15-c9s"
 class TestDeployNodeJSExTemplate:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-testing", version=VERSION, shared_cluster=True)
+        self.oc_api = OpenShiftAPI(pod_name_prefix=f"nodejs-{VERSION}-testing", version=VERSION, shared_cluster=True)
 
     def teardown_method(self):
         self.oc_api.delete_project()
@@ -44,14 +44,11 @@ class TestDeployNodeJSExTemplate:
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
-        new_version = VERSION
-        if "minimal" in VERSION:
-            new_version = VERSION.replace("-minimal", "")
-        service_name = f"nodejs-{new_version}-testing"
+        service_name = f"nodejs-{VERSION}-testing"
         openshift_args = [
             "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
             "SOURCE_REPOSITORY_REF=master",
-            f"NODEJS_VERSION={new_version}",
+            f"NODEJS_VERSION={VERSION}",
             f"NAME={service_name}"
         ]
         if template != "nodejs.json":
@@ -59,7 +56,7 @@ class TestDeployNodeJSExTemplate:
                 "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
                 "SOURCE_REPOSITORY_REF=master",
                 f"POSTGRESQL_VERSION={IMAGE_TAG}",
-                f"NODEJS_VERSION={new_version}",
+                f"NODEJS_VERSION={VERSION}",
                 f"NAME={service_name}",
                 "DATABASE_USER=testu",
                 "DATABASE_PASSWORD=testpwd",
