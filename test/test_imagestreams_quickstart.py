@@ -13,7 +13,7 @@ if not check_variables():
     sys.exit(1)
 
 
-VERSION = os.getenv("VERSION")
+VERSION = os.getenv("VERSION").replace("-minimal", "")
 IMAGE_NAME = os.getenv("IMAGE_NAME")
 OS = os.getenv("OS")
 
@@ -29,7 +29,7 @@ IMAGE_TAG = f"15-c9s"
 class TestImagestreamsQuickstart:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix="nodejs-example", version=VERSION, shared_cluster=True)
+        self.oc_api = OpenShiftAPI(pod_name_prefix=f"nodejs-{VERSION}-example", version=VERSION, shared_cluster=True)
 
     def teardown_method(self):
         self.oc_api.delete_project()
@@ -43,29 +43,26 @@ class TestImagestreamsQuickstart:
     )
     def test_nodejs_template_inside_cluster(self, template):
         assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
-        new_version = VERSION
-        if "minimal" in VERSION:
-            new_version = VERSION.replace("-minimal", "")
-        service_name = f"nodejs-{new_version}-example"
+        service_name = f"nodejs-{VERSION}-example"
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
         openshift_args = [
-            f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
-            f"SOURCE_REPOSITORY_REF=master",
-            f"NODEJS_VERSION={new_version}",
+            "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
+            "SOURCE_REPOSITORY_REF=master",
+            f"NODEJS_VERSION={VERSION}",
             f"NAME={service_name}"
         ]
         if template != "nodejs.json":
             openshift_args = [
-                f"SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
-                f"SOURCE_REPOSITORY_REF=master",
+                "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
+                "SOURCE_REPOSITORY_REF=master",
                 f"POSTGRESQL_VERSION={IMAGE_TAG}",
-                f"NODEJS_VERSION={new_version}",
+                f"NODEJS_VERSION={VERSION}",
                 f"NAME={service_name}",
-                f"DATABASE_USER=testu",
-                f"DATABASE_PASSWORD=testpwd",
-                f"DATABASE_ADMIN_PASSWORD=testadminpwd"
+                "DATABASE_USER=testu",
+                "DATABASE_PASSWORD=testpwd",
+                "DATABASE_ADMIN_PASSWORD=testadminpwd"
             ]
         assert self.oc_api.imagestream_quickstart(
             imagestream_file="imagestreams/nodejs-rhel.json",
