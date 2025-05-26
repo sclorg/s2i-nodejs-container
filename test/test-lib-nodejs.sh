@@ -457,12 +457,6 @@ function test_client_fastify() {
   if [[ "${VERSION}" == *"minimal"* ]]; then
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
-  if [[ "$VERSION" == "18" ]]; then
-    if [ "$OS" == "rhel8" ] || [ "$OS" == "rhel9" ] || [ "$OS" == "rhel10" ]; then
-      echo "Fastify is not supported in $VERSION and rhel8, rhel9, and rhel10"
-      return
-    fi
-  fi
   echo "Running fastify client test"
   test_running_client_js fastify
 }
