@@ -616,7 +616,7 @@ function test_nodejs_imagestream() {
     VERSION=$(echo "${VERSION}" | cut -d "-" -f 1)
   fi
   ct_os_test_image_stream_quickstart \
-    "${THISDIR}/imagestreams/nodejs-${OS%[0-9]*}.json" \
+    "${THISDIR}/imagestreams/nodejs-${OS//[0-9]/}.json" \
     "https://raw.githubusercontent.com/sclorg/nodejs-ex/${BRANCH_TO_TEST}/openshift/templates/nodejs-postgresql-persistent.json" \
     "${IMAGE_NAME}" \
     'nodejs' \
