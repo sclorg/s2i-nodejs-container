@@ -478,6 +478,27 @@ function test_nodemon_present() {
   ct_check_testcase_result "$?"
 }
 
+function test_nodejs_fips_mode() {
+  # Test that nodejs behaves as expected in fips mode
+  local is_fips_enabled
+
+  # Read fips mode from host in case exists
+  if [[ -f /proc/sys/crypto/fips_enabled ]]; then
+    is_fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
+  else
+    is_fips_enabled="0"
+  fi
+  if [ is_fips_enabled == "0" ]; then
+    # FIPS disabled -- crypto.getFips() should return 0
+    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "node -e 'const crypto = require(\"crypto\"); return crypto.getFips();'"
+    ct_check_testcase_result "$?"
+  else
+    # FIPS enabled -- crypto.getFips() should return 1
+    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! node -e 'const crypto = require(\"crypto\"); return crypto.getFips();'"
+    ct_check_testcase_result "$?"
+  fi
+}
+
 function test_npm_cache_cleared() {
   # Test that the npm cache has been cleared
   cache_loc=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "npm config get cache")
