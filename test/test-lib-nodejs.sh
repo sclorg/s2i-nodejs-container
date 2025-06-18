@@ -45,6 +45,10 @@ run_s2i_build() {
   ct_s2i_build_as_df file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $(ct_build_s2i_npm_variables) $1
 }
 
+run_s2i_fips() {
+  ct_s2i_build_as_df file://${test_dir}/test-fips${IMAGE_NAME} ${IMAGE_NAME}-testfips ${s2i_args} $(ct_build_s2i_npm_variables) $1
+}
+
 run_s2i_build_proxy() {
   ct_s2i_build_as_df file://${test_dir}/test-hw ${IMAGE_NAME} ${IMAGE_NAME}-testhw ${s2i_args} $(ct_build_s2i_npm_variables) -e HTTP_PROXY=$1 -e http_proxy=$1 -e HTTPS_PROXY=$2 -e https_proxy=$2
 }
@@ -130,7 +134,7 @@ prepare() {
   case "$1" in
     # TODO: STI build require the application is a valid 'GIT' repository, we
     # should remove this restriction in the future when a file:// is used.
-    app|hw|express-webapp|binary)
+    app|hw|fips|express-webapp|binary)
       pushd "${test_dir}/test-${1}" >/dev/null
       prepare_dummy_git_repo
       popd >/dev/null
@@ -476,6 +480,29 @@ function test_nodemon_present() {
   # Test that the development dependencies (nodemon) have been removed (npm prune)
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "test -d ./node_modules/nodemon")
   ct_check_testcase_result "$?"
+}
+
+function test_nodejs_fips_mode() {
+  # Test that nodejs behaves as expected in fips mode
+  local is_fips_enabled
+
+  # Read fips mode from host in case exists
+  if [[ -f /proc/sys/crypto/fips_enabled ]]; then
+    is_fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
+  else
+    is_fips_enabled="0"
+  fi
+  if [[ "$is_fips_enabled" == "0" ]]; then
+    # FIPS disabled -- crypto.getFips() should return 0
+    echo "Fips should be disabled"
+    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    ct_check_testcase_result "$?"
+  else
+    # FIPS enabled -- crypto.getFips() should return 1
+    echo "Fips should be enabled"
+    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    ct_check_testcase_result "$?"
+  fi
 }
 
 function test_npm_cache_cleared() {
