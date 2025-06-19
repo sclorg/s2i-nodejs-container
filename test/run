@@ -17,6 +17,7 @@ test_docker_run_usage
 test_npm_functionality
 test_check_build_using_dockerfile
 test_nodemon_removed
+test_nodejs_fips_mode
 test_npm_cache_cleared
 test_npm_tmp_cleared
 kill_test_application
