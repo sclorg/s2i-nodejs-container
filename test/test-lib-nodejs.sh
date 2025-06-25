@@ -45,8 +45,8 @@ run_s2i_build() {
   ct_s2i_build_as_df file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp ${s2i_args} $(ct_build_s2i_npm_variables) $1
 }
 
-run_s2i_fips() {
-  ct_s2i_build_as_df file://${test_dir}/test-fips${IMAGE_NAME} ${IMAGE_NAME}-testfips ${s2i_args} $(ct_build_s2i_npm_variables) $1
+run_s2i_build_fips() {
+  ct_s2i_build_as_df file://${test_dir}/test-fips ${IMAGE_NAME} ${IMAGE_NAME}-testfips ${s2i_args} $(ct_build_s2i_npm_variables) $1
 }
 
 run_s2i_build_proxy() {
@@ -157,7 +157,7 @@ prepare() {
 
 run_test_application() {
   case "$1" in
-    app|hw|express-webapp|binary)
+    app|fips|hw|express-webapp|binary)
       cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
       docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} $2 ${IMAGE_NAME}-test$1
       ;;
@@ -170,7 +170,7 @@ run_test_application() {
 
 run_test_application_with_quoted_args() {
   case "$1" in
-  app | hw | express-webapp | binary)
+  app | fips | hw | express-webapp | binary)
     cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
     docker run -d --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} "$2" ${IMAGE_NAME}-test$1
     ;;
@@ -495,12 +495,12 @@ function test_nodejs_fips_mode() {
   if [[ "$is_fips_enabled" == "0" ]]; then
     # FIPS disabled -- crypto.getFips() should return 0
     echo "Fips should be disabled"
-    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
     ct_check_testcase_result "$?"
   else
     # FIPS enabled -- crypto.getFips() should return 1
     echo "Fips should be enabled"
-    docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "! node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
     ct_check_testcase_result "$?"
   fi
 }
@@ -573,6 +573,25 @@ function test_run_app_application() {
   run_test_application app
   # Wait for the container to write it's CID file
   wait_for_cid
+}
+
+function test_run_fips_app_application() {
+  local is_fips_enabled
+
+  # Read fips mode from host in case exists
+  if [[ -f /proc/sys/crypto/fips_enabled ]]; then
+    is_fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
+  else
+    is_fips_enabled="0"
+  fi
+  if [[ "$is_fips_enabled" == "1" ]]; then
+    # Verify that the HTTP connection can be established to test application container
+    run_test_application fips
+    # Wait for the container to write it's CID file
+    wait_for_cid
+    ct_check_testcase_result $?
+    kill_test_application
+  fi
 }
 
 function test_run_hw_application() {

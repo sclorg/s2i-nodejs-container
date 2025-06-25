@@ -63,6 +63,7 @@ test_init_wrapper_false_development
 
 TEST_LIST_FIPS="\
 test_nodejs_fips_mode
+test_run_fips_app_application
 "
 source "${THISDIR}/test-lib.sh"
 source "${THISDIR}/test-lib-nodejs.sh"
@@ -167,8 +168,8 @@ cleanup
 echo "Testing fips mode"
 prepare fips
 check_prep_result $? fips || exit
-echo "Testing the production image build"
-run_s2i_fips
+echo "Testing the production image build for fips"
+run_s2i_build_fips
 evaluate_build_result $? "default"
 
 TEST_SET=${TESTS:-$TEST_LIST_FIPS} ct_run_tests_from_testset "fips"
