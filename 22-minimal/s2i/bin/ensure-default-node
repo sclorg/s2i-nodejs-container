@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -xe
+
+for bin in node npm npx ; do
+  [ -f /usr/bin/$bin ] || ln -s /usr/bin/$bin-$NODEJS_VERSION /usr/bin/$bin
+done
+
+if [ $NODEJS_VERSION -ne $DEFAULT_NODEJS_VERSION ] ; then
+  ln -s /usr/lib/node_modules_$DEFAULT_NODEJS_VERSION/nodemon /usr/lib/node_modules_$NODEJS_VERSION/nodemon
+fi
+
+[ -d /usr/lib/node_modules_$NODEJS_VERSION/nodemon ] && echo "Found nodemon for version $NODEJS_VERSION"
+
+node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION"

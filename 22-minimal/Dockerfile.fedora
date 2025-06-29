@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-minimal:40
+FROM quay.io/fedora/fedora-minimal:41
 
 EXPOSE 8080
 
@@ -15,9 +15,11 @@ EXPOSE 8080
 ENV APP_ROOT=/opt/app-root \
     # The $HOME is not set by default, but some applications need this variable
     HOME=/opt/app-root/src \
+    STI_SCRIPTS_PATH=/usr/libexec/s2i \
     NPM_RUN=start \
     PLATFORM="fedora" \
     NODEJS_VERSION=22 \
+    DEFAULT_NODEJS_VERSION=22 \
     NPM_RUN=start \
     NAME=nodejs
 
@@ -52,15 +54,14 @@ LABEL summary="$SUMMARY" \
 RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which nss_wrapper-libs" && \
     microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     microdnf clean all && \
-    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
-    ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
-    ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
-    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
-#
-COPY ./s2i/bin/ /usr/libexec/s2i
-RUN chmod +x /usr/libexec/s2i/init-wrapper
+# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
+COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper $STI_SCRIPTS_PATH/ensure-default-node
+
+# Make sure a user has non-versioned binaries available for the correct Node.js version
+RUN $STI_SCRIPTS_PATH/ensure-default-node
 
 # Copy extra files to the image.
 COPY ./root/ /
