@@ -1,9 +1,9 @@
-NodeJS 22 minimal container image
+NodeJS 24 minimal container image
 =========================
 
-This container image includes Node.JS 22 on top of a minimal base image for your Node.JS 22 applications. This image is designed to be used
-with the full-sized s2i-enabled Node.JS 22 image to build the application. The image can be used as a standalone s2i-enabled image as well,
-but compared to the full-sized Node.JS 22 image it will be missing many build-time dependencies.
+This container image includes Node.JS 24 on top of a minimal base image for your Node.JS 24 applications. This image is designed to be used
+with the full-sized s2i-enabled Node.JS 24 image to build the application. The image can be used as a standalone s2i-enabled image as well,
+but compared to the full-sized Node.JS 24 image it will be missing many build-time dependencies.
 Users can choose between RHEL, CentOS and Fedora based images.
 The RHEL images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/),
 the CentOS Stream images are available in the [Quay.io](https://quay.io/organization/sclorg),
@@ -15,8 +15,8 @@ Note: while the examples in this README are calling `podman`, you can replace an
 Description
 -----------
 
-Node.js 22 available as a minimal container is a base platform for
-running various Node.js 22 applications and frameworks.
+Node.js 24 available as a minimal container is a base platform for
+running various Node.js 24 applications and frameworks.
 Node.js is a platform built on Chrome's JavaScript runtime for easily building
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model
 that makes it lightweight and efficient, perfect for data-intensive real-time applications
@@ -24,8 +24,8 @@ that run across distributed devices.
 
 Usage in OpenShift
 ------------------
-In this example, we will assume that you are using the `ubi8/nodejs-22` image, available via `nodejs:22-ubi8` imagestream tag in Openshift
-to build the application, as well as the `ubi8/nodejs-22-minimal` image, available via `nodejs:22-ubi8-minimal` image stream
+In this example, we will assume that you are using the `ubi8/nodejs-24` image, available via `nodejs:24-ubi8` imagestream tag in Openshift
+to build the application, as well as the `ubi8/nodejs-24-minimal` image, available via `nodejs:24-ubi8-minimal` image stream
 for running the resulting application.
 
 With these two images we can create a [chained build](https://docs.openshift.com/container-platform/4.7/cicd/builds/advanced-build-operations.html#builds-chaining-builds_advanced-build-operations) in Openshift using two BuildConfigs:
@@ -50,7 +50,7 @@ spec:
     sourceStrategy:
       from:
         kind: ImageStreamTag
-        name: nodejs:22-ubi8
+        name: nodejs:24-ubi8
         namespace: openshift
 ```
 
@@ -70,7 +70,7 @@ spec:
       name: nodejs-runtime-image:latest
   source:
     dockerfile: |-
-      FROM nodejs:22-ubi8-minimal
+      FROM nodejs:24-ubi8-minimal
       COPY src $HOME
       CMD /usr/libexec/s2i/run
     images:
@@ -84,7 +84,7 @@ spec:
     dockerStrategy:
       from:
         kind: ImageStreamTag
-        name: nodejs:22-ubi8-minimal
+        name: nodejs:24-ubi8-minimal
   triggers:
   - imageChange: {}
     type: ImageChange
@@ -114,11 +114,11 @@ To use the Node.js image in a Dockerfile, follow these steps:
 #### 1. Pull the base builder and minimal runtime images
 
 ```
-podman pull ubi8/nodejs-22
-podman pull ubi8/nodejs-22-minimal
+podman pull ubi8/nodejs-24
+podman pull ubi8/nodejs-24-minimal
 ```
 
-The UBI images `ubi8/nodejs-22` and `ubi8/nodejs-22-minimal` that are used in this example are both usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
+The UBI images `ubi8/nodejs-24` and `ubi8/nodejs-24-minimal` that are used in this example are both usable and freely redistributable under the terms of the UBI End User License Agreement (EULA). See more about UBI at [UBI FAQ](https://developers.redhat.com/articles/ubi-faq).
 
 #### 2. Pull an application code
 
@@ -141,7 +141,7 @@ For all these three parts, users can either setup all manually and use commands 
 ##### 3.1. To use your own setup, create a Dockerfile with this content:
 ```
 # First stage builds the application
-FROM ubi8/nodejs-22 as builder
+FROM ubi8/nodejs-24 as builder
 
 # Add application sources
 ADD app-src $HOME
@@ -150,7 +150,7 @@ ADD app-src $HOME
 RUN npm install
 
 # Second stage copies the application to the minimal image
-FROM ubi8/nodejs-22-minimal
+FROM ubi8/nodejs-24-minimal
 
 # Copy the application source and build artifacts from the builder image to this one
 COPY --from=builder $HOME $HOME
@@ -162,7 +162,7 @@ CMD npm run -d start
 ##### 3.2. To use the Source-to-Image scripts and build an image using a Dockerfile, create a Dockerfile with this content:
 ```
 # First stage builds the application
-FROM ubi8/nodejs-22 as builder
+FROM ubi8/nodejs-24 as builder
 
 # Add application sources to a directory that the assemble script expects them
 # and set permissions so that the container runs without root access
@@ -175,7 +175,7 @@ USER 1001
 RUN /usr/libexec/s2i/assemble
 
 # Second stage copies the application to the minimal image
-FROM ubi8/nodejs-22-minimal
+FROM ubi8/nodejs-24-minimal
 
 # Copy the application source and build artifacts from the builder image to this one
 COPY --from=builder $HOME $HOME

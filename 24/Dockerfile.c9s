@@ -16,12 +16,12 @@ EXPOSE 8080
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
 
-ENV NODEJS_VERSION=22 \
+ENV NODEJS_VERSION=24 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
-    CNB_STACK_ID=com.redhat.stacks.c9s-nodejs-22 \
+    CNB_STACK_ID=com.redhat.stacks.c9s-nodejs-24 \
     CNB_USER_ID=1001 \
     CNB_GROUP_ID=0
 
@@ -41,7 +41,7 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
-      io.buildpacks.stack.id="com.redhat.stacks.c9s-nodejs-22" \
+      io.buildpacks.stack.id="com.redhat.stacks.c9s-nodejs-24" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \

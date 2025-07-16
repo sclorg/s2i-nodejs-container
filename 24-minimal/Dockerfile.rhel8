@@ -17,7 +17,7 @@ ENV APP_ROOT=/opt/app-root \
     HOME=/opt/app-root/src \
     NPM_RUN=start \
     PLATFORM="el8" \
-    NODEJS_VERSION=22 \
+    NODEJS_VERSION=24 \
     NPM_RUN=start \
     NAME=nodejs
 
