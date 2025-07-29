@@ -1,4 +1,4 @@
-FROM quay.io/fedora/s2i-core:40
+FROM quay.io/fedora/s2i-core:42
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
