@@ -49,7 +49,7 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
 # nodejs-full-i18n is included for error strings
-RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n npm findutils tar which" && \
+RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which" && \
     dnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     node-24 -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
     dnf clean all && \

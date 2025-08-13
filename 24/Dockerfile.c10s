@@ -54,7 +54,7 @@ LABEL summary="$SUMMARY" \
       usage="s2i build <SOURCE-REPOSITORY> quay.io/sclorg/$NAME-$NODEJS_VERSION-c10s:latest <APP-NAME>"
 
 # Package libatomic_ops was removed
-RUN INSTALL_PKGS="make gcc gcc-c++ git openssl-devel nodejs nodejs-nodemon nodejs-npm nss_wrapper-libs which" && \
+RUN INSTALL_PKGS="make gcc gcc-c++ git openssl-devel nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
     dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     rm /usr/bin/node && ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
