@@ -6,6 +6,7 @@ NodeJS container images
 Images available on Quay are:
 * Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
 * Fedora [nodejs-22](https://quay.io/repository/fedora/nodejs-22)
+* Fedora [nodejs-24](https://quay.io/repository/fedora/nodejs-24)
 
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
@@ -29,6 +30,8 @@ Node.JS versions currently provided are:
 * [NodeJS 20-minimal](20-minimal)
 * [NodeJS 22](22)
 * [NodeJS 22-minimal](22-minimal)
+* [NodeJS 24](24)
+* [NodeJS 24-minimal](24-minimal)
 
 RHEL versions currently supported are:
 * RHEL8
@@ -99,6 +102,12 @@ see [usage documentation](22/README.md).
 
 For information about usage of Dockerfile for NodeJS 22 minimal,
 see [usage documentation](22-minimal/README.md).
+
+For information about usage of Dockerfile for NodeJS 24,
+see [usage documentation](24/README.md).
+
+For information about usage of Dockerfile for NodeJS 24 minimal,
+see [usage documentation](24-minimal/README.md).
 
 Test
 ----
