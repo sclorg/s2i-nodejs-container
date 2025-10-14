@@ -1,35 +1,19 @@
-import os
-import sys
-
 import pytest
 
+
 from container_ci_suite.openshift import OpenShiftAPI
-from container_ci_suite.utils import check_variables
 
-from constants import TAGS
-
-if not check_variables():
-    print("At least one variable from IMAGE_NAME, OS, VERSION is missing.")
-    sys.exit(1)
+from conftest import VARS, DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG, IMAGE_TAG
 
 
-VERSION = os.getenv("VERSION").replace("-minimal", "")
-IMAGE_NAME = os.getenv("IMAGE_NAME")
-OS = os.getenv("OS")
-
-DEPLOYED_PGSQL_IMAGE = "quay.io/sclorg/postgresql-15-c9s"
-
-
-TAG = TAGS.get(OS)
-PGSQL_IMAGE_TAG = f"postgresql:15-c9s"
-IMAGE_TAG = f"15-c9s"
-
-
-# Replacement with 'test_python_s2i_templates'
-class TestImagestreamsQuickstart:
+class TestDeployNodeJSExTemplate:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix=f"nodejs-{VERSION}-example", version=VERSION, shared_cluster=True)
+        self.oc_api = OpenShiftAPI(
+            pod_name_prefix=f"nodejs-{VARS.VERSION_NO_MINIMAL}-testing",
+            version=VARS.VERSION_NO_MINIMAL,
+            shared_cluster=True
+        )
 
     def teardown_method(self):
         self.oc_api.delete_project()
@@ -41,16 +25,16 @@ class TestImagestreamsQuickstart:
             "nodejs-postgresql-persistent.json",
         ]
     )
-    def test_nodejs_template_inside_cluster(self, template):
+    def test_nodejs_ex_template_inside_cluster(self, template):
         assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
-        service_name = f"nodejs-{VERSION}-example"
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
+        service_name = f"nodejs-{VARS.VERSION_NO_MINIMAL}-testing"
         openshift_args = [
             "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
             "SOURCE_REPOSITORY_REF=master",
-            f"NODEJS_VERSION={VERSION}",
+            f"NODEJS_VERSION={VARS.VERSION_NO_MINIMAL}",
             f"NAME={service_name}"
         ]
         if template != "nodejs.json":
@@ -58,21 +42,20 @@ class TestImagestreamsQuickstart:
                 "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
                 "SOURCE_REPOSITORY_REF=master",
                 f"POSTGRESQL_VERSION={IMAGE_TAG}",
-                f"NODEJS_VERSION={VERSION}",
+                f"NODEJS_VERSION={VARS.VERSION_NO_MINIMAL}",
                 f"NAME={service_name}",
                 "DATABASE_USER=testu",
                 "DATABASE_PASSWORD=testpwd",
                 "DATABASE_ADMIN_PASSWORD=testadminpwd"
             ]
-        assert self.oc_api.imagestream_quickstart(
-            imagestream_file="imagestreams/nodejs-rhel.json",
-            template_file=template_url,
-            image_name=IMAGE_NAME,
+        assert self.oc_api.deploy_template_with_image(
+            image_name=VARS.IMAGE_NAME,
+            template=template_url,
             name_in_template="nodejs",
             openshift_args=openshift_args
+
         )
         assert self.oc_api.is_template_deployed(name_in_template=service_name)
         assert self.oc_api.check_response_inside_cluster(
             name_in_template=service_name, expected_output="Node.js Crud Application"
         )
-

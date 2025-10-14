@@ -1,33 +1,24 @@
-import os
-import sys
-
-import pytest
-
-from container_ci_suite.utils import check_variables
 from container_ci_suite.openshift import OpenShiftAPI
 
-if not check_variables():
-    print("At least one variable from IMAGE_NAME, OS, VERSION is missing.")
-    sys.exit(1)
-
-
-VERSION = os.getenv("VERSION").replace("-minimal", "")
-IMAGE_NAME = os.getenv("IMAGE_NAME")
-OS = os.getenv("TARGET")
+from conftest import VARS
 
 
 class TestNodeJSExTemplate:
 
     def setup_method(self):
-        self.oc_api = OpenShiftAPI(pod_name_prefix=f"nodejs-{VERSION}-testing", version=VERSION, shared_cluster=True)
+        self.oc_api = OpenShiftAPI(
+            pod_name_prefix=f"nodejs-{VARS.VERSION_NO_MINIMAL}-testing",
+            version=VARS.VERSION_NO_MINIMAL,
+            shared_cluster=True
+        )
 
     def teardown_method(self):
         self.oc_api.delete_project()
 
     def test_nodejs_ex_template_inside_cluster(self):
-        service_name = f"nodejs-{VERSION}-testing"
+        service_name = f"nodejs-{VARS.VERSION_NO_MINIMAL}-testing"
         assert self.oc_api.deploy_s2i_app(
-            image_name=IMAGE_NAME, app=f"https://github.com/sclorg/nodejs-ex.git",
+            image_name=VARS.IMAGE_NAME, app="https://github.com/sclorg/nodejs-ex.git",
             context=".",
             service_name=service_name
         )
