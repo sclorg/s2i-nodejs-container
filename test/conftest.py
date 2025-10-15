@@ -1,7 +1,9 @@
-from collections import namedtuple
 import os
-from pathlib import Path
 import sys
+
+from collections import namedtuple
+from pathlib import Path
+from pytest import skip
 
 from container_ci_suite.utils import check_variables
 
@@ -38,3 +40,8 @@ DEPLOYED_PGSQL_IMAGE = "quay.io/sclorg/postgresql-15-c9s"
 
 PGSQL_IMAGE_TAG = "postgresql:15-c9s"
 IMAGE_TAG = "15-c9s"
+
+def skip_for_minimal():
+    if "minimal" in VERSION:
+        skip("This test is not available for NodeJS minimal container")
+
