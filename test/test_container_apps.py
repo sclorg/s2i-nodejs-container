@@ -6,7 +6,7 @@ import pytest
 from container_ci_suite.container_lib import ContainerTestLib
 from container_ci_suite.engines.podman_wrapper import PodmanCLIWrapper
 
-from conftest import VARS
+from conftest import VARS, skip_for_minimal
 
 test_app = VARS.TEST_DIR / "test-app"
 test_binary = VARS.TEST_DIR / "test-binary"
@@ -85,6 +85,7 @@ class TestNodeJSAppsContainer:
         ]
     )
     def test_node_cmd_development(self, node_env, init_wrapper, node_cmd):
+        skip_for_minimal()
         assert self.s2i_app.create_container(
           cid_file_name=self.s2i_app.app_name,
           container_args=f"--user 100001 \'-e NODE_ENV={node_env} "
@@ -138,6 +139,7 @@ class TestNodeJSAppsContainer:
         ]
     )
     def test_node_init_wrapper(self, node_env, init_wrapper):
+        skip_for_minimal()
         assert self.s2i_app.create_container(
             cid_file_name=self.s2i_app.app_name,
             container_args=f"--user 100001 \'-e NODE_ENV={node_env} "
@@ -216,6 +218,34 @@ class TestNodeJSAppsWithDevModeTrueContainer:
         assert re.search("DEBUG_PORT=5858", logs)
         assert re.search(f"NODE_ENV={node_env}", logs)
 
+    # test_node_cmd_development_init_wrapper_true
+    # test_node_cmd_production_init_wrapper_true
+    # test_node_cmd_development_init_wrapper_false
+    @pytest.mark.parametrize(
+        "node_env,init_wrapper,node_cmd",
+        [
+            ("development", "true", "node server.js"),
+            ("production", "true", "node server.js"),
+            ("development", "false", "node server.js"),
+        ]
+    )
+    def test_node_cmd_development(self, node_env, init_wrapper, node_cmd):
+        skip_for_minimal()
+        assert self.s2i_app.create_container(
+          cid_file_name=self.s2i_app.app_name,
+          container_args=f"--user 100001 \'-e NODE_ENV={node_env} "
+                         f"-e INIT_WRAPPER={init_wrapper} -e NODE_CMD={node_cmd}\'"
+        )
+        cip = self.s2i_app.get_cip(cid_file_name=self.s2i_app.app_name)
+        assert cip
+        assert self.s2i_app.test_response(
+            url=f"http://{cip}"
+        )
+        logs = self.s2i_app.get_logs(self.s2i_app.app_name)
+        assert re.search(f"NODE_ENV={node_env}", logs)
+        assert re.search("DEBUG_PORT=5858", logs)
+        assert re.search(f"INIT_WRAPPER={init_wrapper}", logs)
+        assert re.search(f"NODE_CMD={node_cmd}", logs)
 
 class TestNodeJSAppsWithNodeEnvDevelopmentContainer:
 
@@ -339,6 +369,7 @@ class TestNodeJSAppsHWContainer:
         ]
     )
     def test_node_init_wrapper(self, node_env, init_wrapper):
+        skip_for_minimal()
         assert self.s2i_app.create_container(
             cid_file_name=self.s2i_app.app_name,
             container_args=f"--user 100001 \'-e NODE_ENV={node_env} "
@@ -363,6 +394,7 @@ class TestNodeJSAppsHWContainer:
         ]
     )
     def test_node_cmd_development(self, node_env, init_wrapper, node_cmd):
+        skip_for_minimal()
         assert self.s2i_app.create_container(
           cid_file_name=self.s2i_app.app_name,
           container_args=f"--user 100001 \'-e NODE_ENV={node_env} "
@@ -379,6 +411,11 @@ class TestNodeJSAppsHWContainer:
         assert re.search(f"INIT_WRAPPER={init_wrapper}", logs)
         assert re.search(f"NODE_CMD={node_cmd}", logs)
 
+    def test_safe_logging(self):
+        podman_log_file = self.s2i_app.get_podman_build_log_file()
+        assert podman_log_file.count("redacted") == 4
+        assert "redacted" in podman_log_file
+
 
 class TestNodeJSIncrementalAppContainer:
 
@@ -391,6 +428,7 @@ class TestNodeJSIncrementalAppContainer:
         self.build2.cleanup()
 
     def test_incremental_build(self):
+        skip_for_minimal()
         build_log1 = self.build1.get_podman_build_log_file()
         build_log2 = self.build2.get_podman_build_log_file()
         assert build_log1 != build_log2
