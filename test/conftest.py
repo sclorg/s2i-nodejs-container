@@ -42,6 +42,6 @@ PGSQL_IMAGE_TAG = "postgresql:15-c9s"
 IMAGE_TAG = "15-c9s"
 
 def skip_for_minimal():
-    if "minimal" in VERSION:
+    if "minimal" in VARS.VERSION:
         skip("This test is not available for NodeJS minimal container")
 
