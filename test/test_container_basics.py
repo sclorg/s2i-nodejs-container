@@ -1,5 +1,3 @@
-from doctest import debug
-
 import pytest
 
 from pathlib import Path
@@ -7,7 +5,7 @@ from pathlib import Path
 from container_ci_suite.container_lib import ContainerTestLib, PodmanCLIWrapper
 from container_ci_suite.utils import get_file_content
 
-from conftest import VARS
+from conftest import VARS, skip_for_minimal
 
 test_fips = VARS.TEST_DIR / "test-fips"
 
@@ -84,6 +82,7 @@ class TestNodeJSFipsContainer:
         self.s2i_fips.cleanup()
 
     def test_nodejs_fips_mode(self):
+        skip_for_minimal()
         if VARS.OS == "rhel8":
             pytest.skip("Do not execute on RHEL8")
         is_fips_enabled = 0
@@ -106,6 +105,7 @@ class TestNodeJSFipsContainer:
             assert fips_mode == 0
 
     def test_run_fips_app_application(self):
+        skip_for_minimal()
         is_fips_enabled = 0
         fips_enabled_file = Path("/proc/sys/crypto/fips_enabled")
         if fips_enabled_file.exists():
