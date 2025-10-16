@@ -495,12 +495,12 @@ function test_nodejs_fips_mode() {
   if [[ "$is_fips_enabled" == "0" ]]; then
     # FIPS disabled -- crypto.getFips() should return 0
     echo "Fips should be disabled"
-    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "node test.js"
     ct_check_testcase_result "$?"
   else
     # FIPS enabled -- crypto.getFips() should return 1
     echo "Fips should be enabled"
-    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "! node -e 'const crypto = require(\"crypto\"); process.exit(crypto.getFips());'"
+    docker run --rm ${IMAGE_NAME}-testfips /bin/bash -c "! node test.js"
     ct_check_testcase_result "$?"
   fi
 }
