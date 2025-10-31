@@ -7,6 +7,7 @@ from container_ci_suite.utils import get_file_content
 
 from conftest import VARS, skip_for_minimal
 
+
 test_fips = VARS.TEST_DIR / "test-fips"
 
 
