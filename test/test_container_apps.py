@@ -8,6 +8,7 @@ from container_ci_suite.engines.podman_wrapper import PodmanCLIWrapper
 
 from conftest import VARS, skip_for_minimal
 
+
 test_app = VARS.TEST_DIR / "test-app"
 test_binary = VARS.TEST_DIR / "test-binary"
 test_express_webapp = VARS.TEST_DIR / "test-express-webapp"
@@ -246,6 +247,7 @@ class TestNodeJSAppsWithDevModeTrueContainer:
         assert re.search("DEBUG_PORT=5858", logs)
         assert re.search(f"INIT_WRAPPER={init_wrapper}", logs)
         assert re.search(f"NODE_CMD={node_cmd}", logs)
+
 
 class TestNodeJSAppsWithNodeEnvDevelopmentContainer:
 
