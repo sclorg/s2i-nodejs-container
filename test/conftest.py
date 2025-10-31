@@ -26,17 +26,30 @@ PSQL_TAGS = {
     "rhel10": "-el10",
 }
 
-Vars = namedtuple("Vars", [
-    "OS", "VERSION", "TAG", "PSQL_TAGS", "PGSQL_IMAGE_TAG",
-    "DEPLOYED_PGSQL_IMAGE", "IMAGE_NAME", "IS_MINIMAL",
-    "VERSION_NO_MINIMAL", "SHORT_VERSION", "TEST_DIR"
-])
+Vars = namedtuple(
+    "Vars",
+    [
+        "OS",
+        "VERSION",
+        "TAG",
+        "IMAGE_TAG",
+        "PSQL_TAGS",
+        "PGSQL_IMAGE_TAG",
+        "DEPLOYED_PGSQL_IMAGE",
+        "IMAGE_NAME",
+        "IS_MINIMAL",
+        "VERSION_NO_MINIMAL",
+        "SHORT_VERSION",
+        "TEST_DIR",
+    ],
+)
 
 
 VARS = Vars(
     OS=OS,
     VERSION=VERSION,
     TAG=TAGS.get(OS),
+    IMAGE_TAG=IMAGE_TAG,
     PSQL_TAGS=PSQL_TAGS.get(OS),
     PGSQL_IMAGE_TAG=PGSQL_IMAGE_TAG,
     DEPLOYED_PGSQL_IMAGE=DEPLOYED_PGSQL_IMAGE,
@@ -44,7 +57,7 @@ VARS = Vars(
     IS_MINIMAL="minimal" in VERSION,
     VERSION_NO_MINIMAL=VERSION.replace("-minimal", ""),
     SHORT_VERSION=VERSION.replace("-minimal", "").replace(".", ""),
-    TEST_DIR=Path(__file__).parent.absolute()
+    TEST_DIR=Path(__file__).parent.absolute(),
 )
 
 
