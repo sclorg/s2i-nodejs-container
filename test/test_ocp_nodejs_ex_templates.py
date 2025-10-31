@@ -3,7 +3,7 @@ import pytest
 
 from container_ci_suite.openshift import OpenShiftAPI
 
-from conftest import VARS, DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG, IMAGE_TAG
+from conftest import VARS
 
 
 class TestDeployNodeJSExTemplate:
@@ -26,7 +26,7 @@ class TestDeployNodeJSExTemplate:
         ]
     )
     def test_nodejs_ex_template_inside_cluster(self, template):
-        assert self.oc_api.upload_image(DEPLOYED_PGSQL_IMAGE, PGSQL_IMAGE_TAG)
+        assert self.oc_api.upload_image(VARS.DEPLOYED_PGSQL_IMAGE, VARS.PGSQL_IMAGE_TAG)
         template_url = self.oc_api.get_raw_url_for_json(
             container="nodejs-ex", dir="openshift/templates", filename=template, branch="master"
         )
@@ -41,7 +41,7 @@ class TestDeployNodeJSExTemplate:
             openshift_args = [
                 "SOURCE_REPOSITORY_URL=https://github.com/sclorg/nodejs-ex.git",
                 "SOURCE_REPOSITORY_REF=master",
-                f"POSTGRESQL_VERSION={IMAGE_TAG}",
+                f"POSTGRESQL_VERSION={VARS.IMAGE_TAG}",
                 f"NODEJS_VERSION={VARS.VERSION_NO_MINIMAL}",
                 f"NAME={service_name}",
                 "DATABASE_USER=testu",

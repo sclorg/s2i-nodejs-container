@@ -1,13 +1,17 @@
 from container_ci_suite.helm import HelmChartsAPI
 
-from conftest import VARS, TAGS
+from conftest import VARS
 
 
 class TestHelmNodeJSApplication:
 
     def setup_method(self):
         package_name = "redhat-nodejs-application"
-        self.hc_api = HelmChartsAPI(path=VARS.TEST_DIR, package_name=package_name, tarball_dir=VARS.TEST_DIR)
+        self.hc_api = HelmChartsAPI(
+            path=VARS.TEST_DIR,
+            package_name=package_name,
+            tarball_dir=VARS.TEST_DIR
+            )
         self.hc_api.clone_helm_chart_repo(
             repo_url="https://github.com/sclorg/helm-charts", repo_name="helm-charts",
             subdir="charts/redhat"
@@ -24,7 +28,7 @@ class TestHelmNodeJSApplication:
         assert self.hc_api.helm_package()
         assert self.hc_api.helm_installation(
             values={
-                "nodejs": f"{VARS.VERSION}{TAGS.get(VARS.OS)}",
+                "nodejs": f"{VARS.VERSION}{VARS.TAG}",
                 "namespace": self.hc_api.namespace
             }
         )
