@@ -26,7 +26,6 @@ test_client_faas
 test_client_cloudevents
 test_client_fastify
 test_client_pino
-test_client_langchainjs
 "
 
 TEST_LIST_BINARY="\
@@ -49,8 +48,6 @@ readonly CLOUDEVENTS_REVISION="v${CLOUDEVENTS_REVISION:-$(docker run --rm "${IMA
 readonly CLOUDEVENTS_REPO="https://github.com/cloudevents/sdk-javascript.git"
 readonly FASTIFY_REVISION="v${FASTIFY_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show fastify version)}"
 readonly FASTIFY_REPO="https://github.com/fastify/fastify.git"
-readonly LANGCHAINJS_REVISION="${LANGCHAINJS_REVISION:-$(docker run --rm "${IMAGE_NAME}" -- npm show langchain version)}"
-readonly LANGCHAINJS_REPO="https://github.com/langchain-ai/langchainjs.git"
 
 # Since we built the candidate image locally, we don't want S2I attempt to pull
 # it from a registry
