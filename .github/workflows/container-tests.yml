@@ -3,29 +3,12 @@ on:
     types:
       - created
 jobs:
+  check-readme:
+    uses: "sclorg/ci-actions/.github/workflows/check-readme.yml@main"
   container-tests:
-    # This job only runs for '[test]' pull request comments by owner, member
-    name: "Container tests: ${{ matrix.version }} - ${{ matrix.os_test }}"
-    runs-on: ubuntu-latest
-    concurrency:
-      group: container-${{ github.event.issue.number }}-${{ matrix.version }}-${{ matrix.os_test }}
-      cancel-in-progress: true
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [ "20", "20-minimal", "22", "22-minimal", "24", "24-minimal" ]
-        os_test: [ "fedora", "rhel8", "rhel9", "rhel10", "c9s", "c10s" ]
-        test_case: [ "container" ]
-
-    if: |
-      github.event.issue.pull_request
-      && (contains(github.event.comment.body, '[test]') || contains(github.event.comment.body, '[test-all]'))
-      && contains(fromJson('["OWNER", "MEMBER"]'), github.event.comment.author_association)
-    steps:
-      - uses: sclorg/tfaga-wrapper@main
-        with:
-          os_test: ${{ matrix.os_test }}
-          version: ${{ matrix.version }}
-          test_case: ${{ matrix.test_case }}
-          public_api_key: ${{ secrets.TF_PUBLIC_API_KEY }}
-          private_api_key: ${{ secrets.TF_INTERNAL_API_KEY }}
+    uses: "sclorg/ci-actions/.github/workflows/container-tests.yml@main"
+    with:
+      enabled-tests: '["container","container-pytest","openshift-4","openshift-pytest","container-fips"]'
+      versions: '[ "20", "20-minimal", "22", "22-minimal", "24", "24-minimal" ]'
+      openshift-versions: '[ "20", "20-minimal", "22", "22-minimal", "24", "24-minimal" ]'
+    secrets: inherit
