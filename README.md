@@ -3,11 +3,6 @@ NodeJS container images
 
 [![Build and push images to Quay.io registry](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/s2i-nodejs-container/actions/workflows/build-and-push.yml)
 
-Images available on Quay are:
-* Fedora [nodejs-20](https://quay.io/repository/fedora/nodejs-20)
-* Fedora [nodejs-22](https://quay.io/repository/fedora/nodejs-22)
-* Fedora [nodejs-24](https://quay.io/repository/fedora/nodejs-24)
-
 This repository contains the source for building various versions of
 the Node.JS application as a reproducible container image using
 [source-to-image](https://github.com/openshift/source-to-image).
@@ -25,23 +20,21 @@ For more information about concepts used in these container images, see the
 
 Versions
 ---------------
-Node.JS versions currently provided are:
-* [NodeJS 20](20)
-* [NodeJS 20-minimal](20-minimal)
-* [NodeJS 22](22)
-* [NodeJS 22-minimal](22-minimal)
-* [NodeJS 24](24)
-* [NodeJS 24-minimal](24-minimal)
-
-RHEL versions currently supported are:
-* RHEL8
-* RHEL9
-* RHEL10
-
-CentOS Stream versions currently available are:
-* CentOS Stream 9
-* CentOS Stream 10
-
+Currently supported versions are visible in the following table, expand an entry to see its container registry address.
+<!--
+Table start
+-->
+||CentOS Stream 9|CentOS Stream 10|Fedora|RHEL 8|RHEL 9|RHEL 10|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|
+|20|<details><summary>✓</summary>`quay.io/sclorg/nodejs-20-c9s`</details>||<details><summary>✓</summary>`quay.io/fedora/nodejs-20`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel8/nodejs-20`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-20`</details>||
+|20-minimal|<details><summary>✓</summary>`quay.io/sclorg/nodejs-20-minimal-c9s`</details>||<details><summary>✓</summary>`quay.io/fedora/nodejs-20-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel8/nodejs-20-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-20-minimal`</details>||
+|22||<details><summary>✓</summary>`quay.io/sclorg/nodejs-22-c10s`</details>|<details><summary>✓</summary>`quay.io/fedora/nodejs-22`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel8/nodejs-22`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-22`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel10/nodejs-22`</details>|
+|22-minimal||<details><summary>✓</summary>`quay.io/sclorg/nodejs-22-minimal-c10s`</details>|<details><summary>✓</summary>`quay.io/fedora/nodejs-22-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel8/nodejs-22-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-22-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel10/nodejs-22-minimal`</details>|
+|24|<details><summary>✓</summary>`quay.io/sclorg/nodejs-24-c9s`</details>|<details><summary>✓</summary>`quay.io/sclorg/nodejs-24-c10s`</details>|<details><summary>✓</summary>`quay.io/fedora/nodejs-24`</details>||<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-24`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel10/nodejs-24`</details>|
+|24-minimal|<details><summary>✓</summary>`quay.io/sclorg/nodejs-24-minimal-c9s`</details>|<details><summary>✓</summary>`quay.io/sclorg/nodejs-24-minimal-c10s`</details>|<details><summary>✓</summary>`quay.io/fedora/nodejs-24-minimal`</details>||<details><summary>✓</summary>`registry.redhat.io/rhel9/nodejs-24-minimal`</details>|<details><summary>✓</summary>`registry.redhat.io/rhel10/nodejs-24-minimal`</details>|
+<!--
+Table end
+-->
 
 Installation
 ---------------
