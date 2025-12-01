@@ -11,4 +11,4 @@ include common/common.mk
 
 .PHONY: test-upstream
 test-upstream: tag
-	VERSIONS="$(VERSIONS)" TEST_UPSTREAM=yes common/test.sh
+	VERSIONS="$(VERSIONS)" OS="${OS}" TEST_UPSTREAM=yes common/test.sh
