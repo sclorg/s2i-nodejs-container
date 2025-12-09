@@ -44,7 +44,6 @@ LABEL summary="$SUMMARY" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858" \
       com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
       name="ubi9/$NAME-$NODEJS_VERSION-minimal" \
-      version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
