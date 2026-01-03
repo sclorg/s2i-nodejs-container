@@ -10,5 +10,6 @@ OPENSHIFT_NAMESPACES =
 include common/common.mk
 
 .PHONY: test-upstream
-test-upstream: tag
-	VERSIONS="$(VERSIONS)" OS="${OS}" TEST_UPSTREAM=yes common/test.sh
+test-upstream: script_env += TEST_UPSTREAM=yes
+test-upstream: build
+	VERSIONS="$(VERSIONS)" BASE_IMAGE_NAME="$(BASE_IMAGE_NAME)" $(script_env) $(test)
