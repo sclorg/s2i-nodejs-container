@@ -11,5 +11,5 @@ include common/common.mk
 
 .PHONY: test-upstream
 test-upstream: script_env += TEST_UPSTREAM=yes
-test-upstream: tag
+test-upstream: build
 	VERSIONS="$(VERSIONS)" BASE_IMAGE_NAME="$(BASE_IMAGE_NAME)" $(script_env) $(test)
