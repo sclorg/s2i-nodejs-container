@@ -160,6 +160,9 @@ Application developers can use the following environment variables to configure 
 **`NPM_MIRROR`**  
        Use a custom NPM registry mirror to download packages during the build process
 
+**`NPM_TOKEN`**
+       Use authentication token for a custom NPM registry mirror
+
 One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
 Example: DATABASE_USER=sampleUser

@@ -518,6 +518,18 @@ function test_npm_cache_exists() {
   ct_check_testcase_result "$?"
 }
 
+function test_npm_token_present() {
+  # Test that the npm token has been set
+	INTERNAL_NPM_REGISTRY=$(echo "$NPM_MIRROR" | sed -n 's|https://||p')
+  AUTH_TOKEN="//${INTERNAL_NPM_REGISTRY:-registry.npmjs.org}:_auth"
+  auth_token=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "npm config list | grep -E '^${AUTH_TOKEN}'")
+  ct_check_testcase_result "$?"
+  npmrc_file=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "cat .npmrc")
+  ct_check_testcase_result "$?"
+  echo "$npmrc_file" | grep "${AUTH_TOKEN}=some-token-for-testing"
+  ct_check_testcase_result "$?"
+}
+
 function test_npm_tmp_cleared() {
   # Test that the npm tmp has been cleared
   devdep=$(docker run --rm ${IMAGE_NAME}-testapp /bin/bash -c "! ls \$(npm config get tmp)/npm-* 2>/dev/null")

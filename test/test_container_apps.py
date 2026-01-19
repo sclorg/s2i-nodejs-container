@@ -1,4 +1,5 @@
 import re
+import os
 
 from pathlib import Path
 
@@ -490,3 +491,60 @@ class TestNodeJSIncrementalAppContainer:
         build_log1 = self.build1.get_podman_build_log_file()
         build_log2 = self.build2.get_podman_build_log_file()
         assert build_log1 != build_log2
+
+
+class TestNodeJSAuthenticationTokenAppContainer:
+    """
+    Test npm authentication token of a NodeJS application.
+    """
+
+    def setup_method(self):
+        """
+        Setup the test environment.
+        """
+        self.s2i_app = build_s2i_app(
+            test_app, container_args="-e NPM_TOKEN=some-token-for-testing"
+        )
+
+    def teardown_method(self):
+        """
+        Cleanup the test environment.
+        """
+        self.s2i_app.cleanup()
+
+    def test_npm_authentication_token(self):
+        """
+        Test npm authentication token of a NodeJS application.
+        """
+        assert self.s2i_app.create_container(
+            cid_file_name=self.s2i_app.app_name,
+            container_args="-e NPM_TOKEN=some-token-for-testing",
+        )
+        cip, cid = self.s2i_app.get_cip_cid(cid_file_name=self.s2i_app.app_name)
+        assert cip, cid
+        assert self.s2i_app.test_response(url=f"http://{cip}")
+        INTERNAL_NPM_REGISTRY = (
+            os.getenv("NPM_MIRROR").replace("https://", "")
+            if os.getenv("NPM_MIRROR")
+            else "registry.npmjs.org"
+        )
+        NPM_REGISTRY_AUTH = f"//{INTERNAL_NPM_REGISTRY}:_auth"
+        npm_config_list = PodmanCLIWrapper.podman_run_command_and_remove(
+            cid_file_name=f"{VARS.IMAGE_NAME}-{self.s2i_app.app_name}",
+            cmd="npm config list",
+        )
+        pattern = rf"{NPM_REGISTRY_AUTH}\s*=\s*\(protected\)"
+        for line in npm_config_list.split("\n"):
+            if re.search(pattern, line):
+                print("Line found")
+                break
+        else:
+            assert False, (
+                f"Auth registry {NPM_REGISTRY_AUTH} not found in npm config list"
+            )
+        npmrc_file = PodmanCLIWrapper.podman_run_command_and_remove(
+            cid_file_name=f"{VARS.IMAGE_NAME}-{self.s2i_app.app_name}",
+            cmd="cat .npmrc",
+        ).strip()
+        pattern_file = rf"{NPM_REGISTRY_AUTH}=some-token-for-testing"
+        assert re.search(pattern_file, npmrc_file)
