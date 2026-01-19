@@ -29,6 +29,12 @@ test_init_wrapper_true_development
 test_init_wrapper_false_development
 "
 
+TEST_LIST_NPM_TOKEN="\
+test_run_app_application
+test_connection
+test_npm_token_present
+"
+
 TEST_LIST_NODE_ENV="\
 test_run_app_application
 test_connection
@@ -137,6 +143,16 @@ run_s2i_build
 evaluate_build_result $? "default"
 
 TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
+
+cleanup
+
+prepare app
+check_prep_result $? app || exit
+echo "Testing the production image build with token"
+run_s2i_build "-e NPM_TOKEN=some-token-for-testing"
+evaluate_build_result $? "-e NPM_TOKEN=some-token-for-testing"
+
+TEST_SET=${TESTS:-$TEST_LIST_NPM_TOKEN} ct_run_tests_from_testset "node_env_token"
 
 cleanup
 
