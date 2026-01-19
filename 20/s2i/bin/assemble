@@ -63,6 +63,13 @@ if [ -n "$NPM_MIRROR" ]; then
 	npm config set registry $NPM_MIRROR
 fi
 
+# Change the npm authentication token if provided
+if [ -n "$NPM_TOKEN" ]; then
+	echo "---> Setting npm authentication token for $NPM_MIRROR"
+	INTERNAL_NPM_REGISTRY=$(echo "$NPM_MIRROR" | sed -n 's|https://||p')
+	npm config set "//${INTERNAL_NPM_REGISTRY:-registry.npmjs.org}:_auth" $NPM_TOKEN
+fi
+
 # Set the DEV_MODE to false by default.
 if [ -z "$DEV_MODE" ]; then
   export DEV_MODE=false
