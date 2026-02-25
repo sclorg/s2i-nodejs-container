@@ -8,4 +8,11 @@
 
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 
-cd "${THISDIR}" && python3.12 -m pytest -s -rA --showlocals -vv test_ocp_*.py
+git show -s
+
+if python3 -c 'import sys; sys.exit(0 if sys.version_info < (3,13) else 1)'; then
+  PYTHON_VERSION="3.12"
+else
+  PYTHON_VERSION="3"
+fi
+cd "${THISDIR}" && "python${PYTHON_VERSION}" -m pytest -s -rA --showlocals -vv test_ocp_*.py
