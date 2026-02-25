@@ -57,11 +57,11 @@ run_s2i_build_client() {
   ct_s2i_build_as_df_build_args \
     "file://${test_dir}/$1" "${IMAGE_NAME}" "${IMAGE_NAME}-$1" "--ulimit nofile=4096:4096" \
     ${s2i_args} \
-    $(ct_build_s2i_npm_variables) -e NODE_ENV=development
+    $(ct_build_s2i_npm_variables) -e NODE_ENV=development -e CI=true
 }
 
 run_s2i_build_binary() {
-  ct_s2i_build_as_df file://${test_dir}/test-binary ${IMAGE_NAME} ${IMAGE_NAME}-testbinary ${s2i_args} $(ct_build_s2i_npm_variables) $1
+  ct_s2i_build_as_df file://${test_dir}/test-binary ${IMAGE_NAME} ${IMAGE_NAME}-testbinary ${s2i_args} $(ct_build_s2i_npm_variables) $1  -e CI=true
 }
 
 run_s2i_multistage_build() {
@@ -186,7 +186,7 @@ run_client_test_suite() {
   local cmd="npm test"
   # Skip style check tests
   [ "$1" == "prom-client" ] && cmd="sed -i.bak 's/&& npm run check-prettier //g' package.json && $cmd"
-  docker run --user=100001 $(ct_mount_ca_file) --rm --cidfile=${cid_file} ${IMAGE_NAME}-$1 bash -c "$cmd"
+  docker run --user=100001 $(ct_mount_ca_file) -e CI=true --rm --cidfile=${cid_file} ${IMAGE_NAME}-$1 bash -c "$cmd"
 }
 
 kill_test_application() {
