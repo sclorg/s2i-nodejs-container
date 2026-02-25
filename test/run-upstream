@@ -68,8 +68,6 @@ readonly -A gitconfig=(
 ct_init
 cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
 
-export CI=true
-
 TEST_SET=${TESTS:-$TEST_LIST_CLIENTS} ct_run_tests_from_testset "clients"
 
 if [[ "$VERSION" != "18" ]]; then
