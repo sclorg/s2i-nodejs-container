@@ -1,4 +1,4 @@
-FROM quay.io/sclorg/s2i-core-c9s
+FROM FROM quay.io/centos/centos:stream9-minimal
 
 EXPOSE 8080
 
