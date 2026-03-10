@@ -1,4 +1,4 @@
-FROM ubi9/s2i-core:1
+FROM ubi9/s2i-core:latest
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
