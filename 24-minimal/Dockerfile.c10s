@@ -50,8 +50,8 @@ LABEL summary="$SUMMARY" \
 
 # nodejs-full-i18n is included for error strings
 RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which" && \
-    dnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
-    dnf clean all && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    microdnf clean all && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
     ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
     ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
