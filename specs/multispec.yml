@@ -1,0 +1,118 @@
+version: 1
+
+specs:
+  distroinfo:
+    fedora43:
+      distros:
+        - fedora-43-x86_64
+      s2i_base: quay.io/fedora/s2i-core
+      org: "fedora"
+      prod: "fedora"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+
+    rhel8:
+      distros:
+        - rhel-8-x86_64
+      s2i_base: ubi8/s2i-core
+      org: "rhel8"
+      prod: "rhel8"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >4-
+           yum -y module enable nodejs:{{ spec.version }} && \
+      post_install: >4-
+           (yum -y reinstall tzdata || yum -y update tzdata ) && \
+    rhel9:
+      distros:
+        - rhel-9-x86_64
+      s2i_base: ubi9/s2i-core
+      org: "rhel9"
+      prod: "rhel9"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >4-
+           { yum -y module enable nodejs:{{ spec.version }} || :; } && \
+      post_install: >4-
+           (yum -y reinstall tzdata || yum -y update tzdata ) && \
+    rhel10:
+      distros:
+        - rhel-10-x86_64
+      s2i_base: ubi10/s2i-core
+      org: "rhel10"
+      prod: "rhel10"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+    c9s:
+      distros:
+        - centos-stream-9-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c9s:c9s
+      org: "sclorg"
+      prod: "c9s"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >4-
+           { yum -y module enable nodejs:{{ spec.version }} || :; } && \
+
+    c10s:
+      distros:
+        - centos-stream-10-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c10s:c10s
+      org: "sclorg"
+      prod: "c10s"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      check_pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+
+  version:
+    "20":
+      version: "20"
+      prev_version: "18"
+      short: "20"
+      prev_short: "18"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      rhel_image_name: "rhel8/nodejs-{{ spec.short }}"
+      latest_fedora: "f38"
+
+    "22":
+      version: "22"
+      prev_version: "20"
+      short: "22"
+      prev_short: "20"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f38"
+
+    "24":
+      version: "24"
+      prev_version: "22"
+      short: "24"
+      prev_short: "22"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f40"
+
+matrix:
+  include:
+    - version: "20"
+      distros:
+        - rhel-8-x86_64
+    - version: "22"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - centos-stream-9-x86_64
+    - version: "24"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - centos-stream-9-x86_64
+        - fedora-40-x86_64
