@@ -2,17 +2,6 @@ version: 1
 
 specs:
   distroinfo:
-    fedora42:
-      distros:
-        - fedora-42-x86_64
-      s2i_base: quay.io/fedora/s2i-core
-      org: "fedora"
-      prod: "fedora"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
-      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      latest_fedora: "42"
-
     fedora43:
       distros:
         - fedora-43-x86_64
@@ -23,28 +12,6 @@ specs:
       img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
       latest_fedora: "43"
-
-    fedora44:
-      distros:
-        - fedora-44-x86_64
-      s2i_base: quay.io/fedora/s2i-core
-      org: "fedora"
-      prod: "fedora"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
-      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      latest_fedora: "44"
-
-    fedora45:
-      distros:
-        - fedora-45-x86_64
-      s2i_base: quay.io/fedora/s2i-core
-      org: "fedora"
-      prod: "fedora"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
-      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      latest_fedora: "45"
 
     rhel8:
       distros:
@@ -96,6 +63,7 @@ specs:
     c10s:
       distros:
         - centos-stream-10-x86_64
+        - fedora-43-x86_64
       s2i_base: quay.io/sclorg/s2i-core-c10s:c10s
       org: "sclorg"
       prod: "c10s"
@@ -168,10 +136,7 @@ matrix:
         - rhel-10-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
-        - fedora-42-x86_64
         - fedora-43-x86_64
-        - fedora-44-x86_64
-        - fedora-45-x86_64
     - version: "22"
       distros:
         - rhel-8-x86_64
@@ -179,10 +144,7 @@ matrix:
         - rhel-10-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
-        - fedora-42-x86_64
         - fedora-43-x86_64
-        - fedora-44-x86_64
-        - fedora-45-x86_64
     - version: "24"
       distros:
         - rhel-8-x86_64
@@ -190,7 +152,28 @@ matrix:
         - rhel-10-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
-        - fedora-42-x86_64
         - fedora-43-x86_64
-        - fedora-44-x86_64
-        - fedora-45-x86_64
+    - version: "20-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
+    - version: "22-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
+    - version: "24-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64

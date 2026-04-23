@@ -1,6 +1,6 @@
 FROM {{ config.s2i_base }}:latest
 
-# This image provides a Node.JS environment you can use to run your Node.JS
+# This image provides a minimal Node.JS environment you can use to run your Node.JS
 # applications.
 
 EXPOSE 8080
@@ -25,20 +25,20 @@ ENV NODEJS_VERSION={{ spec.version }} \
     CNB_USER_ID=1001 \
     CNB_GROUP_ID=0{% endif %}
 
-ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
-    DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
+ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications (minimal)" \
+    DESCRIPTION="Node.js $NODEJS_VERSION minimal available as container is a base platform for \
 building and running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
 that makes it lightweight and efficient, perfect for data-intensive real-time applications \
-that run across distributed devices."
+that run across distributed devices. This minimal variant excludes development tools."
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="Node.js $NODEJS_VERSION" \
+      io.k8s.display-name="Node.js $NODEJS_VERSION (minimal)" \
       io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION" \
+      io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION,minimal" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i"{% if config.redhat_component %} \
       io.buildpacks.stack.id="com.redhat.stacks.{{ config.org }}-nodejs-{{ spec.version }}"{% endif %} \
@@ -46,17 +46,16 @@ LABEL summary="$SUMMARY" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"{% if config.redhat_component %} \
       com.redhat.component="{{ config.redhat_component }}" \{% endif %}
-      name="{{ config.img_name }}" \
+      name="{{ config.img_name }}-minimal" \
       version="{% if config.redhat_component %}1{% else %}$NODEJS_VERSION{% endif %}"{% if config.redhat_component %} \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI"{% endif %} \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="{% if config.redhat_component %}s2i build <SOURCE-REPOSITORY> {{ config.img_name }}:latest <APP-NAME>{% else %}oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>{% endif %}"
+      usage="{% if config.redhat_component %}s2i build <SOURCE-REPOSITORY> {{ config.img_name }}-minimal:latest <APP-NAME>{% else %}oc new-app $FGC/$NAME-minimal~<SOURCE-REPOSITORY>{% endif %}"
 
 {% if config.environment_setup %}
 RUN {{ config.environment_setup }}{% endif %}
-    MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS {{ config.pkgs }}" && \
+    INSTALL_PKGS="{{ config.pkgs }}" && \
 {% if config.prod == "fedora" %}    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
