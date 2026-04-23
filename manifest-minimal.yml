@@ -1,25 +1,25 @@
-# Manifest for image directories creation
+# Manifest for image directories creation (minimal variants)
 # every dest path will be prefixed by $DESTDIR/$version
 
 # Files containing distgen directives, which are used for each
 # (distro, version) combination not excluded in multispec
 DISTGEN_MULTI_RULES:
-  - src: src/Dockerfile
+  - src: src/Dockerfile.minimal
     dest: Dockerfile.rhel8
 
-  - src: src/Dockerfile
+  - src: src/Dockerfile.minimal
     dest: Dockerfile.rhel9
 
-  - src: src/Dockerfile
+  - src: src/Dockerfile.minimal
     dest: Dockerfile.rhel10
 
-  - src: src/Dockerfile
+  - src: src/Dockerfile.minimal
     dest: Dockerfile.c9s
 
-  - src: src/Dockerfile
+  - src: src/Dockerfile.minimal
     dest: Dockerfile.c10s
 
-  - src: src/Dockerfile.fedora
+  - src: src/Dockerfile.minimal.fedora
     dest: Dockerfile.fedora
 
 # Files to copy
