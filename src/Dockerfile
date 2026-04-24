@@ -1,4 +1,4 @@
-FROM {{ config.s2i_base }}:latest
+FROM {{ spec.s2i_base }}{% if not ":" in spec.s2i_base and spec.prod != "c8s" %}:latest{% endif %}
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -20,10 +20,11 @@ ENV NODEJS_VERSION={{ spec.version }} \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH{% if config.redhat_component %} \
-    CNB_STACK_ID=com.redhat.stacks.{{ config.org }}-nodejs-{{ spec.version }} \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH{% if spec.prod != "fedora" %} \
+    CNB_STACK_ID=com.redhat.stacks.{{ spec.prod }}-nodejs-{{ spec.version }} \
     CNB_USER_ID=1001 \
-    CNB_GROUP_ID=0{% endif %}
+    CNB_GROUP_ID=0
+{% endif %}
 
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
     DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
@@ -40,24 +41,24 @@ LABEL summary="$SUMMARY" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
-      io.s2i.scripts-url="image:///usr/libexec/s2i"{% if config.redhat_component %} \
-      io.buildpacks.stack.id="com.redhat.stacks.{{ config.org }}-nodejs-{{ spec.version }}"{% endif %} \
+      io.s2i.scripts-url="image:///usr/libexec/s2i"{% if spec.prod != "fedora" %} \
+      io.buildpacks.stack.id="com.redhat.stacks.{{ spec.prod }}-nodejs-{{ spec.version }}"{% endif %} \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"{% if config.redhat_component %} \
-      com.redhat.component="{{ config.redhat_component }}" \{% endif %}
-      name="{{ config.img_name }}" \
-      version="{% if config.redhat_component %}1{% else %}$NODEJS_VERSION{% endif %}"{% if config.redhat_component %} \
+      com.redhat.dev-mode.port="DEBUG_PORT:5858"{% if spec.prod != "fedora" %} \
+      com.redhat.component="{{ spec.redhat_component }}" \{% endif %}
+      name="{{ spec.img_name }}" \
+      version="{% if spec.prod != "fedora" %}1{% else %}$NODEJS_VERSION{% endif %}"{% if spec.prod != "fedora" %} \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI"{% endif %} \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="{% if config.redhat_component %}s2i build <SOURCE-REPOSITORY> {{ config.img_name }}:latest <APP-NAME>{% else %}oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>{% endif %}"
+      usage="{% if spec.prod != "fedora" %}s2i build <SOURCE-REPOSITORY> {{ spec.img_name }}:latest <APP-NAME>{% else %}oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>{% endif %}"
 
-{% if config.environment_setup %}
-RUN {{ config.environment_setup }}{% endif %}
+{% if spec.environment_setup %}
+RUN {{ spec.environment_setup }}{% endif %}
     MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS {{ config.pkgs }}" && \
-{% if config.prod == "fedora" %}    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    INSTALL_PKGS="$MODULE_DEPS {{ spec.pkgs }}" && \
+{% if spec.prod == "fedora" %}    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
     ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
@@ -70,7 +71,7 @@ RUN {{ config.environment_setup }}{% endif %}
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \{% endif %}
     yum -y clean all --enablerepo='*'{% if config.post_install %}
 
-RUN {{ config.post_install }}{% endif %}
+RUN {{ spec.post_install }}{% endif %}
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH

@@ -1,5 +1,4 @@
-FROM :latest
-
+FROM quay.io/sclorg/s2i-core-c10s:c10s
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
 
@@ -20,7 +19,11 @@ ENV NODEJS_VERSION=24 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
+    CNB_STACK_ID=com.redhat.stacks.c10s-nodejs-24 \
+    CNB_USER_ID=1001 \
+    CNB_GROUP_ID=0
+
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications" \
     DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
 building and running various Node.js $NODEJS_VERSION applications and frameworks. \
@@ -37,16 +40,19 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.buildpacks.stack.id="com.redhat.stacks.c10s-nodejs-24" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"      name="" \
-      version="$NODEJS_VERSION" \
+      com.redhat.dev-mode.port="DEBUG_PORT:5858" \
+      com.redhat.component="nodejs-24-container" \      name="sclorg/nodejs-24-c10s" \
+      version="1" \
+      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
+      usage="s2i build <SOURCE-REPOSITORY> sclorg/nodejs-24-c10s:latest <APP-NAME>"
 
     MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS " && \
+    INSTALL_PKGS="$MODULE_DEPS nodejs npm nodejs-nodemon nss_wrapper-libs which" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     ln -s /usr/libexec/platform-python /usr/bin/python3 && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \

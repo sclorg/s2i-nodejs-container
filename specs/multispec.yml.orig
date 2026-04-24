@@ -75,14 +75,14 @@ specs:
     c8s:
       distros:
         - centos-stream-8-x86_64
-      s2i_base: quay.io/sclorg/s2i-core-c8s
+      s2i_base: quay.io/sclorg/s2i-core-c8s:c8s
       org: "sclorg"
       prod: "c8s"
-      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
-      img_name: "sclorg/$NAME-$NODEJS_VERSION-c8s"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
       environment_setup: >4-
-           yum -y module enable nodejs:$NODEJS_VERSION && \
+           { yum -y module enable nodejs:{{ spec.version }} || :; } && 
 
   version:
     "20":
@@ -91,11 +91,6 @@ specs:
       common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
       rhel_image_name: "rhel8/nodejs-{{ spec.short }}"
       latest_fedora: "f45"
-      c8s_base: "quay.io/sclorg/s2i-core-c8s"
-      c9s_base: "quay.io/sclorg/s2i-core-c9s:c9s"
-      rhel8_base: "ubi8/s2i-core:latest"
-      rhel9_base: "ubi9/s2i-core:latest"
-      fedora_base: "quay.io/fedora/s2i-core:38"
 
     "22":
       version: "22"
