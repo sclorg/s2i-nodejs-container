@@ -14,6 +14,9 @@ DISTGEN_MULTI_RULES:
     dest: Dockerfile.rhel10
 
   - src: src/Dockerfile
+    dest: Dockerfile.c8s
+
+  - src: src/Dockerfile
     dest: Dockerfile.c9s
 
   - src: src/Dockerfile

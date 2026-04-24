@@ -72,6 +72,18 @@ specs:
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
       check_pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
 
+    c8s:
+      distros:
+        - centos-stream-8-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c8s:c8s
+      org: "sclorg"
+      prod: "c8s"
+      redhat_component: "nodejs-{{ spec.short }}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >4-
+           { yum -y module enable nodejs:{{ spec.version }} || :; } && 
+
   version:
     "20":
       version: "20"
@@ -133,15 +145,15 @@ matrix:
       distros:
         - rhel-8-x86_64
         - rhel-9-x86_64
-        - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
-        - centos-stream-10-x86_64
         - fedora-43-x86_64
     - version: "22"
       distros:
         - rhel-8-x86_64
         - rhel-9-x86_64
         - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
         - fedora-43-x86_64
@@ -150,6 +162,7 @@ matrix:
         - rhel-8-x86_64
         - rhel-9-x86_64
         - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
         - fedora-43-x86_64
@@ -157,15 +170,15 @@ matrix:
       distros:
         - rhel-8-x86_64
         - rhel-9-x86_64
-        - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
-        - centos-stream-10-x86_64
         - fedora-43-x86_64
     - version: "22-minimal"
       distros:
         - rhel-8-x86_64
         - rhel-9-x86_64
         - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
         - fedora-43-x86_64
@@ -174,6 +187,7 @@ matrix:
         - rhel-8-x86_64
         - rhel-9-x86_64
         - rhel-10-x86_64
+        - centos-stream-8-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
         - fedora-43-x86_64
