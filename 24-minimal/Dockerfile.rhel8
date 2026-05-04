@@ -1,5 +1,4 @@
-FROM :latest
-
+FROM ubi8/s2i-core:latest
 # This image provides a minimal Node.JS environment you can use to run your Node.JS
 # applications.
 
@@ -20,7 +19,10 @@ ENV NODEJS_VERSION=24 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
+    CNB_STACK_ID=com.redhat.stacks.rhel8-nodejs-24 \
+    CNB_USER_ID=1001 \
+    CNB_GROUP_ID=0
 ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications (minimal)" \
     DESCRIPTION="Node.js $NODEJS_VERSION minimal available as container is a base platform for \
 building and running various Node.js $NODEJS_VERSION applications and frameworks. \
@@ -37,20 +39,24 @@ LABEL summary="$SUMMARY" \
       io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION,minimal" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
+      io.buildpacks.stack.id="com.redhat.stacks.rhel8-nodejs-24" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"      name="-minimal" \
-      version="$NODEJS_VERSION" \
+      com.redhat.dev-mode.port="DEBUG_PORT:5858" \
+      com.redhat.component="nodejs-24-minimal-container" \      name="rhel8/nodejs-24-minimal-minimal" \
+      version="1" \
+      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="oc new-app $FGC/$NAME-minimal~<SOURCE-REPOSITORY>"
+      usage="s2i build <SOURCE-REPOSITORY> rhel8/nodejs-24-minimal-minimal:latest <APP-NAME>"
 
-    INSTALL_PKGS="" && \
+RUN  yum -y module enable nodejs:24 && \    INSTALL_PKGS="nodejs npm nodejs-nodemon nss_wrapper-libs which" && \
     ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
     ln -s /usr/libexec/platform-python /usr/bin/python3 && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \    yum -y clean all --enablerepo='*'
+RUN  (yum -y reinstall tzdata || yum -y update tzdata ) && \
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper

@@ -1,4 +1,4 @@
-FROM :43
+FROM quay.io/sclorg/s2i-core-c10s:c10s:43
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
