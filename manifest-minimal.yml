@@ -1,0 +1,65 @@
+# Manifest for image directories creation (minimal variants)
+# every dest path will be prefixed by $DESTDIR/$version
+
+# Files containing distgen directives, which are used for each
+# (distro, version) combination not excluded in multispec
+DISTGEN_MULTI_RULES:
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.rhel8
+
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.rhel9
+
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.rhel10
+
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.c8s
+
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.c9s
+
+  - src: src/Dockerfile.minimal
+    dest: Dockerfile.c10s
+
+  - src: src/Dockerfile.minimal.fedora
+    dest: Dockerfile.fedora
+
+# Files to copy
+COPY_RULES:
+  - src: src/s2i/bin/assemble
+    dest: s2i/bin/assemble
+    mode: "0755"
+
+  - src: src/s2i/bin/run
+    dest: s2i/bin/run
+    mode: "0755"
+
+  - src: src/s2i/bin/save-artifacts
+    dest: s2i/bin/save-artifacts
+    mode: "0755"
+
+  - src: src/s2i/bin/usage
+    dest: s2i/bin/usage
+    mode: "0755"
+
+  - src: src/s2i/bin/init-wrapper
+    dest: s2i/bin/init-wrapper
+    mode: "0755"
+
+  - src: src/root/opt/app-root/etc/generate_container_user
+    dest: root/opt/app-root/etc/generate_container_user
+
+  - src: src/root/opt/app-root/etc/npm_global_module_list
+    dest: root/opt/app-root/etc/npm_global_module_list
+
+  - src: src/root/opt/app-root/etc/scl_enable
+    dest: root/opt/app-root/etc/scl_enable
+
+# Symbolic links
+SYMLINK_RULES:
+  - src: ../test
+    dest: test
+
+  - src: ../README.md
+    dest: README.md

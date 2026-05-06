@@ -47,7 +47,7 @@ run_node() {
     echo "Launching via npm..."
     exec npm run -d $NPM_RUN
   fi
-} 
+}
 
 #Set the debug port to 5858 by default.
 if [ -z "$DEBUG_PORT" ]; then

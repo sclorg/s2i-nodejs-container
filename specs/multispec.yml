@@ -1,0 +1,202 @@
+version: 1
+
+specs:
+  distroinfo:
+    fedora43:
+      distros:
+        - fedora-43-x86_64
+      s2i_base: quay.io/fedora/s2i-core
+      org: "fedora"
+      prod: "fedora"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      latest_fedora: "43"
+
+    rhel8:
+      distros:
+        - rhel-8-x86_64
+      s2i_base: ubi8/s2i-core
+      org: "ubi8"
+      prod: "rhel8"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi8/$NAME-$NODEJS_VERSION"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
+      post_install: >4-
+           (dnf -y reinstall tzdata || dnf -y update tzdata ) && \
+    rhel9:
+      distros:
+        - rhel-9-x86_64
+      s2i_base: ubi9/s2i-core
+      org: "ubi9"
+      prod: "rhel9"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi9/$NAME-$NODEJS_VERSION"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
+      post_install: >4-
+           (dnf -y reinstall tzdata || dnf -y update tzdata ) && \
+    rhel10:
+      distros:
+        - rhel-10-x86_64
+      s2i_base: ubi10/s2i-core
+      org: "ubi10"
+      prod: "rhel10"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi10/$NAME-$NODEJS_VERSION"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+    c9s:
+      distros:
+        - centos-stream-9-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c9s:c9s
+      org: "c9s"
+      prod: "c9s"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "sclorg/$NAME-$NODEJS_VERSION-c9s"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
+
+    c10s:
+      distros:
+        - centos-stream-10-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c10s:c10s
+      org: "c10s"
+      prod: "c10s"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "sclorg/$NAME-$NODEJS_VERSION-c10s"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      check_pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+
+    c8s:
+      distros:
+        - centos-stream-8-x86_64
+      s2i_base: quay.io/sclorg/s2i-core-c8s
+      org: "c8s"
+      prod: "c8s"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "sclorg/$NAME-$NODEJS_VERSION-c8s"
+      pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
+      environment_setup: >-
+        yum -y module enable nodejs:$NODEJS_VERSION && \
+
+  version:
+    "20":
+      version: "20"
+      short: "20"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      rhel_image_name: "rhel8/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      c8s_base: "quay.io/sclorg/s2i-core-c8s"
+      c9s_base: "quay.io/sclorg/s2i-core-c9s:c9s"
+      rhel8_base: "ubi8/s2i-core:latest"
+      rhel9_base: "ubi9/s2i-core:latest"
+      fedora_base: "quay.io/fedora/s2i-core:38"
+
+    "22":
+      version: "22"
+      prev_version: "20"
+      short: "22"
+      prev_short: "20"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      fedora_base: "quay.io/fedora/s2i-core:40"
+
+    "24":
+      version: "24"
+      prev_version: "22"
+      short: "24"
+      prev_short: "22"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      fedora_base: "quay.io/fedora/s2i-core:42"
+
+    "20-minimal":
+      version: "20"
+      short: "20-minimal"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      rhel_image_name: "rhel8/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      fedora_minimal_base: "quay.io/fedora/fedora-minimal:38"
+
+    "22-minimal":
+      version: "22"
+      prev_version: "20"
+      short: "22-minimal"
+      prev_short: "20-minimal"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      fedora_minimal_base: "quay.io/fedora/fedora-minimal:40"
+
+    "24-minimal":
+      version: "24"
+      prev_version: "22"
+      short: "24-minimal" 
+      prev_short: "22-minimal"
+      common_image_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      c9s_image_name: "sclorg/nodejs-{{ spec.short }}-c9s"
+      rhel_image_name: "rhel9/nodejs-{{ spec.short }}"
+      latest_fedora: "f45"
+      fedora_minimal_base: "quay.io/fedora/fedora-minimal:42"
+
+matrix:
+  include:
+    - version: "20"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - fedora-43-x86_64
+    - version: "22"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
+    - version: "24"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
+    - version: "20-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - fedora-43-x86_64
+    - version: "22-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
+    - version: "24-minimal"
+      distros:
+        - rhel-8-x86_64
+        - rhel-9-x86_64
+        - rhel-10-x86_64
+        - centos-stream-8-x86_64
+        - centos-stream-9-x86_64
+        - centos-stream-10-x86_64
+        - fedora-43-x86_64
