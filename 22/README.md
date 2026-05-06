@@ -20,6 +20,8 @@ fast, scalable network applications. Node.js uses an event-driven, non-blocking 
 that makes it lightweight and efficient, perfect for data-intensive real-time applications 
 that run across distributed devices.
 
+See [the Red Hat Enterprise Linux Application Streams Life Cycle page](https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle) for information about support for this particular stream.
+
 Usage in OpenShift
 ------------------
 In this example, we will assume that you are using the `ubi8/nodejs-22` image, available via `nodejs:22` imagestream tag in Openshift.
