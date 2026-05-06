@@ -1,7 +1,4 @@
-FROM quay.io/fedora/s2i-core:43
-
-# This image provides a minimal Node.JS environment you can use to run your Node.JS
-# applications.
+FROM quay.io/fedora/fedora-minimal:42
 
 EXPOSE 8080
 
@@ -15,60 +12,60 @@ EXPOSE 8080
 # * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
-
-ENV NODEJS_VERSION=24 \
+ENV APP_ROOT=/opt/app-root \
+    # The $HOME is not set by default, but some applications need this variable
+    HOME=/opt/app-root/src \
     NPM_RUN=start \
-    NAME=nodejs \
-    NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
+    PLATFORM="fedora" \
+    NODEJS_VERSION=24 \
+    NPM_RUN=start \
+    NAME=nodejs
 
-ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications (minimal)" \
-    DESCRIPTION="Node.js $NODEJS_VERSION minimal available as container is a base platform for \
-building and running various Node.js $NODEJS_VERSION applications and frameworks. \
+ENV SUMMARY="Minimal image for running Node.js $NODEJS_VERSION applications" \
+    DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
+running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
 that makes it lightweight and efficient, perfect for data-intensive real-time applications \
-that run across distributed devices. This minimal variant excludes development tools."
+that run across distributed devices." \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="Node.js $NODEJS_VERSION (minimal)" \
+      io.k8s.display-name="Node.js $NODEJS_VERSION Micro" \
       io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION,minimal" \
+      io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
       io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
-      com.redhat.dev-mode.port="DEBUG_PORT:5858"\
-      com.redhat.component="$NAME" \
-      name="fedora/nodejs-24-minimal-fedora-minimal" \
-      version="$NODEJS_VERSION" \
+      com.redhat.dev-mode.port="DEBUG_PORT:5858" \
+      com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
+      name="fedora/$NAME-$NODEJS_VERSION-minimal" \
+      version="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
-      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="oc new-app $FGC/$NAME-minimal~<SOURCE-REPOSITORY>"
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
-RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
-    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
+# nodejs-full-i18n is included for error strings
+RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which" && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    microdnf clean all && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
     ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
     ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
     node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
-    dnf -y clean all --enablerepo='*'
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
 
-# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+#
+COPY ./s2i/bin/ /usr/libexec/s2i
 RUN chmod +x /usr/libexec/s2i/init-wrapper
 
-# Copy extra files to the image, including help file.
+# Copy extra files to the image.
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
-    rpm-file-permissions
-
+RUN mkdir -p "$HOME" && chown -R 1001:0 "$APP_ROOT" && chmod -R ug+rwx "$APP_ROOT"
+WORKDIR "$HOME"
 USER 1001
-
-# Set the default CMD to print the usage of the language image
-CMD $STI_SCRIPTS_PATH/usage

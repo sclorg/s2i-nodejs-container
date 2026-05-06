@@ -8,7 +8,7 @@ specs:
       s2i_base: quay.io/fedora/s2i-core
       org: "fedora"
       prod: "fedora"
-      redhat_component: "nodejs-{{ spec.short }}-container"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
       img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
       latest_fedora: "43"
@@ -17,57 +17,57 @@ specs:
       distros:
         - rhel-8-x86_64
       s2i_base: ubi8/s2i-core
-      org: "rhel8"
+      org: "ubi8"
       prod: "rhel8"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi8/$NAME-$NODEJS_VERSION"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      environment_setup: >4-
-           yum -y module enable nodejs:{{ spec.version }} && \
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
       post_install: >4-
-           (yum -y reinstall tzdata || yum -y update tzdata ) && \
+           (dnf -y reinstall tzdata || dnf -y update tzdata ) && \
     rhel9:
       distros:
         - rhel-9-x86_64
       s2i_base: ubi9/s2i-core
-      org: "rhel9"
+      org: "ubi9"
       prod: "rhel9"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi9/$NAME-$NODEJS_VERSION"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      environment_setup: >4-
-           { yum -y module enable nodejs:{{ spec.version }} || :; } && \
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
       post_install: >4-
-           (yum -y reinstall tzdata || yum -y update tzdata ) && \
+           (dnf -y reinstall tzdata || dnf -y update tzdata ) && \
     rhel10:
       distros:
         - rhel-10-x86_64
       s2i_base: ubi10/s2i-core
-      org: "rhel10"
+      org: "ubi10"
       prod: "rhel10"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "ubi10/$NAME-$NODEJS_VERSION"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
     c9s:
       distros:
         - centos-stream-9-x86_64
       s2i_base: quay.io/sclorg/s2i-core-c9s:c9s
-      org: "sclorg"
+      org: "c9s"
       prod: "c9s"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "sclorg/$NAME-$NODEJS_VERSION-c9s"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      environment_setup: >4-
-           { yum -y module enable nodejs:{{ spec.version }} || :; } && \
+      environment_setup: >-
+        dnf -y module enable nodejs:$NODEJS_VERSION && \
 
     c10s:
       distros:
         - centos-stream-10-x86_64
       s2i_base: quay.io/sclorg/s2i-core-c10s:c10s
-      org: "sclorg"
+      org: "c10s"
       prod: "c10s"
-      redhat_component: "nodejs-{{ spec.short }}-container"
-      img_name: "{{ spec.org }}/nodejs-{{ spec.short }}-{{ spec.prod }}"
+      redhat_component: "${NAME}-${NODEJS_VERSION}-container"
+      img_name: "sclorg/$NAME-$NODEJS_VERSION-c10s"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
       check_pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
 
@@ -75,13 +75,13 @@ specs:
       distros:
         - centos-stream-8-x86_64
       s2i_base: quay.io/sclorg/s2i-core-c8s
-      org: "sclorg"
+      org: "c8s"
       prod: "c8s"
       redhat_component: "${NAME}-${NODEJS_VERSION}-container"
       img_name: "sclorg/$NAME-$NODEJS_VERSION-c8s"
       pkgs: "nodejs npm nodejs-nodemon nss_wrapper-libs which"
-      environment_setup: >4-
-           yum -y module enable nodejs:$NODEJS_VERSION && \
+      environment_setup: >-
+        yum -y module enable nodejs:$NODEJS_VERSION && \
 
   version:
     "20":

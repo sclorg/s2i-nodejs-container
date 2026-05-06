@@ -1,7 +1,5 @@
-FROM {{ spec.s2i_base }}{% if not ":" in spec.s2i_base and spec.prod != "c8s" %}:latest{% endif %}
+{% if spec.prod == "rhel8" %}FROM ubi8/ubi-minimal:latest{% elif spec.prod == "rhel9" %}FROM ubi9/ubi-minimal{% elif spec.prod == "rhel10" %}FROM ubi10-minimal:latest{% elif spec.prod == "c8s" %}FROM quay.io/sclorg/s2i-core-c8s{% elif spec.prod == "c9s" %}FROM quay.io/centos/centos:stream9-minimal{% elif spec.prod == "c10s" %}FROM quay.io/centos/centos:stream10-minimal{% elif spec.prod == "fedora" %}FROM {{ spec.fedora_minimal_base }}{% endif %}
 
-# This image provides a minimal Node.JS environment you can use to run your Node.JS
-# applications.
 
 EXPOSE 8080
 
@@ -15,74 +13,122 @@ EXPOSE 8080
 # * $NPM_RUN - Select an alternate / custom runtime mode, defined in your package.json files' scripts section (default: npm run "start").
 # Expose ports:
 # * 8080 - Unprivileged port used by nodejs application
-
-ENV NODEJS_VERSION={{ spec.version }} \
+ENV APP_ROOT=/opt/app-root \
+    # The $HOME is not set by default, but some applications need this variable
+    HOME=/opt/app-root/src \
     NPM_RUN=start \
-    NAME=nodejs \
-    NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH{% if spec.prod != "fedora" %} \
-    CNB_STACK_ID=com.redhat.stacks.{{ spec.prod }}-nodejs-{{ spec.version }} \
-    CNB_USER_ID=1001 \
-    CNB_GROUP_ID=0{% endif %}
+{% if spec.prod in ["rhel8", "c8s"] %}    PLATFORM="el8" \
+{% elif spec.prod in ["rhel9", "c9s"] %}    PLATFORM="el9" \
+{% elif spec.prod in ["rhel10", "c10s"] %}    PLATFORM="el10" \
+{% elif spec.prod == "fedora" %}    PLATFORM="fedora" \
+{% endif %}    NODEJS_VERSION={{ spec.version }} \
+    NPM_RUN=start \
+    NAME=nodejs
 
-ENV SUMMARY="Platform for building and running Node.js $NODEJS_VERSION applications (minimal)" \
-    DESCRIPTION="Node.js $NODEJS_VERSION minimal available as container is a base platform for \
-building and running various Node.js $NODEJS_VERSION applications and frameworks. \
+ENV SUMMARY="Minimal image for running Node.js $NODEJS_VERSION applications" \
+    DESCRIPTION="Node.js $NODEJS_VERSION available as container is a base platform for \
+running various Node.js $NODEJS_VERSION applications and frameworks. \
 Node.js is a platform built on Chrome's JavaScript runtime for easily building \
 fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model \
 that makes it lightweight and efficient, perfect for data-intensive real-time applications \
-that run across distributed devices. This minimal variant excludes development tools."
+that run across distributed devices." \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="Node.js $NODEJS_VERSION (minimal)" \
+      io.k8s.display-name="Node.js $NODEJS_VERSION {% if spec.prod in ["rhel9", "rhel10", "c9s", "c10s"] %}Micro{% else %}Minimal{% endif %}" \
       io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,$NAME,$NAME$NODEJS_VERSION,minimal" \
+      io.openshift.tags="builder,$NAME,${NAME}${NODEJS_VERSION}" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i" \
-      io.s2i.scripts-url="image:///usr/libexec/s2i"{% if spec.prod != "fedora" %} \
-      io.buildpacks.stack.id="com.redhat.stacks.{{ spec.prod }}-nodejs-{{ spec.version }}"{% endif %} \
+      io.s2i.scripts-url="image:///usr/libexec/s2i" \
       com.redhat.dev-mode="DEV_MODE:false" \
       com.redhat.deployments-dir="${APP_ROOT}/src" \
       com.redhat.dev-mode.port="DEBUG_PORT:5858"{% if spec.prod != "fedora" %} \
-      com.redhat.component="{{ spec.redhat_component }}" \{% endif %}
-      name="{{ spec.img_name }}-minimal" \
-      version="{% if spec.prod != "fedora" %}1{% else %}$NODEJS_VERSION{% endif %}"{% if spec.prod != "fedora" %} \
+      com.redhat.component="${NAME}-${NODEJS_VERSION}-minimal-container" \
+{% endif %}      name="{% if spec.prod in ["c8s", "c9s", "c10s"] %}sclorg/$NAME-$NODEJS_VERSION-minimal-{{ spec.prod }}{% else %}{{ spec.img_name }}-minimal{% endif %}"{% if spec.prod != "rhel10" %} \
+      version="{% if spec.prod == "fedora" %}$NODEJS_VERSION{% else %}1{% endif %}"{% endif %}{% if spec.prod in ["rhel8", "rhel9", "rhel10"] %} \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI"{% endif %} \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>" \
-      help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
-      usage="{% if spec.prod != "fedora" %}s2i build <SOURCE-REPOSITORY> {{ spec.img_name }}-minimal:latest <APP-NAME>{% else %}oc new-app $FGC/$NAME-minimal~<SOURCE-REPOSITORY>{% endif %}"
+      help="For more information visit https://github.com/sclorg/s2i-nodejs-container"
 
-{% if spec.environment_setup %}
-RUN {{ spec.environment_setup }}{% endif %}
-    INSTALL_PKGS="{{ spec.pkgs }}" && \
-{% if spec.prod == "fedora" %}    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
+{% if spec.prod == "fedora" %}# nodejs-full-i18n is included for error strings
+RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm findutils tar which" && \
+    dnf --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
     ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
     ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
     ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
-    ln -s /usr/lib/node_modules_18/nodemon /usr/lib/node_modules_$NODEJS_VERSION/nodemon && \
-    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \{% else %}    ln -s /usr/lib/node_modules/nodemon/bin/nodemon.js /usr/bin/nodemon && \
-    ln -s /usr/libexec/platform-python /usr/bin/python3 && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \{% endif %}
-    yum -y clean all --enablerepo='*'{% if spec.post_install %}
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    dnf clean all
+{% elif spec.prod == "c8s" %}# nodejs-full-i18n is included for error strings
+RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
+    yum -y module disable nodejs && \
+    yum -y module enable nodejs:$NODEJS_VERSION && \
+    yum -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    yum clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% elif spec.prod == "c9s" and spec.version == "22" %}# nodejs-full-i18n is included for error strings
+RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
+    yum -y module disable nodejs && \
+    yum -y module enable nodejs:$NODEJS_VERSION && \
+    yum -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    yum clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% elif spec.prod == "rhel10" %}# nodejs-full-i18n is included for error strings
+{% if spec.version == "22" %}RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    microdnf clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% else %}RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which" && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    microdnf clean all && \
+    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
+    ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
+    ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% endif %}
+{% elif spec.prod == "c10s" %}# nodejs-full-i18n is included for error strings
+{% if spec.version == "22" %}RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n npm findutils tar which" && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    node-22 -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    microdnf clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% else %}RUN INSTALL_PKGS="nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-full-i18n nodejs$NODEJS_VERSION-npm findutils tar which" && \
+    microdnf -y --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    microdnf clean all && \
+    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
+    ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
+    ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% endif %}
+{% else %}# nodejs-full-i18n is included for error strings
+RUN INSTALL_PKGS="nodejs nodejs-nodemon nodejs-full-i18n npm findutils tar which" && \
+    microdnf -y module disable nodejs && \
+    microdnf -y module enable nodejs:$NODEJS_VERSION && \
+    microdnf {% if spec.prod != "rhel8" %}-y {% endif %}--nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
+    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
+    microdnf clean all && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/dnf* /mnt/rootfs/var/log/yum.*
+{% endif %}
 
-RUN {{ spec.post_install }}{% endif %}
-
-# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
-RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper
+COPY ./s2i/bin/ /usr/libexec/s2i
+RUN chmod +x /usr/libexec/s2i/init-wrapper
 
 # Copy extra files to the image.
 COPY ./root/ /
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
+{% if spec.prod in ["rhel8", "rhel9", "rhel10", "c8s", "c9s", "c10s"] %}RUN mkdir -p "$HOME" && chown -R 1001:0 "$APP_ROOT" && chmod -R ug+rwx "$APP_ROOT"
+WORKDIR "$HOME"
+USER 1001
+{% else %}RUN chown -R 1001:0 ${APP_ROOT} && chmod -R ug+rwx ${APP_ROOT} && \
     rpm-file-permissions
 
 USER 1001
-
-# Set the default CMD to print the usage of the language image
-CMD $STI_SCRIPTS_PATH/usage
+{% endif %}
