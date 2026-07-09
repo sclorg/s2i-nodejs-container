@@ -1,4 +1,4 @@
-FROM quay.io/fedora/s2i-core:38
+FROM quay.io/fedora/s2i-core:41
 
 # This image provides a Node.JS environment you can use to run your Node.JS
 # applications.
@@ -17,6 +17,7 @@ EXPOSE 8080
 # * 8080 - Unprivileged port used by nodejs application
 
 ENV NODEJS_VERSION=20 \
+    DEFAULT_NODEJS_VERSION=22 \
     NPM_RUN=start \
     NAME=nodejs \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -48,20 +49,16 @@ LABEL summary="$SUMMARY" \
       help="For more information visit https://github.com/sclorg/s2i-nodejs-container" \
       usage="oc new-app $FGC/$NAME~<SOURCE-REPOSITORY>"
 
-RUN MODULE_DEPS="make gcc gcc-c++ libatomic_ops git openssl-devel" && \
-    INSTALL_PKGS="$MODULE_DEPS nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    ln -s /usr/bin/node-$NODEJS_VERSION /usr/bin/node && \
-    ln -s /usr/bin/npm-$NODEJS_VERSION /usr/bin/npm && \
-    ln -s /usr/bin/npx-$NODEJS_VERSION /usr/bin/npx && \
-    ln -s /usr/lib/node_modules_18/nodemon /usr/lib/node_modules_$NODEJS_VERSION/nodemon && \
-    node -v | grep -qe "^v$NODEJS_VERSION\." && echo "Found VERSION $NODEJS_VERSION" && \
-    yum -y clean all --enablerepo='*'
+RUN INSTALL_PKGS="make gcc gcc-c++ libatomic_ops git openssl-devel nodejs$NODEJS_VERSION nodejs-nodemon nodejs$NODEJS_VERSION-npm nss_wrapper-libs which" && \
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    dnf -y clean all --enablerepo='*'
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
-RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper
+RUN chmod +x $STI_SCRIPTS_PATH/init-wrapper $STI_SCRIPTS_PATH/ensure-default-node
+
+# Make sure a user has non-versioned binaries available for the correct Node.js version
+RUN $STI_SCRIPTS_PATH/ensure-default-node
 
 # Copy extra files to the image, including help file.
 COPY ./root/ /
