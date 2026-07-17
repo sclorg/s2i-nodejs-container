@@ -237,6 +237,9 @@ Application developers can use the following environment variables to configure 
 **`NPM_TOKEN`**
        Use authentication token for a custom NPM registry mirror
 
+**`NPM_CI_STRICT`**  
+       When set to "true", a failed `npm ci` (e.g. missing or out-of-sync `package-lock.json`) causes the build to fail immediately instead of falling back to `npm install` (default: "false")
+
 One way to define a set of environment variables is to include them as key value pairs in your repo's `.s2i/environment` file.
 
 Example: DATABASE_USER=sampleUser

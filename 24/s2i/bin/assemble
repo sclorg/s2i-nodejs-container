@@ -88,12 +88,32 @@ fi
 if [ "$NODE_ENV" != "production" ]; then
 
 	echo "---> Building your Node application from source"
-	npm install
+
+	# Prefer npm ci for reproducible installs; fall back unless NPM_CI_STRICT=true
+	echo "---> Installing dependencies with npm ci"
+	if ! npm ci; then
+		if [ "${NPM_CI_STRICT}" == "true" ]; then
+			echo "---> ERROR: npm ci failed and NPM_CI_STRICT=true; not falling back to npm install" >&2
+			exit 1
+		fi
+		echo "---> WARNING: npm ci failed, falling back to npm install (set NPM_CI_STRICT=true to disable this fallback)" >&2
+		npm install
+	fi
 
 else
 
 	echo "---> Installing all dependencies"
-	NODE_ENV=development npm install
+
+	# Prefer npm ci for reproducible installs; fall back unless NPM_CI_STRICT=true
+	echo "---> Installing dependencies with npm ci"
+	if ! NODE_ENV=development npm ci; then
+		if [ "${NPM_CI_STRICT}" == "true" ]; then
+			echo "---> ERROR: npm ci failed and NPM_CI_STRICT=true; not falling back to npm install" >&2
+			exit 1
+		fi
+		echo "---> WARNING: npm ci failed, falling back to npm install (set NPM_CI_STRICT=true to disable this fallback)" >&2
+		NODE_ENV=development npm install
+	fi
 
 	#do not fail when there is no build script
 	echo "---> Building in production mode"
