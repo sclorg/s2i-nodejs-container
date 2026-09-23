@@ -116,7 +116,7 @@ fi
 
 echo
 echo "7. Checking CNB environment variables..."
-for version in 22 24; do
+for version in 22 24 26; do
     for distro in fedora rhel8 rhel9; do
         dockerfile="$version/Dockerfile.$distro"
         if [ -f "$dockerfile" ]; then
@@ -178,10 +178,12 @@ echo "9. Checking version matrix coverage..."
 expected_v20=4  # rhel8, rhel9, c9s, fedora
 expected_v22=6  # rhel8, rhel9, rhel10, c9s, c10s, fedora
 expected_v24=6  # rhel8, rhel9, rhel10, c9s, c10s, fedora
+expected_v26=6  # rhel8, rhel9, rhel10, c9s, c10s, fedora
 
 actual_v20=$(ls 20/Dockerfile.* 2>/dev/null | wc -l)
 actual_v22=$(ls 22/Dockerfile.* 2>/dev/null | wc -l)
 actual_v24=$(ls 24/Dockerfile.* 2>/dev/null | wc -l)
+actual_v26=$(ls 26/Dockerfile.* 2>/dev/null | wc -l)
 
 if [ "$actual_v20" -eq "$expected_v20" ]; then
     check_pass "v20 has $expected_v20 distros"
@@ -199,6 +201,12 @@ if [ "$actual_v24" -eq "$expected_v24" ]; then
     check_pass "v24 has $expected_v24 distros"
 else
     check_fail "v24 has $actual_v24 distros, expected $expected_v24"
+fi
+
+if [ "$actual_v26" -eq "$expected_v26" ]; then
+    check_pass "v26 has $expected_v26 distros"
+else
+    check_fail "v26 has $actual_v26 distros, expected $expected_v26"
 fi
 
 echo
