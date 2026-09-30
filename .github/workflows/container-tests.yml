@@ -11,6 +11,6 @@ jobs:
     uses: "sclorg/ci-actions/.github/workflows/container-tests.yml@main"
     with:
       enabled-tests: '["container","container-pytest","openshift-pytest","container-fips"]'
-      versions: '[ "22", "22-minimal", "24", "24-minimal" ]'
-      openshift-versions: '[ "22", "22-minimal", "24", "24-minimal" ]'
+      versions: '[ "22", "22-minimal", "24", "24-minimal", "26", "26-minimal" ]'
+      openshift-versions: '[ "22", "22-minimal", "24", "24-minimal", "26", "26-minimal" ]'
     secrets: inherit

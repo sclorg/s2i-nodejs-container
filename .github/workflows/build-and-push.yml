@@ -126,6 +126,38 @@ jobs:
             quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
             image_name: "nodejs-24-minimal"
 
+          - dockerfile: "26/Dockerfile.c10s"
+            docker_context: 26
+            registry_namespace: "sclorg"
+            tag: "c10s"
+            image_name: "nodejs-26-c10s"
+            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
+          - dockerfile: "26-minimal/Dockerfile.c10s"
+            docker_context: 26-minimal
+            registry_namespace: "sclorg"
+            tag: "c10s"
+            image_name: "nodejs-26-minimal-c10s"
+            quayio_username: "QUAY_IMAGE_SCLORG_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_SCLORG_BUILDER_TOKEN"
+
+          - dockerfile: "26/Dockerfile.fedora"
+            docker_context: 26
+            registry_namespace: "fedora"
+            tag: "fedora"
+            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-26"
+
+          - dockerfile: "26-minimal/Dockerfile.fedora"
+            docker_context: 26-minimal
+            registry_namespace: "fedora"
+            tag: "fedora"
+            quayio_username: "QUAY_IMAGE_FEDORA_BUILDER_USERNAME"
+            quayio_token: "QUAY_IMAGE_FEDORA_BUILDER_TOKEN"
+            image_name: "nodejs-26-minimal"
+
     steps:
       - name: Build and push to quay.io registry
         uses: sclorg/build-and-push-action@v4
