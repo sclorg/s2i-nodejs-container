@@ -1,0 +1,1 @@
+../../test/test-lib-nodejs.sh
