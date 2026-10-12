@@ -98,8 +98,8 @@ SYMLINK_RULES:
   - src: ../../test/test-incremental
     dest: test/test-incremental
 
-  - src: ../../test/test-lib-nodejs.sh
-    dest: test/test-lib-nodejs.sh
+  - src: ../../test/test_lib_nodejs.py
+    dest: test/test_lib_nodejs.py
 
   - src: ../../common/test-lib-openshift.sh
     dest: test/test-lib-openshift.sh
