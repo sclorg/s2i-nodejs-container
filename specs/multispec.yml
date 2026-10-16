@@ -402,7 +402,8 @@ matrix:
         - rhel-10-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
-        - fedora-45-x86_64
+        # Fedora 45 not yet available - postponed
+        # - fedora-45-x86_64
     - version: "26-minimal"
       distros:
         - rhel-8-x86_64
@@ -410,4 +411,5 @@ matrix:
         - rhel-10-x86_64
         - centos-stream-9-x86_64
         - centos-stream-10-x86_64
-        - fedora-45-x86_64
+        # Fedora 45 not yet available - postponed
+        # - fedora-45-x86_64
