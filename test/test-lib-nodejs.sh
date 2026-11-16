@@ -419,7 +419,7 @@ function test_client_pino() {
 }
 
 function test_client_prom() {
-  echo "Running prom-client test"
+  echo "Running @prometheus-io/client test"
   test_running_client_js prom-client
 }
 
