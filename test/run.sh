@@ -1,0 +1,191 @@
+#!/bin/bash
+#
+# The 'run' performs a simple test that verifies that STI image.
+# The main focus here is to exercise the STI scripts.
+#
+# IMAGE_NAME specifies a name of the candidate image used for testing.
+# The image has to be available before this script is executed.
+
+THISDIR=$(dirname ${BASH_SOURCE[0]})
+
+TEST_LIST_APP="\
+test_run_app_application
+test_s2i_usage
+test_scl_usage
+test_connection
+test_docker_run_usage
+test_npm_functionality
+test_check_build_using_dockerfile
+test_nodemon_removed
+test_npm_cache_cleared
+test_npm_tmp_cleared
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
+test_node_cmd_development_init_wrapper_true
+test_node_cmd_production_init_wrapper_true
+test_node_cmd_development_init_wrapper_false
+test_init_wrapper_true_development
+test_init_wrapper_false_development
+"
+
+TEST_LIST_NPM_TOKEN="\
+test_run_app_application
+test_connection
+test_npm_token_present
+"
+
+TEST_LIST_NODE_ENV="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_development
+test_node_cmd_development_init_wrapper_true
+test_node_cmd_production_init_wrapper_true
+test_node_cmd_production_init_wrapper_false
+"
+
+TEST_LIST_DEV_MODE="\
+test_run_app_application
+test_connection
+test_nodemon_present
+test_npm_cache_exists
+kill_test_application
+test_dev_mode_true_development
+test_dev_mode_false_production
+"
+
+TEST_LIST_HW="\
+test_safe_logging
+test_run_hw_application
+test_incremental_build
+test_build_express_webapp
+test_node_cmd_development_init_wrapper_true
+test_init_wrapper_false_development
+"
+
+TEST_LIST_FIPS="\
+test_nodejs_fips_mode
+test_run_fips_app_application
+"
+source "${THISDIR}/test-lib.sh"
+source "${THISDIR}/test-lib-nodejs.sh"
+
+test -n $IMAGE_NAME \
+  -a -n $VERSION
+
+test_dir="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
+image_dir="$(readlink -f ${test_dir}/..)"
+
+# Since we built the candidate image locally, we don't want S2I attempt to pull
+# it from Docker hub
+s2i_args="--pull-policy=never "
+
+# TODO: This should be part of the image metadata
+test_port=8080
+
+# Common git configuration
+readonly -A gitconfig=(
+  [user.name]="builder"
+  [user.email]="build@localhost"
+  [commit.gpgsign]="false"
+)
+
+[[ -n "$DEBUG" ]] && set -x
+
+# Positive test & non-zero exit status = ERROR.
+# Negative test & zero exit status = ERROR.
+# Tests with '-should-fail-' in their name should fail during a build,
+# expecting non-zero exit status.
+evaluate_build_result() {
+  local _result="$1"
+  local _app="$2"
+  local _type="positive"
+  local _test_msg="[PASSED]"
+  local _ret_code=0
+
+  if [[ "$_app" == *"-should-fail-"* ]]; then
+    _type="negative"
+  fi
+
+  if [[ "$_type" == "positive" && "$_result" != "0" ]]; then
+    info "TEST FAILED (${_type}), EXPECTED:0 GOT:${_result}"
+    _ret_code=$_result
+  elif [[ "$_type" == "negative" && "$_result" == "0" ]]; then
+    info "TEST FAILED (${_type}), EXPECTED: non-zero GOT:${_result}"
+    _ret_code=1
+  fi
+  if [ $_ret_code != 0 ]; then
+    cleanup
+    TESTSUITE_RESULT=1
+    _test_msg="[FAILED]"
+  fi
+  ct_update_test_result "$_test_msg" "$_app" run_s2i_build
+
+  if [[ "$_type" == "negative" && "$_result" != "0" ]]; then
+    _ret_code=127 # even though this is success, the app is still not built
+  fi
+  return $_ret_code
+}
+
+ct_init
+cid_file=$CID_FILE_DIR/$(mktemp -u -p . --suffix=.cid)
+
+# Build the application image twice to ensure the 'save-artifacts' and
+# 'restore-artifacts' scripts are working properly
+prepare app
+check_prep_result $? app || exit
+echo "Testing the production image build"
+run_s2i_build
+evaluate_build_result $? "default"
+
+TEST_SET=${TESTS:-$TEST_LIST_APP} ct_run_tests_from_testset "app"
+
+cleanup
+
+prepare app
+check_prep_result $? app || exit
+echo "Testing the production image build with token"
+run_s2i_build "-e NPM_TOKEN=some-token-for-testing"
+evaluate_build_result $? "-e NPM_TOKEN=some-token-for-testing"
+
+TEST_SET=${TESTS:-$TEST_LIST_NPM_TOKEN} ct_run_tests_from_testset "node_env_token"
+
+cleanup
+
+run_s2i_build "-e NODE_ENV=development"
+evaluate_build_result $? "-e NODE_ENV=development"
+
+TEST_SET=${TESTS:-$TEST_LIST_NODE_ENV} ct_run_tests_from_testset "node_env_development"
+
+cleanup
+
+echo "Testing the development image build: s2i build -e \"DEV_MODE=true\")"
+run_s2i_build "-e DEV_MODE=true"
+evaluate_build_result $? "-e DEV_MODE=true"
+
+TEST_SET=${TESTS:-$TEST_LIST_DEV_MODE} ct_run_tests_from_testset "dev_mode"
+
+cleanup
+
+echo "Testing proxy safe logging..."
+prepare hw
+check_prep_result $? hw || exit
+run_s2i_build_proxy http://user.password@0.0.0.0:8000 https://user.password@0.0.0.0:8000 > /tmp/build-log 2>&1
+evaluate_build_result $? "proxy"
+
+TEST_SET=${TESTS:-$TEST_LIST_HW} ct_run_tests_from_testset "hw"
+
+cleanup
+
+echo "Testing fips mode"
+prepare fips
+check_prep_result $? fips || exit
+echo "Testing the production image build for fips"
+run_s2i_build_fips
+evaluate_build_result $? "default"
+
+TEST_SET=${TESTS:-$TEST_LIST_FIPS} ct_run_tests_from_testset "fips"
